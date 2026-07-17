@@ -1,0 +1,15 @@
+---
+import PageHeader from "../../components/PageHeader.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { collectTags, getAllPosts, getTagUrl } from "../../lib/posts";
+
+const posts = await getAllPosts();
+const tags = collectTags(posts);
+---
+
+<BaseLayout title="标签">
+  <PageHeader title="标签" eyebrow="Tags" description="标签更像是思考时留下的线索，用来串起不同文章之间的联系。" />
+  <div class="flex flex-wrap gap-3">
+    {tags.map(([tag, count]) => <a class="rounded-full border border-white/70 bg-white/65 px-4 py-2 text-sm text-ink-700 shadow-soft transition hover:-translate-y-0.5 hover:border-leaf-300 hover:bg-leaf-50 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100 dark:hover:bg-leaf-300/10" href={getTagUrl(tag)}>#{tag} <span class="text-ink-400">{count}</span></a>)}
+  </div>
+</BaseLayout>

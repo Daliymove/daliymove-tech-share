@@ -1,0 +1,23 @@
+---
+import PageHeader from "../../components/PageHeader.astro";
+import PostCard from "../../components/PostCard.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { collectTags, getAllPosts } from "../../lib/posts";
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  return collectTags(posts).map(([tag]) => ({
+    params: { tag },
+    props: { tag, posts: posts.filter((post) => post.data.tags.includes(tag)) },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`标签：${tag}`}>
+  <PageHeader title={`#${tag}`} eyebrow="Tag" description={`包含这个标签的文章共有 ${posts.length} 篇。`} />
+  <div class="grid gap-5 md:grid-cols-2">
+    {posts.map((post) => <PostCard post={post} />)}
+  </div>
+</BaseLayout>

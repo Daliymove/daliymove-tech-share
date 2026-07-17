@@ -1,0 +1,341 @@
+---
+import PageHeader from "../components/PageHeader.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getAllPosts, getPostUrl } from "../lib/posts";
+
+const posts = await getAllPosts();
+const localSearchIndex = posts.map((post) => {
+  const body = (post.body ?? "").replace(/\s+/g, " ").trim();
+  return {
+    title: post.data.title,
+    description: post.data.description,
+    category: post.data.category,
+    tags: post.data.tags,
+    url: getPostUrl(post),
+    body,
+  };
+});
+---
+
+<BaseLayout title="搜索">
+  <PageHeader title="搜索" eyebrow="Search" description="支持全文搜索。构建后优先使用 Pagefind 索引；开发模式下会自动回退到本地文章索引。" />
+
+  <section class="rounded-lg border border-white/70 bg-white/68 p-5 shadow-soft backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.055] md:p-6">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div class="min-w-0 flex-1">
+        <label class="mb-3 block text-sm font-medium text-ink-700 dark:text-ink-100" for="search-input">输入关键词</label>
+        <div class="relative">
+          <input id="search-input" class="w-full rounded-md border border-ink-200 bg-white px-4 py-3 pr-24 text-ink-900 outline-none ring-leaf-300 transition placeholder:text-ink-400 focus:border-leaf-300 focus:ring-2 dark:border-white/10 dark:bg-ink-950/70 dark:text-ink-50 dark:placeholder:text-ink-500" type="search" placeholder="例如：Astro、学习系统、Markdown" autocomplete="off" spellcheck="false" />
+          <button id="search-clear" class="absolute right-2 top-1/2 hidden -translate-y-1/2 rounded-md border border-ink-200 bg-white px-3 py-1.5 text-xs font-semibold text-ink-500 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:text-leaf-200" type="button">清空</button>
+        </div>
+      </div>
+      <div class="rounded-md border border-ink-200/80 bg-ink-50/75 px-4 py-3 text-sm text-ink-500 dark:border-white/10 dark:bg-white/5 dark:text-ink-300">
+        <span id="search-count" class="font-semibold text-ink-950 dark:text-white">0</span> 条结果
+      </div>
+    </div>
+
+    <div class="mt-4 flex flex-wrap gap-2" aria-label="常用搜索词">
+      {["Astro", "Markdown", "学习", "复盘", "知识管理"].map((keyword) => (
+        <button class="search-chip rounded-full border border-ink-200 bg-white/65 px-3 py-1.5 text-xs font-medium text-ink-600 transition hover:border-leaf-300 hover:bg-leaf-50 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-leaf-300/10 dark:hover:text-leaf-200" type="button" data-query={keyword}>{keyword}</button>
+      ))}
+    </div>
+
+    <div class="mt-5 rounded-md border border-ink-200/80 bg-ink-50/70 px-4 py-3 dark:border-white/10 dark:bg-ink-950/45">
+      <p id="search-status" class="text-sm text-ink-500 dark:text-ink-300">正在准备搜索索引...</p>
+    </div>
+
+    <div id="search-results" class="mt-6 grid gap-4" aria-live="polite"></div>
+  </section>
+
+  <script id="local-search-index" type="application/json" set:html={JSON.stringify(localSearchIndex)} />
+
+  <script>
+    type LocalSearchItem = {
+      title: string;
+      description: string;
+      category: string;
+      tags: string[];
+      url: string;
+      body: string;
+    };
+
+    type SearchResultItem = {
+      title: string;
+      excerpt: string;
+      url: string;
+      source: "pagefind" | "local";
+    };
+
+    const input = document.querySelector("#search-input") as HTMLInputElement | null;
+    const clearButton = document.querySelector("#search-clear") as HTMLButtonElement | null;
+    const results = document.querySelector("#search-results");
+    const status = document.querySelector("#search-status");
+    const count = document.querySelector("#search-count");
+    const chips = document.querySelectorAll<HTMLButtonElement>(".search-chip");
+    const pagefindPath = `${import.meta.env.BASE_URL}pagefind/pagefind.js`.replace(/\/{2,}/g, "/");
+    const localIndexNode = document.querySelector("#local-search-index");
+
+    let pagefind: any;
+    let pagefindReady = false;
+    let pagefindFailed = false;
+    let searchTimer: number | undefined;
+    let searchToken = 0;
+    let engineLabel = "本地索引";
+
+    const localIndex: LocalSearchItem[] = (() => {
+      try {
+        return JSON.parse(localIndexNode?.textContent || "[]") as LocalSearchItem[];
+      } catch {
+        return [];
+      }
+    })();
+
+    function setStatus(message: string) {
+      if (status) status.textContent = message;
+    }
+
+    function setCount(value: number) {
+      if (count) count.textContent = String(value);
+    }
+
+    function updateClearButton() {
+      clearButton?.classList.toggle("hidden", !input?.value.trim());
+    }
+
+    function escapeHtml(value: unknown) {
+      const element = document.createElement("div");
+      element.textContent = String(value ?? "未命名文章");
+      return element.innerHTML;
+    }
+
+    function escapeAttribute(value: unknown) {
+      return String(value ?? "").replace(/[&<>"]/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+      }[char] ?? char));
+    }
+
+    function renderEmpty(title: string, description: string) {
+      if (!results) return;
+      results.innerHTML = `
+        <div class="rounded-lg border border-dashed border-ink-200 bg-white/50 p-7 text-center dark:border-white/10 dark:bg-white/[0.035]">
+          <h2 class="text-lg font-semibold text-ink-950 dark:text-white">${escapeHtml(title)}</h2>
+          <p class="mt-2 text-sm leading-6 text-ink-500 dark:text-ink-300">${escapeHtml(description)}</p>
+        </div>
+      `;
+    }
+
+    function renderResults(items: SearchResultItem[], total: number, elapsed: number, query: string) {
+      if (!results) return;
+      setCount(total);
+
+      if (!items.length) {
+        setStatus(`没有找到“${query}”的匹配内容。`);
+        renderEmpty("没有匹配结果", "换一个更短的关键词试试，比如文章主题、工具名或分类名。");
+        return;
+      }
+
+      setStatus(`找到 ${total} 条结果，用时 ${elapsed}ms（${engineLabel}）。`);
+      results.innerHTML = items.map((item, index) => `
+        <a class="group block rounded-lg border border-white/70 bg-white/72 p-5 shadow-soft transition duration-300 hover:-translate-y-0.5 hover:border-leaf-200 hover:shadow-lift dark:border-white/10 dark:bg-white/[0.055] dark:hover:border-leaf-300/40" href="${escapeAttribute(item.url)}">
+          <div class="flex items-start gap-4">
+            <span class="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-leaf-50 text-xs font-semibold text-leaf-700 dark:bg-leaf-300/10 dark:text-leaf-200">${index + 1}</span>
+            <div class="min-w-0 flex-1">
+              <h2 class="text-lg font-semibold leading-snug text-ink-950 transition group-hover:text-leaf-700 dark:text-ink-50 dark:group-hover:text-leaf-300">${escapeHtml(item.title)}</h2>
+              <p class="mt-2 text-sm leading-7 text-ink-600 dark:text-ink-300">${item.excerpt || "没有可显示的摘要。"}</p>
+              <p class="mt-3 truncate text-xs text-ink-400 dark:text-ink-500">${escapeHtml(item.url)}</p>
+            </div>
+          </div>
+        </a>
+      `).join("");
+    }
+
+    function normalize(text: string) {
+      return text.toLowerCase().replace(/\s+/g, " ").trim();
+    }
+
+    function buildTokens(query: string) {
+      const normalized = normalize(query);
+      if (!normalized) return [] as string[];
+
+      const tokens = new Set<string>([normalized]);
+      normalized.split(/[\s,，。.!！?？;；:：/\\|]+/).filter(Boolean).forEach((token) => tokens.add(token));
+
+      // Chinese-friendly partial matching: add 2-char and 3-char windows.
+      const compact = normalized.replace(/\s+/g, "");
+      if (/[\u4e00-\u9fa5]/.test(compact)) {
+        for (let size = 2; size <= 3; size += 1) {
+          for (let i = 0; i <= compact.length - size; i += 1) {
+            tokens.add(compact.slice(i, i + size));
+          }
+        }
+      }
+
+      return Array.from(tokens).filter(Boolean);
+    }
+
+    function makeExcerpt(text: string, query: string, fallback = "") {
+      const source = text || fallback || "没有可显示的摘要。";
+      const normalizedSource = source;
+      const token = buildTokens(query)[0] || query;
+      const index = normalize(normalizedSource).indexOf(normalize(token));
+      if (index < 0) {
+        return escapeHtml(source.slice(0, 96)) + (source.length > 96 ? "..." : "");
+      }
+
+      const start = Math.max(0, index - 24);
+      const end = Math.min(source.length, index + token.length + 48);
+      const snippet = `${start > 0 ? "..." : ""}${source.slice(start, end)}${end < source.length ? "..." : ""}`;
+      const safe = escapeHtml(snippet);
+      const highlight = escapeHtml(source.slice(index, index + token.length));
+      return safe.replace(highlight, `<mark>${highlight}</mark>`);
+    }
+
+    function searchLocal(query: string): SearchResultItem[] {
+      const tokens = buildTokens(query);
+      if (!tokens.length) return [];
+
+      const scored = localIndex.map((item) => {
+        const fields = [
+          { text: item.title, weight: 12 },
+          { text: item.tags.join(" "), weight: 8 },
+          { text: item.category, weight: 7 },
+          { text: item.description, weight: 5 },
+          { text: item.body, weight: 2 },
+        ];
+
+        let score = 0;
+        for (const field of fields) {
+          const haystack = normalize(field.text);
+          for (const token of tokens) {
+            if (haystack.includes(normalize(token))) {
+              score += field.weight;
+            }
+          }
+          if (haystack.includes(normalize(query))) {
+            score += field.weight * 2;
+          }
+        }
+
+        return { item, score };
+      })
+        .filter((entry) => entry.score > 0)
+        .sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title, "zh-CN"));
+
+      return scored.slice(0, 12).map(({ item }) => ({
+        title: item.title,
+        url: item.url,
+        excerpt: makeExcerpt(item.description || item.body, query, item.description),
+        source: "local" as const,
+      }));
+    }
+
+    async function loadPagefind() {
+      if (pagefindReady) return pagefind;
+      if (pagefindFailed) return null;
+
+      try {
+        pagefind = await import(/* @vite-ignore */ pagefindPath);
+        await pagefind.options({ excerptLength: 24 });
+        pagefindReady = true;
+        engineLabel = "Pagefind";
+        setStatus("索引已就绪。输入关键词即可搜索标题、摘要和正文。");
+        return pagefind;
+      } catch {
+        pagefindFailed = true;
+        engineLabel = "本地索引";
+        setStatus(`Pagefind 索引未找到，已切换到本地文章索引（共 ${localIndex.length} 篇）。`);
+        return null;
+      }
+    }
+
+    async function searchPagefind(query: string): Promise<SearchResultItem[] | null> {
+      const engine = await loadPagefind();
+      if (!engine) return null;
+
+      try {
+        const search = await engine.search(query);
+        const data = await Promise.all(search.results.slice(0, 10).map((result: any) => result.data()));
+        return data.map((item: any) => ({
+          title: item.meta?.title ?? item.url ?? "未命名文章",
+          excerpt: item.excerpt || "没有可显示的摘要。",
+          url: item.url,
+          source: "pagefind" as const,
+        }));
+      } catch {
+        pagefindFailed = true;
+        pagefindReady = false;
+        engineLabel = "本地索引";
+        return null;
+      }
+    }
+
+    async function runSearch(query: string) {
+      const trimmed = query.trim();
+      const token = ++searchToken;
+      updateClearButton();
+      setCount(0);
+
+      if (!results) return;
+      results.innerHTML = "";
+
+      if (!trimmed) {
+        setStatus(pagefindReady
+          ? "索引已就绪。输入关键词即可搜索标题、摘要和正文。"
+          : `本地文章索引已就绪（共 ${localIndex.length} 篇），也可以在构建后使用 Pagefind。`);
+        renderEmpty("开始一次搜索", "可以搜索技术关键词、文章标题、分类线索，或者点击上方常用搜索词。");
+        return;
+      }
+
+      setStatus(`正在搜索“${trimmed}”...`);
+      const startedAt = performance.now();
+
+      let items = await searchPagefind(trimmed);
+      if (token !== searchToken) return;
+
+      // Fallback when Pagefind is unavailable or returns no Chinese-friendly matches.
+      if (!items || items.length === 0) {
+        engineLabel = pagefindReady ? "本地索引（补充）" : "本地索引";
+        items = searchLocal(trimmed);
+      } else {
+        engineLabel = "Pagefind";
+      }
+
+      if (token !== searchToken) return;
+      const elapsed = Math.max(1, Math.round(performance.now() - startedAt));
+      renderResults(items, items.length, elapsed, trimmed);
+    }
+
+    function queueSearch() {
+      window.clearTimeout(searchTimer);
+      searchTimer = window.setTimeout(() => runSearch(input?.value ?? ""), 160);
+    }
+
+    input?.addEventListener("input", queueSearch);
+    clearButton?.addEventListener("click", () => {
+      if (!input) return;
+      input.value = "";
+      input.focus();
+      runSearch("");
+    });
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        if (!input) return;
+        input.value = chip.dataset.query ?? "";
+        input.focus();
+        runSearch(input.value);
+      });
+    });
+
+    renderEmpty("开始一次搜索", "可以搜索技术关键词、文章标题、分类线索，或者点击上方常用搜索词。");
+    updateClearButton();
+    loadPagefind().finally(() => {
+      if (!pagefindReady) {
+        setStatus(`本地文章索引已就绪（共 ${localIndex.length} 篇）。输入关键词即可搜索。`);
+      }
+    });
+  </script>
+</BaseLayout>

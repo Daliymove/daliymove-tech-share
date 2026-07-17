@@ -1,0 +1,35 @@
+---
+import PageHeader from "../components/PageHeader.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+---
+
+<BaseLayout title="关于">
+  <PageHeader title="关于 daliyMove技术分享" eyebrow="About" description="这里记录每天推进一点的技术实践：前端、工程化、工具方法，以及能复用的经验。" />
+  <div class="prose-blog max-w-3xl rounded-2xl border border-white/70 bg-white/72 p-7 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
+    <p>你好，我是 <strong>daliyMove</strong>。这个站点是我的技术分享站，用来把零散经验整理成更清晰、可检索、可复用的内容。</p>
+    <p>我希望这里不是信息堆叠，而是持续前进的技术笔记。文章会尽量写清楚问题背景、实践过程、踩过的坑，以及下次能直接拿走的结论。</p>
+    <h2>关注主题</h2>
+    <ul>
+      <li>前端与工程实践</li>
+      <li>开发工具与效率方法</li>
+      <li>学习系统与技术复盘</li>
+    </ul>
+    <h2>更新节奏</h2>
+    <p>先以稳定记录为主，等内容沉淀得更厚，再逐步扩展 RSS、部署、评论和更完整的知识导航。</p>
+    <div class="not-prose mt-8 grid gap-3 sm:grid-cols-3">
+      <div class="rounded-xl border border-ink-200/70 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
+        <div class="mb-2 text-leaf-700 dark:text-leaf-300"><Icon name="code" class="h-5 w-5" /></div>
+        <p class="text-sm font-semibold text-ink-950 dark:text-white">工程实践</p>
+      </div>
+      <div class="rounded-xl border border-ink-200/70 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
+        <div class="mb-2 text-leaf-700 dark:text-leaf-300"><Icon name="layers" class="h-5 w-5" /></div>
+        <p class="text-sm font-semibold text-ink-950 dark:text-white">方法沉淀</p>
+      </div>
+      <div class="rounded-xl border border-ink-200/70 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
+        <div class="mb-2 text-leaf-700 dark:text-leaf-300"><Icon name="pulse" class="h-5 w-5" /></div>
+        <p class="text-sm font-semibold text-ink-950 dark:text-white">持续前进</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

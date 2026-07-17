@@ -1,0 +1,62 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+import { formatDate, getReadingTime, getTagUrl, withBase, type BlogPost } from "../lib/posts";
+
+interface Props {
+  post: BlogPost;
+  headings: Array<{ depth: number; slug: string; text: string }>;
+}
+
+const { post, headings } = Astro.props;
+const toc = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_17rem]" data-pagefind-body>
+    <div class="min-w-0">
+      <a class="inline-flex items-center gap-2 text-sm font-medium text-ink-500 transition hover:text-leaf-700 dark:text-ink-300 dark:hover:text-leaf-300" href={withBase("/blog/")}>
+        <span aria-hidden="true">←</span>
+        返回文章列表
+      </a>
+      <header class="mt-6 border-b border-ink-200/70 pb-9 dark:border-white/10">
+        <span class="inline-flex items-center gap-1 rounded-full border border-leaf-200 bg-leaf-50 px-3 py-1 text-xs font-semibold text-leaf-700 dark:border-leaf-300/20 dark:bg-leaf-300/10 dark:text-leaf-100">
+          <Icon name="grid" class="h-3 w-3" />
+          {post.data.category}
+        </span>
+        <h1 class="mt-5 max-w-4xl text-4xl font-semibold leading-tight tracking-normal text-ink-950 dark:text-white md:text-6xl">{post.data.title}</h1>
+        <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-600 dark:text-ink-300">{post.data.description}</p>
+        <div class="mt-7 flex flex-wrap items-center gap-3 text-sm text-ink-500 dark:text-ink-300">
+          <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+          <span class="text-ink-300 dark:text-ink-600">/</span>
+          <span class="inline-flex items-center gap-1">
+            <Icon name="book" class="h-3.5 w-3.5" />
+            {getReadingTime(post.body)}
+          </span>
+          {post.data.updatedDate && <span>/ 更新于 {formatDate(post.data.updatedDate)}</span>}
+        </div>
+        <div class="mt-5 flex flex-wrap gap-2">
+          {post.data.tags.map((tag) => (
+            <a class="rounded-full bg-ink-100/80 px-3 py-1 text-sm text-ink-600 transition hover:bg-leaf-100 hover:text-leaf-700 dark:bg-white/10 dark:text-ink-200 dark:hover:bg-leaf-300/10" href={getTagUrl(tag)}>#{tag}</a>
+          ))}
+        </div>
+      </header>
+      <div class="prose-blog mt-9 max-w-3xl"><slot /></div>
+    </div>
+    {toc.length > 0 && (
+      <aside class="hidden lg:block">
+        <div class="sticky top-28 rounded-2xl border border-white/70 bg-white/70 p-5 text-sm shadow-soft backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
+          <p class="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink-400">
+            <Icon name="layers" class="h-3.5 w-3.5" />
+            On this page
+          </p>
+          <nav class="space-y-2.5 border-l border-ink-200 pl-4 dark:border-white/10">
+            {toc.map((heading) => (
+              <a class:list={["block leading-6 text-ink-500 transition hover:text-leaf-700 dark:text-ink-300 dark:hover:text-leaf-300", heading.depth === 3 && "pl-3 text-xs"]} href={`#${heading.slug}`}>{heading.text}</a>
+            ))}
+          </nav>
+        </div>
+      </aside>
+    )}
+  </article>
+</BaseLayout>

@@ -1,0 +1,22 @@
+{
+  "name": "daliymove-tech-share",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "astro check && astro build && pagefind --site dist",
+    "preview": "astro preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "latest",
+    "@astrojs/tailwind": "latest",
+    "astro": "latest",
+    "pagefind": "latest",
+    "tailwindcss": "^3.4.17"
+  },
+  "devDependencies": {
+    "@astrojs/check": "latest",
+    "typescript": "^5.9.3"
+  }
+}
