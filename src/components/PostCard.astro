@@ -1,36 +1,50 @@
 ---
-import { formatDate, getPostUrl, getReadingTime, getTagUrl, type BlogPost } from "../lib/posts";
+import { formatDate, getCoverUrl, getPostUrl, getReadingTime, getTagUrl, type BlogPost } from "../lib/posts";
 import Icon from "./Icon.astro";
 
 interface Props {
   post: BlogPost;
   featured?: boolean;
+  compact?: boolean;
 }
 
-const { post, featured = false } = Astro.props;
+const { post, featured = false, compact = false } = Astro.props;
+const cover = getCoverUrl(post);
 ---
 
-<article class:list={["group relative overflow-hidden rounded-2xl border border-white/70 bg-white/75 p-5 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-leaf-200 hover:shadow-lift dark:border-white/10 dark:bg-white/[0.055] dark:hover:border-leaf-300/40", featured && "md:p-6"]}>
+<article class:list={[
+  "group relative overflow-hidden rounded-2xl border border-white/70 bg-white/75 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-leaf-200 hover:shadow-lift dark:border-white/10 dark:bg-white/[0.055] dark:hover:border-leaf-300/40",
+  compact ? "p-4" : "p-5",
+  featured && "md:p-6",
+]}>
   <div class="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-leaf-500 via-blue-500 to-violet-500 opacity-0 transition group-hover:opacity-100"></div>
+  {!compact && (
+    <div class="mb-4 overflow-hidden rounded-xl border border-ink-200/60 bg-ink-50/70 dark:border-white/10 dark:bg-white/5">
+      <img class="h-36 w-full object-cover transition duration-500 group-hover:scale-[1.03]" src={cover} alt="" loading="lazy" />
+    </div>
+  )}
   <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-ink-500 dark:text-ink-300">
     <span class="inline-flex items-center gap-1 rounded-full border border-leaf-200 bg-leaf-50 px-2.5 py-1 text-leaf-700 dark:border-leaf-300/20 dark:bg-leaf-300/10 dark:text-leaf-100">
       <Icon name="grid" class="h-3 w-3" />
       {post.data.category}
     </span>
-    <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
-    <span class="text-ink-300 dark:text-ink-600">/</span>
+    {post.data.series && <span class="rounded-full bg-blue-50 px-2.5 py-1 text-blue-700 dark:bg-blue-300/10 dark:text-blue-100">系列 · {post.data.series}</span>}
+    {!compact && <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>}
+    {!compact && <span class="text-ink-300 dark:text-ink-600">/</span>}
     <span class="inline-flex items-center gap-1">
       <Icon name="book" class="h-3 w-3" />
       {getReadingTime(post.body)}
     </span>
   </div>
-  <h2 class:list={["mt-4 font-semibold leading-snug tracking-normal text-ink-950 transition group-hover:text-leaf-700 dark:text-ink-50 dark:group-hover:text-leaf-300", featured ? "text-2xl md:text-3xl" : "text-xl"]}>
+  <h2 class:list={["mt-4 font-semibold leading-snug tracking-normal text-ink-950 transition group-hover:text-leaf-700 dark:text-ink-50 dark:group-hover:text-leaf-300", featured ? "text-2xl md:text-3xl" : compact ? "text-base" : "text-xl"]}>
     <a href={getPostUrl(post)}>{post.data.title}</a>
   </h2>
-  <p class="mt-3 text-sm leading-7 text-ink-600 dark:text-ink-300">{post.data.description}</p>
-  <div class="mt-5 flex flex-wrap gap-2">
-    {post.data.tags.slice(0, 4).map((tag) => (
-      <a class="rounded-full bg-ink-100/80 px-2.5 py-1 text-xs text-ink-500 transition hover:bg-leaf-100 hover:text-leaf-700 dark:bg-white/10 dark:text-ink-300 dark:hover:bg-leaf-300/10 dark:hover:text-leaf-200" href={getTagUrl(tag)}>#{tag}</a>
-    ))}
-  </div>
+  {!compact && <p class="mt-3 text-sm leading-7 text-ink-600 dark:text-ink-300">{post.data.description}</p>}
+  {!compact && (
+    <div class="mt-5 flex flex-wrap gap-2">
+      {post.data.tags.slice(0, 4).map((tag) => (
+        <a class="rounded-full bg-ink-100/80 px-2.5 py-1 text-xs text-ink-500 transition hover:bg-leaf-100 hover:text-leaf-700 dark:bg-white/10 dark:text-ink-300 dark:hover:bg-leaf-300/10 dark:hover:text-leaf-200" href={getTagUrl(tag)}>#{tag}</a>
+      ))}
+    </div>
+  )}
 </article>

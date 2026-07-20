@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://daliymove.github.io/daliymove-tech-share/sitemap-index.xml

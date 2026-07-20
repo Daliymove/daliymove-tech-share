@@ -2,14 +2,51 @@
 import PageHeader from "../../components/PageHeader.astro";
 import PostCard from "../../components/PostCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getAllPosts } from "../../lib/posts";
+import { collectCategories, getAllPosts } from "../../lib/posts";
 
 const posts = await getAllPosts();
+const categories = collectCategories(posts);
 ---
 
 <BaseLayout title="文章">
-  <PageHeader title="文章" eyebrow="Archive" description="这里收纳所有公开笔记。你可以从最新文章开始，也可以沿着分类和标签慢慢翻。" />
-  <div class="grid gap-5 md:grid-cols-2">
-    {posts.map((post) => <PostCard post={post} />)}
-  </div>
+  <PageHeader title="文章" eyebrow="Archive" description="这里收纳所有公开笔记。可按分类筛选，从最新文章开始慢慢翻。" />
+  <section>
+    <div class="mb-7 flex flex-wrap items-center gap-2" aria-label="按分类筛选文章">
+      <button class="archive-filter is-active rounded-full border border-ink-200 bg-white/70 px-4 py-2 text-sm font-semibold text-ink-700 shadow-soft transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" type="button" data-category="all" aria-pressed="true">全部 <span class="opacity-60">{posts.length}</span></button>
+      {categories.map(([category, count]) => (
+        <button class="archive-filter rounded-full border border-ink-200 bg-white/55 px-4 py-2 text-sm text-ink-600 transition hover:border-leaf-300 hover:bg-leaf-50 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-leaf-300/10" type="button" data-category={category} aria-pressed="false">{category} <span class="opacity-60">{count}</span></button>
+      ))}
+    </div>
+    <p id="archive-status" class="mb-5 text-sm text-ink-500 dark:text-ink-300">展示全部 {posts.length} 篇文章</p>
+    <div id="archive-list" class="grid gap-5 md:grid-cols-2">
+      {posts.map((post) => <div data-post-category={post.data.category}><PostCard post={post} /></div>)}
+    </div>
+    <div id="archive-empty" class="hidden rounded-2xl border border-dashed border-ink-200 bg-white/50 p-8 text-center text-sm text-ink-500 dark:border-white/10 dark:bg-white/5 dark:text-ink-300">这个分类暂时没有公开文章。</div>
+  </section>
+
+  <script>
+    const filters = document.querySelectorAll<HTMLButtonElement>(".archive-filter");
+    const items = document.querySelectorAll<HTMLElement>("[data-post-category]");
+    const status = document.querySelector("#archive-status");
+    const empty = document.querySelector("#archive-empty");
+
+    filters.forEach((filter) => {
+      filter.addEventListener("click", () => {
+        const category = filter.dataset.category ?? "all";
+        let visible = 0;
+        items.forEach((item) => {
+          const match = category === "all" || item.dataset.postCategory === category;
+          item.classList.toggle("hidden", !match);
+          if (match) visible += 1;
+        });
+        filters.forEach((button) => {
+          const active = button === filter;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+        if (status) status.textContent = category === "all" ? `展示全部 ${visible} 篇文章` : `正在浏览「${category}」的 ${visible} 篇文章`;
+        empty?.classList.toggle("hidden", visible > 0);
+      });
+    });
+  </script>
 </BaseLayout>

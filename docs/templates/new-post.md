@@ -1,13 +1,16 @@
 ---
 title: "在这里写文章标题"
 description: "用一句话概括这篇文章，会出现在首页和文章列表"
-pubDate: 2026-07-17
-updatedDate: 2026-07-17
+pubDate: 2026-07-20
+updatedDate: 2026-07-20
 category: "前端"
 tags:
   - 笔记
   - 实践
+cover: "/images/posts/your-post-slug/cover.webp" # 可选；没有图片时删除此行并使用默认 OG 图
+series: ""
 featured: false
+pinned: false
 draft: true
 ---
 

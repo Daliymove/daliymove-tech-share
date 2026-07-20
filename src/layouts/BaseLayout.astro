@@ -2,19 +2,36 @@
 import "../styles/global.css";
 import Icon from "../components/Icon.astro";
 import { site } from "../lib/site";
-import { withBase } from "../lib/posts";
+import { absoluteUrl, withBase } from "../lib/posts";
 
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  type?: "website" | "article";
+  canonicalPath?: string;
+  noindex?: boolean;
 }
 
-const { title, description = site.description } = Astro.props;
+const {
+  title,
+  description = site.description,
+  image = withBase("/images/og/default.svg"),
+  type = "website",
+  canonicalPath,
+  noindex = false,
+} = Astro.props;
+
 const pageTitle = title ? `${title} | ${site.title}` : site.title;
 const currentPath = Astro.url.pathname;
 const homeHref = withBase("/");
 const searchHref = withBase("/search/");
 const faviconHref = withBase("/favicon.svg");
+const rssHref = withBase("/rss.xml");
+const routePath = Astro.url.pathname.replace(import.meta.env.BASE_URL, "/") || "/";
+const canonical = absoluteUrl(canonicalPath ?? routePath);
+const ogPath = image.replace(import.meta.env.BASE_URL, "/") || "/images/og/default.svg";
+const ogImage = image.startsWith("http") ? image : absoluteUrl(ogPath);
 ---
 
 <!doctype html>
@@ -25,8 +42,23 @@ const faviconHref = withBase("/favicon.svg");
     <meta name="description" content={description} />
     <meta name="author" content={site.author} />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#0B1220" />
+    <meta name="theme-color" content="#0B1220" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F4F7FB" media="(prefers-color-scheme: light)" />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href={faviconHref} />
+    <link rel="alternate" type="application/rss+xml" title={`${site.title} RSS`} href={rssHref} />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={site.title} />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <title>{pageTitle}</title>
     <script is:inline>
       const savedTheme = localStorage.getItem("theme");
@@ -36,9 +68,10 @@ const faviconHref = withBase("/favicon.svg");
   </head>
   <body>
     <div class="page-glow" aria-hidden="true"></div>
+    <div id="reading-progress" class="reading-progress" aria-hidden="true"></div>
     <a class="skip-link" href="#content">跳到正文</a>
-    <header class="sticky top-0 z-40 px-3 pt-3 md:px-5">
-      <div class="mx-auto max-w-7xl rounded-2xl border border-white/70 bg-white/75 px-4 py-3 shadow-soft backdrop-blur-2xl dark:border-white/10 dark:bg-ink-950/70">
+    <header class="site-header sticky top-0 z-40 px-3 pt-3 md:px-5">
+      <div class="header-shell mx-auto max-w-7xl rounded-2xl border border-white/70 bg-white/75 px-4 py-3 shadow-soft backdrop-blur-2xl transition-all dark:border-white/10 dark:bg-ink-950/70">
         <div class="flex items-center justify-between gap-4">
           <a class="flex min-w-0 items-center gap-3" href={homeHref} aria-label={`${site.title} 首页`}>
             <span class="brand-mark grid h-11 w-11 shrink-0 place-items-center rounded-xl text-sm font-black tracking-tight text-white shadow-glow">
@@ -54,7 +87,7 @@ const faviconHref = withBase("/favicon.svg");
               const href = withBase(item.href);
               const active = currentPath === href || (item.href !== "/" && currentPath.startsWith(href));
               return (
-                <a class:list={["inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm transition", active ? "bg-ink-950 text-white shadow-soft dark:bg-leaf-300 dark:text-ink-950" : "text-ink-600 hover:bg-ink-100 hover:text-ink-950 dark:text-ink-200 dark:hover:bg-white/10 dark:hover:text-white"]} href={href}>
+                <a class:list={["inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm transition", active ? "bg-ink-950 text-white shadow-soft dark:bg-leaf-300 dark:text-ink-950" : "text-ink-600 hover:bg-ink-100 hover:text-ink-950 dark:text-ink-200 dark:hover:bg-white/10 dark:hover:text-white"]} href={href} aria-current={active ? "page" : undefined}>
                   <Icon name={item.icon} class="h-3.5 w-3.5 opacity-80" />
                   <span>{item.label}</span>
                 </a>
@@ -62,9 +95,13 @@ const faviconHref = withBase("/favicon.svg");
             })}
           </nav>
           <div class="flex items-center gap-2">
-            <a class="hidden items-center gap-1.5 rounded-xl border border-ink-200 bg-white/70 px-3.5 py-2 text-sm font-medium text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 sm:inline-flex dark:border-white/10 dark:bg-white/5 dark:text-ink-100 dark:hover:border-leaf-500" href={searchHref}>
+            <a class="hidden items-center gap-1.5 rounded-xl border border-ink-200 bg-white/70 px-3.5 py-2 text-sm font-medium text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 sm:inline-flex dark:border-white/10 dark:bg-white/5 dark:text-ink-100 dark:hover:border-leaf-500" href={searchHref} aria-label="打开搜索页，快捷键 Ctrl 或 Cmd + K">
               <Icon name="search" class="h-4 w-4" />
               搜索
+              <kbd class="ml-1 rounded-md border border-ink-200 bg-ink-50 px-1.5 py-0.5 text-[10px] font-semibold text-ink-500 dark:border-white/10 dark:bg-white/5 dark:text-ink-300">⌘K</kbd>
+            </a>
+            <a class="grid h-10 w-10 place-items-center rounded-xl border border-ink-200 bg-white/70 text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" href={rssHref} aria-label="RSS 订阅" title="RSS 订阅">
+              <Icon name="rss" class="h-4 w-4" />
             </a>
             <button class="theme-toggle grid h-10 w-10 place-items-center rounded-xl border border-ink-200 bg-white/70 text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" type="button" aria-label="切换深浅色模式">
               <span class="theme-icon-light" aria-hidden="true"><Icon name="sun" class="h-4 w-4" /></span>
@@ -77,7 +114,7 @@ const faviconHref = withBase("/favicon.svg");
             const href = withBase(item.href);
             const active = currentPath === href || (item.href !== "/" && currentPath.startsWith(href));
             return (
-              <a class:list={["inline-flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-xs transition", active ? "bg-ink-950 text-white dark:bg-leaf-300 dark:text-ink-950" : "text-ink-600 hover:bg-ink-100 dark:text-ink-200 dark:hover:bg-white/10"]} href={href}>
+              <a class:list={["inline-flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-xs transition", active ? "bg-ink-950 text-white dark:bg-leaf-300 dark:text-ink-950" : "text-ink-600 hover:bg-ink-100 dark:text-ink-200 dark:hover:bg-white/10"]} href={href} aria-current={active ? "page" : undefined}>
                 <Icon name={item.icon} class="h-3.5 w-3.5 opacity-80" />
                 <span>{item.label}</span>
               </a>
@@ -93,14 +130,21 @@ const faviconHref = withBase("/favicon.svg");
           <p class="font-medium text-ink-700 dark:text-ink-100">© {new Date().getFullYear()} {site.title}</p>
           <p class="mt-1">{site.tagline}</p>
         </div>
-        <p class="text-ink-400 dark:text-ink-400">Powered by Astro · Tailwind · Pagefind</p>
+        <div class="flex flex-wrap items-center gap-3 text-ink-400 dark:text-ink-400">
+          <a class="hover:text-leaf-700 dark:hover:text-leaf-300" href={rssHref}>RSS</a>
+          <span>·</span>
+          <a class="hover:text-leaf-700 dark:hover:text-leaf-300" href={searchHref}>搜索</a>
+          <span>·</span>
+          <span>Powered by Astro · Tailwind · Pagefind</span>
+        </div>
       </div>
     </footer>
-    <script is:inline>
+    <script is:inline define:vars={{ searchHref }}>
       const root = document.documentElement;
       const button = document.querySelector(".theme-toggle");
       const lightIcon = document.querySelector(".theme-icon-light");
       const darkIcon = document.querySelector(".theme-icon-dark");
+      const header = document.querySelector(".site-header");
       function syncIcon() {
         const isDark = root.classList.contains("dark");
         lightIcon?.classList.toggle("hidden", isDark);
@@ -113,6 +157,29 @@ const faviconHref = withBase("/favicon.svg");
         syncIcon();
       });
       syncIcon();
+
+      const onScroll = () => {
+        header?.classList.toggle("is-compact", window.scrollY > 12);
+      };
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+
+      window.addEventListener("keydown", (event) => {
+        const key = event.key.toLowerCase();
+        const isShortcut = (event.metaKey || event.ctrlKey) && key === "k";
+        if (!isShortcut) return;
+        const target = event.target;
+        const tag = target instanceof HTMLElement ? target.tagName : "";
+        if (tag === "INPUT" || tag === "TEXTAREA" || (target instanceof HTMLElement && target.isContentEditable)) {
+          if (!window.location.pathname.includes("/search")) return;
+        }
+        event.preventDefault();
+        if (window.location.pathname.includes("/search")) {
+          document.querySelector("#search-input")?.focus();
+          return;
+        }
+        window.location.href = searchHref;
+      });
     </script>
   </body>
 </html>

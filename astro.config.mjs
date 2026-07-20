@@ -1,5 +1,5 @@
 import mdx from "@astrojs/mdx";
-import tailwind from "@astrojs/tailwind";
+import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
 
 // GitHub Pages project site:
@@ -7,7 +7,12 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   site: "https://daliymove.github.io",
   base: "/daliymove-tech-share",
-  integrations: [mdx(), tailwind({ applyBaseStyles: false })],
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) => !page.includes("/404"),
+    }),
+  ],
   markdown: {
     shikiConfig: {
       theme: "github-dark-dimmed",
