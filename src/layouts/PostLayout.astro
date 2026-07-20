@@ -55,13 +55,20 @@ const cover = getCoverUrl(post);
             </span>
           )}
           {post.data.pinned && (
-            <span class="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100">
-              置顶
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-300/70 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 shadow-sm dark:border-amber-300/25 dark:bg-amber-300/10 dark:text-amber-100">
+              <Icon name="pin" class="h-3 w-3" />
+              置顶文章
             </span>
           )}
         </div>
         <h1 class="mt-5 max-w-4xl text-4xl font-semibold leading-tight tracking-normal text-ink-950 dark:text-white md:text-6xl" data-pagefind-meta="title">{post.data.title}</h1>
         <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-600 dark:text-ink-300">{post.data.description}</p>
+        {post.data.pinned && (
+          <p class="mt-5 inline-flex items-center gap-2 rounded-xl border border-amber-200/80 bg-amber-50/80 px-3.5 py-2 text-sm text-amber-800 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100">
+            <Icon name="pin" class="h-4 w-4 shrink-0" />
+            这是一篇置顶文章，作为当前阶段的优先阅读内容。
+          </p>
+        )}
         <div class="mt-7 flex flex-wrap items-center gap-3 text-sm text-ink-500 dark:text-ink-300">
           <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
           <span class="text-ink-300 dark:text-ink-600">/</span>
