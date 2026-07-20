@@ -43,15 +43,15 @@ export function getCoverUrl(post: BlogPost) {
   if (post.data.cover) {
     return post.data.cover.startsWith("http") ? post.data.cover : withBase(post.data.cover);
   }
-  return withBase("/images/og/default.svg");
+  return withBase("/images/og/default.png");
 }
 
 export function getCoverAbsoluteUrl(post?: BlogPost) {
-  if (!post) return absoluteUrl("/images/og/default.svg");
+  if (!post) return absoluteUrl("/images/og/default.png");
   if (post.data.cover) {
     return post.data.cover.startsWith("http") ? post.data.cover : absoluteUrl(post.data.cover);
   }
-  return absoluteUrl("/images/og/default.svg");
+  return absoluteUrl("/images/og/default.png");
 }
 
 export async function getAllPosts() {

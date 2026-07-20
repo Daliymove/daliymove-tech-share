@@ -16,7 +16,7 @@ interface Props {
 const {
   title,
   description = site.description,
-  image = withBase("/images/og/default.svg"),
+  image = withBase("/images/og/default.png"),
   type = "website",
   canonicalPath,
   noindex = false,
@@ -30,7 +30,7 @@ const faviconHref = withBase("/favicon.svg");
 const rssHref = withBase("/rss.xml");
 const routePath = Astro.url.pathname.replace(import.meta.env.BASE_URL, "/") || "/";
 const canonical = absoluteUrl(canonicalPath ?? routePath);
-const ogPath = image.replace(import.meta.env.BASE_URL, "/") || "/images/og/default.svg";
+const ogPath = image.replace(import.meta.env.BASE_URL, "/") || "/images/og/default.png";
 const ogImage = image.startsWith("http") ? image : absoluteUrl(ogPath);
 ---
 
