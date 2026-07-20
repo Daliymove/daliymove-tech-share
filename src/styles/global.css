@@ -4,28 +4,28 @@
 
 :root {
   color-scheme: light;
-  --surface: #f4f7fb;
-  --surface-soft: #e8eef8;
-  --surface-card: rgba(255, 255, 255, 0.78);
-  --text: #0f172a;
-  --muted: #64748b;
-  --line: rgba(100, 116, 139, 0.18);
-  --accent: #0f766e;
-  --accent-strong: #0d9488;
-  --accent-secondary: #2563eb;
+  --surface: #f7f3ea;
+  --surface-soft: #efe9dc;
+  --surface-card: rgba(255, 255, 255, 0.66);
+  --text: #232b22;
+  --muted: #646e62;
+  --line: rgba(120, 110, 90, 0.22);
+  --accent: #3a5c3e;
+  --accent-strong: #4f7a52;
+  --accent-secondary: #9a6b3f;
 }
 
 :root.dark {
   color-scheme: dark;
-  --surface: #070b14;
-  --surface-soft: #0b1220;
-  --surface-card: rgba(15, 23, 42, 0.72);
-  --text: #f8fafc;
-  --muted: #94a3b8;
-  --line: rgba(148, 163, 184, 0.16);
-  --accent: #2dd4bf;
-  --accent-strong: #5eead4;
-  --accent-secondary: #60a5fa;
+  --surface: #161b16;
+  --surface-soft: #1e241d;
+  --surface-card: rgba(255, 255, 255, 0.04);
+  --text: #e9ece2;
+  --muted: #8a9382;
+  --line: rgba(180, 168, 150, 0.16);
+  --accent: #88b189;
+  --accent-strong: #a7c9a8;
+  --accent-secondary: #c99a6a;
 }
 
 * {
@@ -41,13 +41,18 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 28rem),
-    radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 24rem),
+    radial-gradient(circle at top left, rgba(79, 122, 82, 0.10), transparent 30rem),
+    radial-gradient(circle at top right, rgba(154, 107, 63, 0.08), transparent 26rem),
     linear-gradient(180deg, var(--surface), var(--surface-soft));
   color: var(--text);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Manrope", "Noto Sans SC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.7;
   text-rendering: optimizeLegibility;
+}
+
+/* 标题统一使用衬线（Fraunces + 思源宋体） */
+h1, h2, h3, .font-display {
+  font-family: "Fraunces", "Noto Serif SC", ui-serif, Georgia, serif;
 }
 
 body::before {
@@ -57,16 +62,16 @@ body::before {
   pointer-events: none;
   content: "";
   background-image:
-    linear-gradient(rgba(100, 116, 139, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(100, 116, 139, 0.07) 1px, transparent 1px);
+    linear-gradient(rgba(120, 110, 90, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 110, 90, 0.06) 1px, transparent 1px);
   background-size: 42px 42px;
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent 72%);
 }
 
 :root.dark body::before {
   background-image:
-    linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(180, 168, 150, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 168, 150, 0.05) 1px, transparent 1px);
 }
 
 .page-glow {
@@ -76,18 +81,18 @@ body::before {
   width: 22rem;
   height: 22rem;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.14), transparent 70%);
+  background: radial-gradient(circle, rgba(79, 122, 82, 0.14), transparent 70%);
   filter: blur(8px);
   pointer-events: none;
 }
 
 :root.dark .page-glow {
-  background: radial-gradient(circle, rgba(96, 165, 250, 0.12), transparent 70%);
+  background: radial-gradient(circle, rgba(136, 177, 137, 0.12), transparent 70%);
 }
 
 .brand-mark {
-  background: linear-gradient(135deg, #0f766e 0%, #2563eb 55%, #7c3aed 100%);
-  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.25);
+  background: linear-gradient(135deg, #3a5c3e 0%, #9a6b3f 100%);
+  box-shadow: 0 10px 28px rgba(58, 92, 62, 0.25);
 }
 
 a {
@@ -101,7 +106,7 @@ img {
 }
 
 ::selection {
-  background: rgba(37, 99, 235, 0.18);
+  background: rgba(79, 122, 82, 0.20);
 }
 
 .prose-blog {
@@ -113,6 +118,7 @@ img {
   scroll-margin-top: 6rem;
   line-height: 1.25;
   letter-spacing: 0;
+  font-family: "Fraunces", "Noto Serif SC", ui-serif, Georgia, serif;
 }
 
 .prose-blog h2 {
@@ -145,14 +151,14 @@ img {
 
 .prose-blog a {
   color: var(--accent-strong);
-  border-bottom: 1px solid rgba(15, 118, 110, 0.35);
+  border-bottom: 1px solid rgba(79, 122, 82, 0.35);
 }
 
 .prose-blog blockquote {
   border-left: 3px solid var(--accent);
   border-radius: 0 0.75rem 0.75rem 0;
   padding: 0.2rem 0 0.2rem 1rem;
-  background: rgba(37, 99, 235, 0.06);
+  background: rgba(79, 122, 82, 0.07);
   color: var(--muted);
 }
 
@@ -160,16 +166,16 @@ img {
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   padding: 0.12rem 0.34rem;
-  background: rgba(100, 116, 139, 0.12);
+  background: rgba(120, 110, 90, 0.12);
   font-size: 0.9em;
 }
 
 .prose-blog pre {
   overflow-x: auto;
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  border: 1px solid rgba(180, 168, 150, 0.18);
   border-radius: 1rem;
   padding: 1.1rem;
-  box-shadow: 0 18px 44px rgba(7, 17, 29, 0.18);
+  box-shadow: 0 18px 44px rgba(15, 12, 9, 0.18);
 }
 
 .prose-blog table {
@@ -188,7 +194,7 @@ img {
 }
 
 .prose-blog th {
-  background: rgba(37, 99, 235, 0.08);
+  background: rgba(79, 122, 82, 0.10);
 }
 
 .skip-link {
@@ -209,7 +215,7 @@ img {
 [data-pagefind-body] mark,
 mark {
   border-radius: 0.25rem;
-  background: rgba(251, 191, 36, 0.45);
+  background: rgba(154, 107, 63, 0.30);
   color: inherit;
   padding: 0 0.15rem;
 }
@@ -222,25 +228,25 @@ mark {
   height: 3px;
   transform: scaleX(0);
   transform-origin: left;
-  background: linear-gradient(90deg, var(--accent), var(--accent-secondary), #7c3aed);
+  background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
   transition: transform 80ms linear;
 }
 
 .site-header.is-compact .header-shell {
-  box-shadow: 0 14px 38px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 14px 38px rgba(35, 43, 34, 0.12);
 }
 
 .pinned-post-card {
-  border-color: rgba(245, 158, 11, 0.48);
+  border-color: rgba(154, 107, 63, 0.48);
   background:
-    linear-gradient(135deg, rgba(255, 251, 235, 0.96), rgba(255, 255, 255, 0.82) 52%, rgba(240, 253, 250, 0.72));
-  box-shadow: 0 18px 45px rgba(180, 83, 9, 0.12);
+    linear-gradient(135deg, rgba(241, 230, 214, 0.96), rgba(255, 255, 255, 0.82) 52%, rgba(228, 235, 221, 0.72));
+  box-shadow: 0 18px 45px rgba(122, 83, 39, 0.12);
 }
 
 :root.dark .pinned-post-card {
-  border-color: rgba(252, 211, 77, 0.28);
+  border-color: rgba(201, 154, 106, 0.28);
   background:
-    linear-gradient(135deg, rgba(120, 53, 15, 0.24), rgba(15, 23, 42, 0.78) 52%, rgba(15, 118, 110, 0.14));
+    linear-gradient(135deg, rgba(79, 53, 32, 0.24), rgba(22, 27, 22, 0.78) 52%, rgba(58, 92, 62, 0.14));
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
 }
 
@@ -256,22 +262,22 @@ mark {
   justify-content: center;
   transform: rotate(45deg);
   padding: 0.35rem 0.6rem;
-  background: linear-gradient(90deg, #b45309, #f59e0b);
+  background: linear-gradient(90deg, #7f5539, #c99a6a);
   color: #fff;
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.08em;
-  box-shadow: 0 4px 15px rgba(180, 83, 9, 0.28);
+  box-shadow: 0 4px 15px rgba(122, 83, 39, 0.28);
 }
 
 :root.dark .pinned-ribbon {
-  background: linear-gradient(90deg, #d97706, #fbbf24);
-  color: #422006;
+  background: linear-gradient(90deg, #9a6b3f, #c99a6a);
+  color: #161b16;
 }
 
 .pinned-post-title {
   text-decoration: underline;
-  text-decoration-color: rgba(245, 158, 11, 0.45);
+  text-decoration-color: rgba(154, 107, 63, 0.45);
   text-decoration-thickness: 0.13em;
   text-underline-offset: 0.16em;
 }
@@ -283,8 +289,67 @@ mark {
 }
 
 :root.dark .archive-filter.is-active {
-  background: #5eead4;
-  color: #070b14;
+  background: #88b189;
+  color: #161b16;
+}
+
+/* 签名元素：首屏关键词手绘波浪下划线 */
+.kw {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M2 9 Q 14 3 26 9 T 50 9 T 74 9 T 98 9 T 122 9' fill='none' stroke='%234F7A52' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: 0 92%;
+  background-size: 120px 12px;
+  padding-bottom: 4px;
+}
+
+:root.dark .kw {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M2 9 Q 14 3 26 9 T 50 9 T 74 9 T 98 9 T 122 9' fill='none' stroke='%2388B189' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* 签名元素：「林间小径」竖向脉络线 */
+.trail {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trail::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 1.4rem;
+  bottom: 1.4rem;
+  width: 2px;
+  background: var(--line);
+}
+
+.trail-item {
+  position: relative;
+  padding-left: 2.25rem;
+}
+
+.trail-item::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 1.45rem;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px var(--surface);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.trail-item:first-child::before {
+  background: var(--accent);
+}
+
+.trail-item:hover::before {
+  transform: scale(1.25);
+  background: var(--accent);
 }
 
 .code-block {
@@ -302,7 +367,7 @@ mark {
   top: 0.65rem;
   right: 0.65rem;
   z-index: 1;
-  border: 1px solid rgba(148, 163, 184, 0.28);
+  border: 1px solid rgba(180, 168, 150, 0.28);
   border-radius: 0.5rem;
   padding: 0.3rem 0.55rem;
   background: rgba(15, 23, 42, 0.72);
@@ -345,7 +410,7 @@ mark {
 .zoomable-image {
   cursor: zoom-in;
   border-radius: 0.9rem;
-  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.15);
+  box-shadow: 0 14px 35px rgba(35, 43, 34, 0.15);
 }
 
 .image-lightbox {
@@ -355,7 +420,7 @@ mark {
   display: grid;
   place-items: center;
   padding: 2rem;
-  background: rgba(2, 6, 23, 0.88);
+  background: rgba(15, 12, 9, 0.88);
   cursor: zoom-out;
 }
 

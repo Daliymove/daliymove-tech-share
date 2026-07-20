@@ -7,141 +7,101 @@ import { site } from "../lib/site";
 
 const posts = await getAllPosts();
 const pinnedPosts = getPinnedPosts(posts);
-const latest = getRegularPosts(posts).slice(0, 4);
+const latest = getRegularPosts(posts).slice(0, 6);
 const categories = collectCategories(posts).slice(0, 6);
 const tags = collectTags(posts).slice(0, 12);
-const primaryCategory = categories[0]?.[0] ?? "前端工程";
 ---
 
 <BaseLayout>
-  <section class="grid min-h-[34rem] gap-10 border-b border-ink-200/70 pb-14 lg:grid-cols-[minmax(0,1.12fr)_minmax(22rem,0.88fr)] lg:items-center dark:border-white/10">
-    <div>
-      <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-leaf-200 bg-white/70 px-3 py-1.5 text-xs font-semibold text-leaf-700 shadow-soft dark:border-leaf-300/20 dark:bg-white/5 dark:text-leaf-200">
-        <span class="grid h-5 w-5 place-items-center rounded-full bg-leaf-500/10 text-leaf-700 dark:text-leaf-200">
-          <Icon name="pulse" class="h-3.5 w-3.5" />
-        </span>
-        daliyMove Tech Notes
-      </div>
-      <h1 class="max-w-4xl text-5xl font-semibold leading-[1.12] tracking-normal text-ink-950 dark:text-white md:text-6xl lg:text-7xl">
-        把每天的技术推进，<br />沉淀成<span class="bg-gradient-to-r from-leaf-700 via-blue-600 to-violet-600 bg-clip-text text-transparent dark:from-leaf-300 dark:via-blue-300 dark:to-violet-300">可复用的分享</span>。
-      </h1>
-      <p class="mt-7 max-w-2xl text-lg leading-8 text-ink-600 dark:text-ink-300">{site.description}</p>
-      <div class="mt-9 flex flex-wrap items-center gap-3">
-        <a class="inline-flex items-center gap-2 rounded-xl bg-ink-950 px-5 py-3 text-sm font-semibold text-white shadow-lift transition hover:-translate-y-0.5 hover:bg-leaf-700 dark:bg-leaf-300 dark:text-ink-950 dark:hover:bg-leaf-200" href={withBase("/blog/")}>
-          开始阅读
-          <Icon name="arrow" class="h-4 w-4" />
-        </a>
-        <a class="inline-flex items-center gap-2 rounded-xl border border-ink-200 bg-white/65 px-5 py-3 text-sm font-semibold text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" href={withBase("/about/")}>
-          <Icon name="user" class="h-4 w-4" />
-          关于 daliyMove
-        </a>
-      </div>
-      <div class="mt-9 flex flex-wrap gap-x-8 gap-y-3 text-sm text-ink-500 dark:text-ink-300">
-        <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-950 dark:text-white">{posts.length}</strong>篇文章</span>
-        <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-950 dark:text-white">{categories.length}</strong>个分类</span>
-        <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-950 dark:text-white">{tags.length}</strong>个标签</span>
-      </div>
+  <!-- HERO：纯文字叙事 -->
+  <section class="relative mx-auto max-w-4xl pb-4 pt-6 text-center md:pt-10">
+    <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-leaf-200 bg-white/70 px-3 py-1.5 text-xs font-semibold text-leaf-700 shadow-soft dark:border-leaf-300/20 dark:bg-white/5 dark:text-leaf-200">
+      <span class="grid h-5 w-5 place-items-center rounded-full bg-leaf-500/10 text-leaf-700 dark:text-leaf-200">
+        <Icon name="pulse" class="h-3.5 w-3.5" />
+      </span>
+      daliyMove Tech Notes
     </div>
-
-    <aside class="relative min-h-[27rem] overflow-hidden rounded-2xl border border-white/70 bg-white/72 p-5 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.055]">
-      <div class="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-leaf-300/30 via-blue-400/20 to-violet-400/20 blur-2xl"></div>
-      <div class="relative flex items-center justify-between border-b border-ink-200/70 pb-4 dark:border-white/10">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-ink-400">Tech Map</p>
-          <h2 class="mt-1 text-lg font-semibold text-ink-950 dark:text-white">正在生长的技术脉络</h2>
-        </div>
-        <span class="inline-flex items-center gap-1 rounded-full bg-leaf-100 px-2.5 py-1 text-xs font-medium text-leaf-700 dark:bg-leaf-300/10 dark:text-leaf-200">
-          <Icon name="spark" class="h-3.5 w-3.5" />
-          持续更新
-        </span>
-      </div>
-      <div class="relative mt-5 h-64 rounded-xl border border-ink-200/70 bg-gradient-to-br from-ink-50/90 via-white to-leaf-50/60 dark:border-white/10 dark:from-ink-950/70 dark:via-ink-900/40 dark:to-ink-950/70" aria-label="技术分类分布示意">
-        <div class="absolute left-[40%] top-[32%] z-10 grid h-24 w-24 place-items-center rounded-full border border-white/50 bg-gradient-to-br from-leaf-600 to-blue-600 p-2 text-center text-sm font-semibold text-white shadow-glow dark:from-leaf-300 dark:to-blue-300 dark:text-ink-950">{primaryCategory}</div>
-        <div class="absolute left-[8%] top-[14%] inline-flex items-center gap-1.5 rounded-full border border-amber-300/60 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700 shadow-soft dark:bg-amber-300/10 dark:text-amber-100">
-          <Icon name="code" class="h-3.5 w-3.5" />
-          编程实践
-        </div>
-        <div class="absolute right-[6%] top-[17%] inline-flex items-center gap-1.5 rounded-full border border-coral-400/40 bg-coral-100 px-3 py-2 text-xs font-medium text-coral-600 shadow-soft dark:bg-coral-400/10 dark:text-coral-100">
-          <Icon name="book" class="h-3.5 w-3.5" />
-          阅读思考
-        </div>
-        <div class="absolute bottom-[12%] left-[7%] inline-flex items-center gap-1.5 rounded-full border border-leaf-200 bg-leaf-50 px-3 py-2 text-xs font-medium text-leaf-700 shadow-soft dark:bg-leaf-300/10 dark:text-leaf-100">
-          <Icon name="layers" class="h-3.5 w-3.5" />
-          学习方法
-        </div>
-        <div class="absolute bottom-[10%] right-[7%] inline-flex items-center gap-1.5 rounded-full border border-ink-300 bg-white px-3 py-2 text-xs font-medium text-ink-600 shadow-soft dark:border-white/15 dark:bg-white/10 dark:text-ink-200">
-          <Icon name="pulse" class="h-3.5 w-3.5" />
-          个人系统
-        </div>
-        <span class="absolute left-[28%] top-[29%] h-px w-[19%] rotate-[24deg] bg-ink-300/80 dark:bg-ink-600"></span>
-        <span class="absolute right-[25%] top-[31%] h-px w-[18%] -rotate-[28deg] bg-ink-300/80 dark:bg-ink-600"></span>
-        <span class="absolute bottom-[31%] left-[27%] h-px w-[21%] -rotate-[31deg] bg-ink-300/80 dark:bg-ink-600"></span>
-        <span class="absolute bottom-[29%] right-[24%] h-px w-[20%] rotate-[30deg] bg-ink-300/80 dark:bg-ink-600"></span>
-      </div>
-      <div class="mt-4 flex items-center justify-between gap-3 text-xs text-ink-500 dark:text-ink-300">
-        <span class="truncate">最近更新 · {posts[0] ? posts[0].data.title : "等待第一篇文章"}</span>
-        <a class="inline-flex shrink-0 items-center gap-1 font-semibold text-leaf-700 hover:underline dark:text-leaf-300" href={withBase("/categories/")}>
-          查看分类
-          <Icon name="arrow" class="h-3.5 w-3.5" />
-        </a>
-      </div>
-    </aside>
+    <h1 class="font-display text-4xl font-semibold leading-[1.12] tracking-tight text-ink-900 dark:text-ink-50 md:text-5xl lg:text-6xl">
+      把每天的技术推进，<br />沉淀成<span class="kw">可复用的分享</span>。
+    </h1>
+    <p class="mx-auto mt-7 max-w-2xl text-lg leading-8 text-ink-600 dark:text-ink-400">{site.description}</p>
+    <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+      <a class="inline-flex items-center gap-2 rounded-xl bg-leaf-600 px-5 py-3 text-sm font-semibold text-white shadow-lift transition hover:-translate-y-0.5 hover:bg-leaf-700 dark:bg-leaf-500 dark:text-ink-950 dark:hover:bg-leaf-400" href={withBase("/blog/")}>
+        开始阅读
+        <Icon name="arrow" class="h-4 w-4" />
+      </a>
+      <a class="inline-flex items-center gap-2 rounded-xl border border-ink-200 bg-white/65 px-5 py-3 text-sm font-semibold text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" href={withBase("/about/")}>
+        <Icon name="user" class="h-4 w-4" />
+        关于 daliyMove
+      </a>
+    </div>
+    <div class="mt-9 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ink-500 dark:text-ink-400">
+      <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{posts.length}</strong>篇文章</span>
+      <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{categories.length}</strong>个分类</span>
+      <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{tags.length}</strong>个标签</span>
+    </div>
   </section>
 
+  <!-- 主编领读 / 置顶 -->
   {pinnedPosts.length > 0 && (
-    <section class="border-b border-ink-200/70 py-14 dark:border-white/10">
-      <div class="mb-7 flex items-end justify-between gap-4">
+    <section class="border-b border-ink-200/70 py-12 dark:border-white/10">
+      <div class="mb-6 flex items-end justify-between gap-4">
         <div>
-          <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-700 dark:text-amber-200">
+          <p class="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-bark-500 dark:text-bark-300">
             <Icon name="pin" class="h-3.5 w-3.5" />
-            Pinned
+            Editor's Pick
           </p>
-          <h2 class="mt-2 text-3xl font-semibold text-ink-950 dark:text-white">置顶文章</h2>
+          <h2 class="mt-2 font-display text-3xl font-semibold text-ink-900 dark:text-ink-50">主编领读</h2>
         </div>
-        <span class="text-sm text-ink-500 dark:text-ink-300">优先阅读与长期维护</span>
+        <span class="text-sm text-ink-500 dark:text-ink-400">优先阅读与长期维护</span>
       </div>
       <div class="space-y-4">{pinnedPosts.map((post) => <PostCard post={post} featured />)}</div>
     </section>
   )}
 
-  <section class="grid gap-10 pt-14 lg:grid-cols-[minmax(0,1fr)_20rem]">
+  <!-- 最近更新 + 侧栏 -->
+  <section class="grid gap-10 pt-12 lg:grid-cols-[minmax(0,1fr)_20rem]">
     <div>
       <div class="mb-6 flex items-center justify-between gap-4">
-        <h2 class="text-2xl font-semibold text-ink-950 dark:text-white">最近更新</h2>
-        <span class="text-xs text-ink-400">按发布时间排序</span>
+        <h2 class="font-display text-2xl font-semibold text-ink-900 dark:text-ink-50">最近更新</h2>
+        <span class="font-mono text-xs text-ink-400">按发布时间排序</span>
       </div>
-      <div class="space-y-4">{latest.map((post) => <PostCard post={post} />)}</div>
+      <ol class="trail space-y-4">
+        {latest.map((post) => (
+          <li class="trail-item"><PostCard post={post} compact /></li>
+        ))}
+      </ol>
     </div>
     <aside class="space-y-8">
       <section>
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="inline-flex items-center gap-2 text-base font-semibold text-ink-950 dark:text-white">
+          <h2 class="inline-flex items-center gap-2 text-base font-semibold text-ink-900 dark:text-ink-50">
             <Icon name="grid" class="h-4 w-4 text-leaf-600 dark:text-leaf-300" />
             知识分类
           </h2>
           <a class="text-xs text-leaf-700 hover:underline dark:text-leaf-300" href={withBase("/categories/")}>全部</a>
         </div>
-        <div class="grid gap-2">
+        <div class="grid gap-1.5">
           {categories.map(([category, count], index) => (
-            <a class="group flex items-center justify-between rounded-xl border border-white/70 bg-white/65 px-4 py-3 text-sm shadow-soft transition hover:border-leaf-200 hover:bg-white dark:border-white/10 dark:bg-white/5 dark:hover:border-leaf-300/30" href={getCategoryUrl(category)}>
+            <a class="group flex items-center justify-between rounded-xl border border-transparent px-3 py-2 text-sm transition hover:border-leaf-200 hover:bg-leaf-50 dark:hover:border-leaf-300/30 dark:hover:bg-leaf-300/10" href={getCategoryUrl(category)}>
               <span class="flex items-center gap-3">
-                <span class:list={["h-2.5 w-2.5 rounded-full", index % 3 === 0 ? "bg-leaf-500" : index % 3 === 1 ? "bg-amber-300" : "bg-coral-400"]}></span>
+                <span class:list={["h-2.5 w-2.5 rounded-full", index % 3 === 0 ? "bg-leaf-500" : index % 3 === 1 ? "bg-bark-500" : "bg-amber-300"]}></span>
                 {category}
               </span>
-              <span class="text-ink-400 transition group-hover:text-leaf-700 dark:group-hover:text-leaf-300">{count}</span>
+              <span class="font-mono text-xs text-ink-400 transition group-hover:text-leaf-700 dark:group-hover:text-leaf-300">{count}</span>
             </a>
           ))}
         </div>
       </section>
       <section>
-        <h2 class="mb-4 inline-flex items-center gap-2 text-base font-semibold text-ink-950 dark:text-white">
+        <h2 class="mb-4 inline-flex items-center gap-2 text-base font-semibold text-ink-900 dark:text-ink-50">
           <Icon name="tag" class="h-4 w-4 text-leaf-600 dark:text-leaf-300" />
           常用标签
         </h2>
         <div class="flex flex-wrap gap-2">
           {tags.map(([tag, count]) => (
             <a class="rounded-full border border-ink-200/80 bg-white/55 px-3 py-1.5 text-xs text-ink-600 transition hover:border-leaf-300 hover:bg-leaf-50 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-leaf-300/10 dark:hover:text-leaf-200" href={getTagUrl(tag)}>
-              #{tag} <span class="text-ink-400">{count}</span>
+              #{tag} <span class="font-mono text-ink-400">{count}</span>
             </a>
           ))}
         </div>

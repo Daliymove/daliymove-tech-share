@@ -18,7 +18,7 @@ const cover = getCoverUrl(post);
   featured && "md:p-6",
   post.data.pinned && "pinned-post-card",
 ]}>
-  <div class:list={["pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-leaf-500 via-blue-500 to-violet-500 opacity-0 transition group-hover:opacity-100", post.data.pinned && "opacity-100"]}></div>
+  <div class:list={["pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-leaf-600 via-leaf-500 to-bark-500 opacity-0 transition group-hover:opacity-100", post.data.pinned && "opacity-100"]}></div>
   {post.data.pinned && (
     <div class="pinned-ribbon" aria-label="此文章已置顶">
       <Icon name="pin" class="h-3.5 w-3.5" />
@@ -35,7 +35,7 @@ const cover = getCoverUrl(post);
       <Icon name="grid" class="h-3 w-3" />
       {post.data.category}
     </span>
-    {post.data.series && <span class="rounded-full bg-blue-50 px-2.5 py-1 text-blue-700 dark:bg-blue-300/10 dark:text-blue-100">系列 · {post.data.series}</span>}
+    {post.data.series && <span class="rounded-full border border-bark-300/50 bg-bark-100 px-2.5 py-1 text-bark-700 dark:border-bark-300/25 dark:bg-bark-500/15 dark:text-bark-300">系列 · {post.data.series}</span>}
     {post.data.pinned && <span class="inline-flex items-center gap-1 rounded-full border border-amber-300/70 bg-amber-50 px-2.5 py-1 font-semibold text-amber-700 dark:border-amber-300/25 dark:bg-amber-300/10 dark:text-amber-100"><Icon name="pin" class="h-3 w-3" />置顶</span>}
     {!compact && <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>}
     {!compact && <span class="text-ink-300 dark:text-ink-600">/</span>}
