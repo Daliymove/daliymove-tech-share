@@ -9,3 +9,5 @@ dist/
 Thumbs.db
 .pnpm-store/
 pnpm-store/
+.workbuddy/
+.playwright-cli/
