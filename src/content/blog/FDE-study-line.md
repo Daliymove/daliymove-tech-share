@@ -8,6 +8,7 @@ tags:
   - 笔记
   - 实践
 featured: false
+pinned: true
 draft: false
 ---
 

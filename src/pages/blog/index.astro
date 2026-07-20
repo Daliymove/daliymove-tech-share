@@ -2,9 +2,11 @@
 import PageHeader from "../../components/PageHeader.astro";
 import PostCard from "../../components/PostCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { collectCategories, getAllPosts } from "../../lib/posts";
+import { collectCategories, getAllPosts, getPinnedPosts, getRegularPosts } from "../../lib/posts";
 
 const posts = await getAllPosts();
+const pinnedPosts = getPinnedPosts(posts);
+const regularPosts = getRegularPosts(posts);
 const categories = collectCategories(posts);
 ---
 
@@ -17,10 +19,32 @@ const categories = collectCategories(posts);
         <button class="archive-filter rounded-full border border-ink-200 bg-white/55 px-4 py-2 text-sm text-ink-600 transition hover:border-leaf-300 hover:bg-leaf-50 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-leaf-300/10" type="button" data-category={category} aria-pressed="false">{category} <span class="opacity-60">{count}</span></button>
       ))}
     </div>
-    <p id="archive-status" class="mb-5 text-sm text-ink-500 dark:text-ink-300">展示全部 {posts.length} 篇文章</p>
-    <div id="archive-list" class="grid gap-5 md:grid-cols-2">
-      {posts.map((post) => <div data-post-category={post.data.category}><PostCard post={post} /></div>)}
-    </div>
+    {pinnedPosts.length > 0 && (
+      <section class="mb-10" aria-labelledby="pinned-posts-heading">
+        <div class="mb-4 flex items-center gap-3">
+          <span class="grid h-9 w-9 place-items-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-300/10 dark:text-amber-100">📌</span>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-200">Pinned</p>
+            <h2 id="pinned-posts-heading" class="text-xl font-semibold text-ink-950 dark:text-white">置顶文章</h2>
+          </div>
+        </div>
+        <div class="space-y-4">
+          {pinnedPosts.map((post) => <PostCard post={post} featured />)}
+        </div>
+      </section>
+    )}
+    <section class="border-t border-ink-200/70 pt-8 dark:border-white/10" aria-labelledby="regular-posts-heading">
+      <div class="mb-5 flex items-end justify-between gap-4">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-400">All posts</p>
+          <h2 id="regular-posts-heading" class="mt-1 text-xl font-semibold text-ink-950 dark:text-white">全部文章</h2>
+        </div>
+        <p id="archive-status" class="text-sm text-ink-500 dark:text-ink-300">按发布时间倒序 · {regularPosts.length} 篇</p>
+      </div>
+      <div id="archive-list" class="space-y-4">
+        {regularPosts.map((post) => <div data-post-category={post.data.category}><PostCard post={post} /></div>)}
+      </div>
+    </section>
     <div id="archive-empty" class="hidden rounded-2xl border border-dashed border-ink-200 bg-white/50 p-8 text-center text-sm text-ink-500 dark:border-white/10 dark:bg-white/5 dark:text-ink-300">这个分类暂时没有公开文章。</div>
   </section>
 
@@ -44,7 +68,7 @@ const categories = collectCategories(posts);
           button.classList.toggle("is-active", active);
           button.setAttribute("aria-pressed", String(active));
         });
-        if (status) status.textContent = category === "all" ? `展示全部 ${visible} 篇文章` : `正在浏览「${category}」的 ${visible} 篇文章`;
+        if (status) status.textContent = category === "all" ? `按发布时间倒序 · ${visible} 篇` : `正在浏览「${category}」的 ${visible} 篇文章`;
         empty?.classList.toggle("hidden", visible > 0);
       });
     });

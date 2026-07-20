@@ -2,12 +2,12 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/Icon.astro";
 import PostCard from "../components/PostCard.astro";
-import { collectCategories, collectTags, getAllPosts, getCategoryUrl, getFeaturedPosts, getTagUrl, withBase } from "../lib/posts";
+import { collectCategories, collectTags, getAllPosts, getCategoryUrl, getPinnedPosts, getRegularPosts, getTagUrl, withBase } from "../lib/posts";
 import { site } from "../lib/site";
 
 const posts = await getAllPosts();
-const featured = getFeaturedPosts(posts).slice(0, 2);
-const latest = posts.slice(0, 4);
+const pinnedPosts = getPinnedPosts(posts);
+const latest = getRegularPosts(posts).slice(0, 4);
 const categories = collectCategories(posts).slice(0, 6);
 const tags = collectTags(posts).slice(0, 12);
 const primaryCategory = categories[0]?.[0] ?? "前端工程";
@@ -88,30 +88,29 @@ const primaryCategory = categories[0]?.[0] ?? "前端工程";
     </aside>
   </section>
 
-  <section class="py-14">
-    <div class="mb-7 flex items-end justify-between gap-4">
-      <div>
-        <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-leaf-700 dark:text-leaf-300">
-          <Icon name="spark" class="h-3.5 w-3.5" />
-          Featured Notes
-        </p>
-        <h2 class="mt-2 text-3xl font-semibold text-ink-950 dark:text-white">值得从这里开始</h2>
+  {pinnedPosts.length > 0 && (
+    <section class="border-b border-ink-200/70 py-14 dark:border-white/10">
+      <div class="mb-7 flex items-end justify-between gap-4">
+        <div>
+          <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-700 dark:text-amber-200">
+            <Icon name="pin" class="h-3.5 w-3.5" />
+            Pinned
+          </p>
+          <h2 class="mt-2 text-3xl font-semibold text-ink-950 dark:text-white">置顶文章</h2>
+        </div>
+        <span class="text-sm text-ink-500 dark:text-ink-300">优先阅读与长期维护</span>
       </div>
-      <a class="hidden items-center gap-1 text-sm font-semibold text-ink-600 transition hover:text-leaf-700 sm:inline-flex dark:text-ink-300" href={withBase("/blog/")}>
-        浏览全部文章
-        <Icon name="arrow" class="h-4 w-4" />
-      </a>
-    </div>
-    <div class="grid gap-5 md:grid-cols-2">{featured.map((post) => <PostCard post={post} featured />)}</div>
-  </section>
+      <div class="space-y-4">{pinnedPosts.map((post) => <PostCard post={post} featured />)}</div>
+    </section>
+  )}
 
-  <section class="grid gap-10 border-t border-ink-200/70 pt-14 lg:grid-cols-[minmax(0,1fr)_20rem] dark:border-white/10">
+  <section class="grid gap-10 pt-14 lg:grid-cols-[minmax(0,1fr)_20rem]">
     <div>
       <div class="mb-6 flex items-center justify-between gap-4">
         <h2 class="text-2xl font-semibold text-ink-950 dark:text-white">最近更新</h2>
         <span class="text-xs text-ink-400">按发布时间排序</span>
       </div>
-      <div class="grid gap-4">{latest.map((post) => <PostCard post={post} />)}</div>
+      <div class="space-y-4">{latest.map((post) => <PostCard post={post} />)}</div>
     </div>
     <aside class="space-y-8">
       <section>

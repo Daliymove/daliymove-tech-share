@@ -17,7 +17,7 @@ const { tag, posts } = Astro.props;
 
 <BaseLayout title={`标签：${tag}`}>
   <PageHeader title={`#${tag}`} eyebrow="Tag" description={`包含这个标签的文章共有 ${posts.length} 篇。`} />
-  <div class="grid gap-5 md:grid-cols-2">
+  <div class="space-y-4">
     {posts.map((post) => <PostCard post={post} />)}
   </div>
 </BaseLayout>

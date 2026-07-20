@@ -17,7 +17,7 @@ const { category, posts } = Astro.props;
 
 <BaseLayout title={`分类：${category}`}>
   <PageHeader title={category} eyebrow="Category" description={`这个分类下共有 ${posts.length} 篇文章。`} />
-  <div class="grid gap-5 md:grid-cols-2">
+  <div class="space-y-4">
     {posts.map((post) => <PostCard post={post} />)}
   </div>
 </BaseLayout>

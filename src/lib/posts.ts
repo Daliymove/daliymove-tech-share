@@ -63,6 +63,16 @@ export async function getAllPosts() {
   });
 }
 
+export function getPinnedPosts(posts: BlogPost[]) {
+  return posts.filter((post) => post.data.pinned);
+}
+
+export function getRegularPosts(posts: BlogPost[]) {
+  return posts
+    .filter((post) => !post.data.pinned)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+}
+
 export function getFeaturedPosts(posts: BlogPost[]) {
   return posts.filter((post) => post.data.featured || post.data.pinned);
 }
