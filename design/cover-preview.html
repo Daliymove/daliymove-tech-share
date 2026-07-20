@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>封面预览 · daliyMove 技术分享</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 40px; background: #EDE7DA; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; color: #232B22; }
+  .wrap { max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 20px; margin: 0 0 4px; font-weight: 700; }
+  .sub { color: #646E62; font-size: 13px; margin: 0 0 28px; }
+  .block { margin: 0 0 40px; }
+  .label { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #4F7A52; font-family: ui-monospace, monospace; margin: 0 0 10px; }
+  .og { border-radius: 18px; overflow: hidden; box-shadow: 0 18px 50px rgba(35,43,34,0.18); }
+  .og svg { display: block; width: 100%; height: auto; }
+  /* 卡片裁切模拟：PostCard 用 object-cover，h-36=144px，宽约 340px */
+  .card { width: 340px; height: 144px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(35,43,34,0.14); }
+  .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .note { font-size: 12px; color: #646E62; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>文章封面预览</h1>
+  <p class="sub">按 Direction A「有机手账风」重做 · public/images/og/default.svg</p>
+
+  <div class="block">
+    <p class="label">① 完整 OG 分享图 (1200 × 630)</p>
+    <div class="og">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="daliyMove 技术分享">
+        <defs>
+          <radialGradient id="bg" cx="30%" cy="20%" r="95%">
+            <stop offset="0%" stop-color="#FBF8F1"/>
+            <stop offset="55%" stop-color="#F7F3EA"/>
+            <stop offset="100%" stop-color="#F1EBDD"/>
+          </radialGradient>
+          <linearGradient id="mossGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#4F7A52"/>
+            <stop offset="100%" stop-color="#3A5C3E"/>
+          </linearGradient>
+          <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#232B22" flood-opacity="0.14"/>
+          </filter>
+        </defs>
+        <rect width="1200" height="630" fill="url(#bg)"/>
+        <circle cx="1000" cy="170" r="110" fill="#E4EBDD" opacity="0.55"/>
+        <circle cx="1075" cy="235" r="58" fill="#F1E6D6" opacity="0.55"/>
+        <rect x="40" y="40" width="1120" height="550" rx="30" fill="none" stroke="#DCD3C2" stroke-width="2"/>
+        <g filter="url(#soft)"><rect x="88" y="118" width="92" height="92" rx="26" fill="url(#mossGrad)"/></g>
+        <text x="134" y="182" text-anchor="middle" fill="#F7F3EA" font-family="'Fraunces','Noto Serif SC','Songti SC',Georgia,serif" font-size="46" font-weight="700">dM</text>
+        <text x="200" y="160" fill="#4A564A" font-family="'IBM Plex Mono',ui-monospace,'SFMono-Regular','Courier New',monospace" font-size="26" letter-spacing="1.5">daliyMove Tech Notes</text>
+        <text x="200" y="192" fill="#646E62" font-family="'IBM Plex Mono',ui-monospace,'SFMono-Regular','Courier New',monospace" font-size="18" letter-spacing="1">长期主义 · 个人知识分享</text>
+        <text x="86" y="300" fill="#232B22" font-family="'Fraunces','Noto Serif SC','Songti SC',Georgia,serif" font-size="80" font-weight="700">daliyMove</text>
+        <text x="86" y="376" fill="#232B22" font-family="'Fraunces','Noto Serif SC','Songti SC',Georgia,serif" font-size="64" font-weight="700">技术分享</text>
+        <path d="M84 388 q 32 -9 65 0 t 65 0 t 65 0 t 65 0" fill="none" stroke="#4F7A52" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.92"/>
+        <text x="88" y="444" fill="#4A564A" font-family="'IBM Plex Mono',ui-monospace,'SFMono-Regular','Courier New',monospace" font-size="26" letter-spacing="0.5">每天一点技术，持续向前</text>
+        <text x="88" y="480" fill="#646E62" font-family="'IBM Plex Mono',ui-monospace,'SFMono-Regular','Courier New',monospace" font-size="22" letter-spacing="0.5">前端 · 工程实践 · 工具方法</text>
+        <circle cx="88" cy="514" r="6" fill="#4F7A52"/>
+        <line x1="104" y1="514" x2="1098" y2="514" stroke="#4F7A52" stroke-width="2.5" stroke-dasharray="1 14" stroke-linecap="round" opacity="0.5"/>
+        <circle cx="1104" cy="514" r="6" fill="#4F7A52"/>
+        <text x="88" y="558" fill="#646E62" font-family="'IBM Plex Mono',ui-monospace,'SFMono-Regular','Courier New',monospace" font-size="22" letter-spacing="0.5">daliymove.github.io/daliymove-tech-share</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="block">
+    <p class="label">② 卡片内显示效果 (340 × 144，object-cover 裁切中间横带)</p>
+    <div class="card">
+      <img src="../public/images/og/default.svg" alt="cover" />
+    </div>
+    <p class="note">标题已上移，确保卡片只露中间横带时仍能完整显示「daliyMove / 技术分享」+ 手绘下划线。</p>
+  </div>
+</div>
+</body>
+</html>
