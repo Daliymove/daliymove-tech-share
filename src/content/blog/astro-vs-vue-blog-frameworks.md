@@ -1,3 +1,16 @@
+---
+title: "Astro博客框架对比"
+description: "Astro 与 Vue/其他博客框架的区别"
+pubDate: 2026-07-21
+updatedDate: 2026-07-21
+category: "前端"
+tags:
+  - 笔记
+  - 实践
+featured: false
+draft: false
+---
+
 # Astro 与 Vue/其他博客框架的区别
 
 这份文档用于说明当前博客项目为什么选择 Astro，以及它和 Vue、Nuxt、VitePress、Hexo、Hugo、Jekyll 等常见博客方案的主要差异。
