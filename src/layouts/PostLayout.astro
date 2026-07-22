@@ -61,7 +61,7 @@ const cover = getCoverUrl(post);
             </span>
           )}
         </div>
-        <h1 class="mt-5 max-w-4xl text-4xl font-semibold leading-tight tracking-normal text-ink-950 dark:text-white md:text-6xl" data-pagefind-meta="title">{post.data.title}</h1>
+        <h1 class="mt-5 max-w-4xl font-display text-4xl font-semibold leading-tight tracking-tight text-ink-950 dark:text-white md:text-6xl" data-pagefind-meta="title">{post.data.title}</h1>
         <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-600 dark:text-ink-300">{post.data.description}</p>
         {post.data.pinned && (
           <p class="mt-5 inline-flex items-center gap-2 rounded-xl border border-amber-200/80 bg-amber-50/80 px-3.5 py-2 text-sm text-amber-800 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100">
@@ -87,6 +87,34 @@ const cover = getCoverUrl(post);
           {post.data.tags.map((tag) => (
             <a class="rounded-full bg-ink-100/80 px-3 py-1 text-sm text-ink-600 transition hover:bg-leaf-100 hover:text-leaf-700 dark:bg-white/10 dark:text-ink-200 dark:hover:bg-leaf-300/10" href={getTagUrl(tag)}>#{tag}</a>
           ))}
+        </div>
+        <div class="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_17rem]">
+          <div class="overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/60 shadow-soft dark:border-white/10 dark:bg-white/5">
+            <img class="h-56 w-full object-cover md:h-72" src={cover} alt={`文章封面：${post.data.title}`} loading="eager" />
+          </div>
+          <aside class="rounded-[1.35rem] border border-white/70 bg-white/68 p-5 shadow-soft backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.055]">
+            <p class="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-ink-400">Article Brief</p>
+            <dl class="mt-4 space-y-3 text-sm">
+              <div class="flex items-center justify-between gap-4 border-b border-ink-200/60 pb-3 dark:border-white/10">
+                <dt class="inline-flex items-center gap-2 text-ink-500 dark:text-ink-300"><Icon name="calendar" class="h-3.5 w-3.5" />发布</dt>
+                <dd class="font-medium text-ink-800 dark:text-ink-100">{formatDate(post.data.pubDate)}</dd>
+              </div>
+              <div class="flex items-center justify-between gap-4 border-b border-ink-200/60 pb-3 dark:border-white/10">
+                <dt class="inline-flex items-center gap-2 text-ink-500 dark:text-ink-300"><Icon name="clock" class="h-3.5 w-3.5" />阅读</dt>
+                <dd class="font-medium text-ink-800 dark:text-ink-100">{getReadingTime(post.body)}</dd>
+              </div>
+              <div class="flex items-center justify-between gap-4 border-b border-ink-200/60 pb-3 dark:border-white/10">
+                <dt class="inline-flex items-center gap-2 text-ink-500 dark:text-ink-300"><Icon name="grid" class="h-3.5 w-3.5" />分类</dt>
+                <dd class="font-medium text-ink-800 dark:text-ink-100">{post.data.category}</dd>
+              </div>
+              {post.data.updatedDate && (
+                <div class="flex items-center justify-between gap-4">
+                  <dt class="text-ink-500 dark:text-ink-300">更新</dt>
+                  <dd class="font-medium text-ink-800 dark:text-ink-100">{formatDate(post.data.updatedDate)}</dd>
+                </div>
+              )}
+            </dl>
+          </aside>
         </div>
       </header>
 
@@ -129,7 +157,7 @@ const cover = getCoverUrl(post);
             <h2 class="text-xl font-semibold text-ink-950 dark:text-white">相关推荐</h2>
           </div>
           <div class="grid gap-4 md:grid-cols-3">
-            {related.map((item) => <PostCard post={item} compact />)}
+            {related.map((item) => <PostCard post={item} compact showDate={false} />)}
           </div>
         </section>
       )}

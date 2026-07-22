@@ -110,21 +110,44 @@ img {
 }
 
 .prose-blog {
+  counter-reset: article-section;
   color: var(--text);
   font-size: 1.06rem;
 }
 
-.prose-blog :where(h2, h3, h4) {
+.prose-blog :where(h1, h2, h3, h4) {
   scroll-margin-top: 6rem;
   line-height: 1.25;
   letter-spacing: 0;
   font-family: "Fraunces", "Noto Serif SC", ui-serif, Georgia, serif;
 }
 
+.prose-blog h1,
 .prose-blog h2 {
-  margin-top: 2.8rem;
-  margin-bottom: 0.9rem;
-  font-size: 1.65rem;
+  position: relative;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  padding-left: 2.35rem;
+  font-size: 1.75rem;
+}
+
+.prose-blog h1::before,
+.prose-blog h2::before {
+  counter-increment: article-section;
+  content: counter(article-section, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0.15rem;
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  place-items: center;
+  border-radius: 0.55rem;
+  background: rgba(79, 122, 82, 0.1);
+  color: var(--accent);
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 .prose-blog h3 {
@@ -145,6 +168,11 @@ img {
   padding-left: 1.35rem;
 }
 
+.prose-blog li::marker {
+  color: var(--accent);
+  font-weight: 700;
+}
+
 .prose-blog li + li {
   margin-top: 0.35rem;
 }
@@ -155,11 +183,14 @@ img {
 }
 
 .prose-blog blockquote {
-  border-left: 3px solid var(--accent);
-  border-radius: 0 0.75rem 0.75rem 0;
-  padding: 0.2rem 0 0.2rem 1rem;
+  position: relative;
+  border: 1px solid rgba(79, 122, 82, 0.16);
+  border-left: 4px solid var(--accent);
+  border-radius: 1rem;
+  padding: 0.85rem 1rem 0.85rem 1.2rem;
   background: rgba(79, 122, 82, 0.07);
   color: var(--muted);
+  box-shadow: 0 12px 30px rgba(35, 43, 34, 0.05);
 }
 
 .prose-blog code:not(pre code) {
@@ -179,11 +210,21 @@ img {
 }
 
 .prose-blog table {
+  display: block;
   width: 100%;
   border-collapse: collapse;
   margin: 1.2rem 0;
-  overflow: hidden;
+  overflow-x: auto;
   border-radius: 0.75rem;
+}
+
+.prose-blog hr {
+  height: 12px;
+  margin: 2.2rem 0;
+  border: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='12' viewBox='0 0 140 12'%3E%3Cpath d='M2 6 Q 18 2 34 6 T 66 6 T 98 6 T 130 6' fill='none' stroke='%234F7A52' stroke-width='2' stroke-linecap='round' opacity='.45'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 140px 12px;
 }
 
 .prose-blog th,
@@ -236,6 +277,75 @@ mark {
   box-shadow: 0 14px 38px rgba(35, 43, 34, 0.12);
 }
 
+.post-card {
+  isolation: isolate;
+}
+
+.post-card::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), transparent 42%);
+  opacity: 0.7;
+}
+
+.post-card-cover {
+  display: block;
+  overflow: hidden;
+  min-height: 11rem;
+  aspect-ratio: 16 / 10;
+  border: 1px solid rgba(120, 110, 90, 0.16);
+  border-radius: 1rem;
+  background: rgba(247, 243, 234, 0.65);
+}
+
+.post-card-date {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 3.9rem;
+  height: 4.5rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(120, 110, 90, 0.18);
+  border-radius: 1rem;
+  background: rgba(251, 248, 241, 0.78);
+  color: var(--accent);
+  box-shadow: 0 10px 24px rgba(35, 43, 34, 0.06);
+}
+
+.post-card-date-day {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.post-card-date-year {
+  margin-top: 0.2rem;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.post-card-compact .post-card-date {
+  width: 3.65rem;
+  height: 4.1rem;
+}
+
+.post-card-featured .post-card-cover {
+  min-height: 12rem;
+}
+
+:root.dark .post-card-cover,
+:root.dark .post-card-date {
+  border-color: rgba(180, 168, 150, 0.14);
+  background: rgba(255, 255, 255, 0.045);
+}
+
 .pinned-post-card {
   border-color: rgba(154, 107, 63, 0.48);
   background:
@@ -250,36 +360,23 @@ mark {
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
 }
 
-.pinned-ribbon {
-  position: absolute;
-  top: 1rem;
-  right: -2.45rem;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  min-width: 8rem;
-  justify-content: center;
-  transform: rotate(45deg);
-  padding: 0.35rem 0.6rem;
-  background: linear-gradient(90deg, #7f5539, #c99a6a);
-  color: #fff;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  box-shadow: 0 4px 15px rgba(122, 83, 39, 0.28);
-}
-
-:root.dark .pinned-ribbon {
-  background: linear-gradient(90deg, #9a6b3f, #c99a6a);
-  color: #161b16;
-}
-
 .pinned-post-title {
   text-decoration: underline;
-  text-decoration-color: rgba(154, 107, 63, 0.45);
-  text-decoration-thickness: 0.13em;
-  text-underline-offset: 0.16em;
+  text-decoration-color: rgba(154, 107, 63, 0.42);
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.2em;
+}
+
+@media (min-width: 640px) {
+  .post-card-cover {
+    width: min(30%, 12rem);
+    min-height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .post-card-featured .post-card-cover {
+    width: min(34%, 15rem);
+  }
 }
 
 .archive-filter.is-active {
@@ -449,7 +546,9 @@ mark {
     font-size: 1rem;
   }
 
+  .prose-blog h1,
   .prose-blog h2 {
+    padding-left: 2.05rem;
     font-size: 1.45rem;
   }
 }

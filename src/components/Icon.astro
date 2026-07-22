@@ -1,6 +1,6 @@
 ---
 interface Props {
-  name: "home" | "article" | "grid" | "tag" | "search" | "user" | "sun" | "moon" | "arrow" | "spark" | "book" | "code" | "layers" | "pulse" | "rss" | "pin";
+  name: "home" | "article" | "grid" | "tag" | "search" | "user" | "sun" | "moon" | "arrow" | "spark" | "book" | "calendar" | "clock" | "code" | "layers" | "pulse" | "rss" | "pin";
   class?: string;
 }
 
@@ -70,6 +70,18 @@ const { name, class: className = "h-4 w-4" } = Astro.props;
   <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v16H7.5A2.5 2.5 0 0 0 5 21.5V5.5Z" />
     <path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19" />
+  </svg>
+)}
+{name === "calendar" && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="4" y="5" width="16" height="15" rx="2" />
+    <path d="M8 3v4M16 3v4M4 10h16" />
+  </svg>
+)}
+{name === "clock" && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="8" />
+    <path d="M12 7.5V12l3 2" />
   </svg>
 )}
 {name === "code" && (

@@ -20,7 +20,7 @@ const categories = collectCategories(posts);
       ))}
     </div>
     {pinnedPosts.length > 0 && (
-      <section class="mb-10" aria-labelledby="pinned-posts-heading">
+      <section class="mb-10" aria-labelledby="pinned-posts-heading" data-pinned-section>
         <div class="mb-4 flex items-center gap-3">
           <span class="grid h-9 w-9 place-items-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-300/10 dark:text-amber-100">📌</span>
           <div>
@@ -29,7 +29,7 @@ const categories = collectCategories(posts);
           </div>
         </div>
         <div class="space-y-4">
-          {pinnedPosts.map((post) => <PostCard post={post} featured />)}
+          {pinnedPosts.map((post) => <div data-archive-item data-pinned-item data-post-category={post.data.category}><PostCard post={post} featured /></div>)}
         </div>
       </section>
     )}
@@ -39,10 +39,10 @@ const categories = collectCategories(posts);
           <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-400">All posts</p>
           <h2 id="regular-posts-heading" class="mt-1 text-xl font-semibold text-ink-950 dark:text-white">全部文章</h2>
         </div>
-        <p id="archive-status" class="text-sm text-ink-500 dark:text-ink-300">按发布时间倒序 · {regularPosts.length} 篇</p>
+        <p id="archive-status" class="text-sm text-ink-500 dark:text-ink-300">普通文章 {regularPosts.length} 篇 · 置顶 {pinnedPosts.length} 篇</p>
       </div>
       <div id="archive-list" class="space-y-4">
-        {regularPosts.map((post) => <div data-post-category={post.data.category}><PostCard post={post} /></div>)}
+        {regularPosts.map((post) => <div data-archive-item data-regular-item data-post-category={post.data.category}><PostCard post={post} /></div>)}
       </div>
     </section>
     <div id="archive-empty" class="hidden rounded-2xl border border-dashed border-ink-200 bg-white/50 p-8 text-center text-sm text-ink-500 dark:border-white/10 dark:bg-white/5 dark:text-ink-300">这个分类暂时没有公开文章。</div>
@@ -50,7 +50,9 @@ const categories = collectCategories(posts);
 
   <script>
     const filters = document.querySelectorAll<HTMLButtonElement>(".archive-filter");
-    const items = document.querySelectorAll<HTMLElement>("[data-post-category]");
+    const items = document.querySelectorAll<HTMLElement>("[data-archive-item]");
+    const pinnedItems = document.querySelectorAll<HTMLElement>("[data-pinned-item]");
+    const pinnedSection = document.querySelector<HTMLElement>("[data-pinned-section]");
     const status = document.querySelector("#archive-status");
     const empty = document.querySelector("#archive-empty");
 
@@ -58,17 +60,27 @@ const categories = collectCategories(posts);
       filter.addEventListener("click", () => {
         const category = filter.dataset.category ?? "all";
         let visible = 0;
+        let visiblePinned = 0;
+        let visibleRegular = 0;
         items.forEach((item) => {
           const match = category === "all" || item.dataset.postCategory === category;
           item.classList.toggle("hidden", !match);
-          if (match) visible += 1;
+          if (!match) return;
+          visible += 1;
+          if (item.hasAttribute("data-pinned-item")) visiblePinned += 1;
+          if (item.hasAttribute("data-regular-item")) visibleRegular += 1;
         });
+        pinnedSection?.classList.toggle("hidden", pinnedItems.length > 0 && visiblePinned === 0);
         filters.forEach((button) => {
           const active = button === filter;
           button.classList.toggle("is-active", active);
           button.setAttribute("aria-pressed", String(active));
         });
-        if (status) status.textContent = category === "all" ? `按发布时间倒序 · ${visible} 篇` : `正在浏览「${category}」的 ${visible} 篇文章`;
+        if (status) {
+          status.textContent = category === "all"
+            ? `普通文章 ${visibleRegular} 篇 · 置顶 ${visiblePinned} 篇`
+            : `正在浏览「${category}」的 ${visible} 篇文章（置顶 ${visiblePinned} 篇）`;
+        }
         empty?.classList.toggle("hidden", visible > 0);
       });
     });
