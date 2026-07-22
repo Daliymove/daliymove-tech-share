@@ -10,6 +10,14 @@ const pinnedPosts = getPinnedPosts(posts);
 const latest = getRegularPosts(posts).slice(0, 6);
 const categories = collectCategories(posts).slice(0, 6);
 const tags = collectTags(posts).slice(0, 12);
+const categoryDotColors: Record<string, string> = {
+  "大模型": "bg-bark-700",
+  "知识管理": "bg-leaf-400",
+  "前端": "bg-bark-500",
+  "编程": "bg-leaf-500",
+  "学习方法": "bg-bark-300",
+  "生活系统": "bg-leaf-300",
+};
 ---
 
 <BaseLayout>
@@ -85,7 +93,7 @@ const tags = collectTags(posts).slice(0, 12);
           {categories.map(([category, count], index) => (
             <a class="group flex items-center justify-between rounded-xl border border-transparent px-3 py-2 text-sm transition hover:border-leaf-200 hover:bg-leaf-50 dark:hover:border-leaf-300/30 dark:hover:bg-leaf-300/10" href={getCategoryUrl(category)}>
               <span class="flex items-center gap-3">
-                <span class:list={["h-2.5 w-2.5 rounded-full", index % 3 === 0 ? "bg-leaf-500" : index % 3 === 1 ? "bg-bark-500" : "bg-amber-300"]}></span>
+                <span class:list={["h-2.5 w-2.5 rounded-full", categoryDotColors[category] ?? (index % 2 === 0 ? "bg-leaf-400" : "bg-bark-400")]}></span>
                 {category}
               </span>
               <span class="font-mono text-xs text-ink-400 transition group-hover:text-leaf-700 dark:group-hover:text-leaf-300">{count}</span>

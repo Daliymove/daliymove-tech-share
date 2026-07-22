@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Breeze Sprout</title>
+  <desc id="desc">A fresh abstract mark with a sprout and flowing breeze</desc>
+  <defs>
+    <linearGradient id="sky" x1="34" y1="28" x2="224" y2="230" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#65D6D1"/>
+      <stop offset="1" stop-color="#4A9FE8"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="64" fill="url(#sky)"/>
+  <path d="M52 156c37 27 81 30 125 11 13-6 23-14 31-24" fill="none" stroke="#F7FFFD" stroke-width="12" stroke-linecap="round"/>
+  <path d="M72 118c28-35 62-46 97-36-11 34-39 55-78 58" fill="#F7FFFD"/>
+  <path d="M92 150c24-17 45-37 62-61" fill="none" stroke="#2FAE9B" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="54" cy="156" r="10" fill="#EAF9AE"/>
+  <circle cx="207" cy="143" r="10" fill="#EAF9AE"/>
+</svg>

@@ -9,6 +9,7 @@ tags:
   - 实践
 featured: false
 pinned: true
+cover: "/images/posts/fde-route.svg"
 draft: false
 ---
 

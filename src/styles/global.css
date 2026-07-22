@@ -4,28 +4,28 @@
 
 :root {
   color-scheme: light;
-  --surface: #f7f3ea;
-  --surface-soft: #efe9dc;
-  --surface-card: rgba(255, 255, 255, 0.66);
-  --text: #232b22;
-  --muted: #646e62;
-  --line: rgba(120, 110, 90, 0.22);
-  --accent: #3a5c3e;
-  --accent-strong: #4f7a52;
-  --accent-secondary: #9a6b3f;
+  --surface: #f4fbfb;
+  --surface-soft: #eaf6f7;
+  --surface-card: rgba(255, 255, 255, 0.72);
+  --text: #203943;
+  --muted: #63808a;
+  --line: rgba(89, 157, 169, 0.24);
+  --accent: #218a84;
+  --accent-strong: #176a6d;
+  --accent-secondary: #4a9fe8;
 }
 
 :root.dark {
   color-scheme: dark;
-  --surface: #161b16;
-  --surface-soft: #1e241d;
-  --surface-card: rgba(255, 255, 255, 0.04);
-  --text: #e9ece2;
-  --muted: #8a9382;
-  --line: rgba(180, 168, 150, 0.16);
-  --accent: #88b189;
-  --accent-strong: #a7c9a8;
-  --accent-secondary: #c99a6a;
+  --surface: #102a35;
+  --surface-soft: #153b48;
+  --surface-card: rgba(247, 255, 255, 0.06);
+  --text: #eafafa;
+  --muted: #9ec4cb;
+  --line: rgba(157, 221, 225, 0.19);
+  --accent: #63d6d1;
+  --accent-strong: #8ee8df;
+  --accent-secondary: #7bb9f2;
 }
 
 * {
@@ -41,8 +41,8 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(79, 122, 82, 0.10), transparent 30rem),
-    radial-gradient(circle at top right, rgba(154, 107, 63, 0.08), transparent 26rem),
+    radial-gradient(circle at top left, rgba(101, 214, 209, 0.16), transparent 30rem),
+    radial-gradient(circle at top right, rgba(74, 159, 232, 0.12), transparent 26rem),
     linear-gradient(180deg, var(--surface), var(--surface-soft));
   color: var(--text);
   font-family: "Manrope", "Noto Sans SC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -62,16 +62,16 @@ body::before {
   pointer-events: none;
   content: "";
   background-image:
-    linear-gradient(rgba(120, 110, 90, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(120, 110, 90, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(78, 161, 173, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78, 161, 173, 0.07) 1px, transparent 1px);
   background-size: 42px 42px;
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent 72%);
 }
 
 :root.dark body::before {
   background-image:
-    linear-gradient(rgba(180, 168, 150, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(180, 168, 150, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(157, 221, 225, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(157, 221, 225, 0.07) 1px, transparent 1px);
 }
 
 .page-glow {
@@ -81,18 +81,24 @@ body::before {
   width: 22rem;
   height: 22rem;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(79, 122, 82, 0.14), transparent 70%);
+  background: radial-gradient(circle, rgba(101, 214, 209, 0.18), transparent 70%);
   filter: blur(8px);
   pointer-events: none;
 }
 
 :root.dark .page-glow {
-  background: radial-gradient(circle, rgba(136, 177, 137, 0.12), transparent 70%);
+  background: radial-gradient(circle, rgba(74, 159, 232, 0.16), transparent 70%);
 }
 
 .brand-mark {
-  background: linear-gradient(135deg, #3a5c3e 0%, #9a6b3f 100%);
-  box-shadow: 0 10px 28px rgba(58, 92, 62, 0.25);
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(74, 159, 232, 0.24);
+}
+
+.brand-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 a {
@@ -106,7 +112,7 @@ img {
 }
 
 ::selection {
-  background: rgba(79, 122, 82, 0.20);
+  background: rgba(47, 174, 155, 0.22);
 }
 
 .prose-blog {
@@ -143,7 +149,7 @@ img {
   height: 1.65rem;
   place-items: center;
   border-radius: 0.55rem;
-  background: rgba(79, 122, 82, 0.1);
+  background: rgba(47, 174, 155, 0.12);
   color: var(--accent);
   font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.72rem;
@@ -179,31 +185,31 @@ img {
 
 .prose-blog a {
   color: var(--accent-strong);
-  border-bottom: 1px solid rgba(79, 122, 82, 0.35);
+  border-bottom: 1px solid rgba(47, 174, 155, 0.38);
 }
 
 .prose-blog blockquote {
   position: relative;
-  border: 1px solid rgba(79, 122, 82, 0.16);
+  border: 1px solid rgba(47, 174, 155, 0.20);
   border-left: 4px solid var(--accent);
   border-radius: 1rem;
   padding: 0.85rem 1rem 0.85rem 1.2rem;
-  background: rgba(79, 122, 82, 0.07);
+  background: rgba(47, 174, 155, 0.09);
   color: var(--muted);
-  box-shadow: 0 12px 30px rgba(35, 43, 34, 0.05);
+  box-shadow: 0 12px 30px rgba(31, 87, 104, 0.06);
 }
 
 .prose-blog code:not(pre code) {
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   padding: 0.12rem 0.34rem;
-  background: rgba(120, 110, 90, 0.12);
+  background: rgba(89, 157, 169, 0.12);
   font-size: 0.9em;
 }
 
 .prose-blog pre {
   overflow-x: auto;
-  border: 1px solid rgba(180, 168, 150, 0.18);
+  border: 1px solid rgba(157, 221, 225, 0.20);
   border-radius: 1rem;
   padding: 1.1rem;
   box-shadow: 0 18px 44px rgba(15, 12, 9, 0.18);
@@ -235,7 +241,7 @@ img {
 }
 
 .prose-blog th {
-  background: rgba(79, 122, 82, 0.10);
+  background: rgba(47, 174, 155, 0.12);
 }
 
 .skip-link {
@@ -256,7 +262,7 @@ img {
 [data-pagefind-body] mark,
 mark {
   border-radius: 0.25rem;
-  background: rgba(154, 107, 63, 0.30);
+  background: rgba(234, 249, 174, 0.55);
   color: inherit;
   padding: 0 0.15rem;
 }
@@ -274,7 +280,7 @@ mark {
 }
 
 .site-header.is-compact .header-shell {
-  box-shadow: 0 14px 38px rgba(35, 43, 34, 0.12);
+  box-shadow: 0 14px 38px rgba(31, 87, 104, 0.14);
 }
 
 .post-card {
@@ -292,13 +298,29 @@ mark {
 }
 
 .post-card-cover {
-  display: block;
-  overflow: hidden;
-  min-height: 11rem;
+  display: grid;
+  width: 100%;
+  min-height: 12rem;
   aspect-ratio: 16 / 10;
-  border: 1px solid rgba(120, 110, 90, 0.16);
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(89, 157, 169, 0.18);
   border-radius: 1rem;
-  background: rgba(247, 243, 234, 0.65);
+  background: rgba(237, 253, 252, 0.72);
+}
+
+.post-card-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 500ms ease;
+}
+
+:root.dark .post-card-cover,
+:root.dark .post-card-date {
+  border-color: rgba(157, 221, 225, 0.18);
+  background: rgba(255, 255, 255, 0.045);
 }
 
 .post-card-date {
@@ -309,11 +331,11 @@ mark {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(120, 110, 90, 0.18);
+  border: 1px solid rgba(89, 157, 169, 0.20);
   border-radius: 1rem;
-  background: rgba(251, 248, 241, 0.78);
+  background: rgba(252, 254, 254, 0.82);
   color: var(--accent);
-  box-shadow: 0 10px 24px rgba(35, 43, 34, 0.06);
+  box-shadow: 0 10px 24px rgba(31, 87, 104, 0.08);
 }
 
 .post-card-date-day {
@@ -337,45 +359,40 @@ mark {
 }
 
 .post-card-featured .post-card-cover {
-  min-height: 12rem;
-}
-
-:root.dark .post-card-cover,
-:root.dark .post-card-date {
-  border-color: rgba(180, 168, 150, 0.14);
-  background: rgba(255, 255, 255, 0.045);
+  min-height: 13rem;
 }
 
 .pinned-post-card {
-  border-color: rgba(154, 107, 63, 0.48);
+  border-color: rgba(74, 159, 232, 0.48);
   background:
-    linear-gradient(135deg, rgba(241, 230, 214, 0.96), rgba(255, 255, 255, 0.82) 52%, rgba(228, 235, 221, 0.72));
-  box-shadow: 0 18px 45px rgba(122, 83, 39, 0.12);
+    linear-gradient(135deg, rgba(229, 242, 253, 0.94), rgba(255, 255, 255, 0.86) 52%, rgba(212, 247, 243, 0.76));
+  box-shadow: 0 18px 45px rgba(47, 132, 169, 0.12);
 }
 
 :root.dark .pinned-post-card {
-  border-color: rgba(201, 154, 106, 0.28);
+  border-color: rgba(123, 185, 242, 0.34);
   background:
-    linear-gradient(135deg, rgba(79, 53, 32, 0.24), rgba(22, 27, 22, 0.78) 52%, rgba(58, 92, 62, 0.14));
+    linear-gradient(135deg, rgba(52, 106, 146, 0.26), rgba(16, 42, 53, 0.80) 52%, rgba(33, 138, 132, 0.18));
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
 }
 
 .pinned-post-title {
   text-decoration: underline;
-  text-decoration-color: rgba(154, 107, 63, 0.42);
+  text-decoration-color: rgba(74, 159, 232, 0.48);
   text-decoration-thickness: 0.1em;
   text-underline-offset: 0.2em;
 }
 
 @media (min-width: 640px) {
   .post-card-cover {
-    width: min(30%, 12rem);
-    min-height: auto;
+    width: min(32%, 14rem);
+    min-height: 10.5rem;
     aspect-ratio: 4 / 3;
   }
 
   .post-card-featured .post-card-cover {
-    width: min(34%, 15rem);
+    width: min(36%, 16rem);
+    min-height: 12rem;
   }
 }
 
@@ -386,13 +403,13 @@ mark {
 }
 
 :root.dark .archive-filter.is-active {
-  background: #88b189;
-  color: #161b16;
+  background: #63d6d1;
+  color: #102a35;
 }
 
 /* 签名元素：首屏关键词手绘波浪下划线 */
 .kw {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M2 9 Q 14 3 26 9 T 50 9 T 74 9 T 98 9 T 122 9' fill='none' stroke='%234F7A52' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M2 9 Q 14 3 26 9 T 50 9 T 74 9 T 98 9 T 122 9' fill='none' stroke='%232FAE9B' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: repeat-x;
   background-position: 0 92%;
   background-size: 120px 12px;
@@ -400,7 +417,7 @@ mark {
 }
 
 :root.dark .kw {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M2 9 Q 14 3 26 9 T 50 9 T 74 9 T 98 9 T 122 9' fill='none' stroke='%2388B189' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M2 9 Q 14 3 26 9 T 50 9 T 74 9 T 98 9 T 122 9' fill='none' stroke='%2363D6D1' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
 /* 签名元素：「林间小径」竖向脉络线 */
@@ -464,7 +481,7 @@ mark {
   top: 0.65rem;
   right: 0.65rem;
   z-index: 1;
-  border: 1px solid rgba(180, 168, 150, 0.28);
+  border: 1px solid rgba(157, 221, 225, 0.30);
   border-radius: 0.5rem;
   padding: 0.3rem 0.55rem;
   background: rgba(15, 23, 42, 0.72);
@@ -507,7 +524,7 @@ mark {
 .zoomable-image {
   cursor: zoom-in;
   border-radius: 0.9rem;
-  box-shadow: 0 14px 35px rgba(35, 43, 34, 0.15);
+  box-shadow: 0 14px 35px rgba(31, 87, 104, 0.16);
 }
 
 .image-lightbox {
@@ -517,7 +534,7 @@ mark {
   display: grid;
   place-items: center;
   padding: 2rem;
-  background: rgba(15, 12, 9, 0.88);
+  background: rgba(16, 42, 53, 0.90);
   cursor: zoom-out;
 }
 

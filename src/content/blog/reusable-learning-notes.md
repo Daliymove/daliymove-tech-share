@@ -8,6 +8,7 @@ tags:
   - 方法论
   - 复盘
 featured: false
+cover: "/images/posts/learning-assets.svg"
 draft: false
 ---
 

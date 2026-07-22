@@ -17,7 +17,7 @@ const year = post.data.pubDate.getFullYear();
 ---
 
 <article class:list={[
-  "post-card group relative overflow-hidden rounded-2xl border border-white/70 bg-white/75 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-leaf-200 hover:shadow-lift dark:border-white/10 dark:bg-white/[0.055] dark:hover:border-leaf-300/40",
+  "post-card group relative overflow-hidden rounded-2xl border border-white/70 bg-white/75 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-leaf-200 hover:shadow-lift focus-within:ring-2 focus-within:ring-leaf-500 focus-within:ring-offset-4 focus-within:ring-offset-paper dark:border-white/10 dark:bg-white/[0.055] dark:hover:border-leaf-300/40 dark:focus-within:ring-offset-ink-950",
   compact ? "post-card-compact p-4" : "p-4 md:p-5",
   featured && "post-card-featured",
   post.data.pinned && "pinned-post-card",
@@ -34,7 +34,7 @@ const year = post.data.pubDate.getFullYear();
 
     {!compact && (
       <a class="post-card-cover" href={postUrl} tabindex="-1" aria-hidden="true">
-        <img class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]" src={cover} alt="" loading="lazy" />
+        <img class="transition duration-500 group-hover:scale-[1.04]" src={cover} alt="" loading="lazy" />
       </a>
     )}
 
