@@ -1,56 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="daliyMove 技术分享">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">daliyMove 技术分享默认封面</title>
+  <desc id="desc">Minimal editorial cover for daliyMove Tech Notes.</desc>
   <defs>
-    <radialGradient id="bg" cx="30%" cy="20%" r="95%">
-      <stop offset="0%" stop-color="#FBF8F1"/>
-      <stop offset="55%" stop-color="#F7F3EA"/>
-      <stop offset="100%" stop-color="#F1EBDD"/>
-    </radialGradient>
-    <linearGradient id="mossGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#4F7A52"/>
-      <stop offset="100%" stop-color="#3A5C3E"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbf8f1"/>
+      <stop offset="0.56" stop-color="#f7f3ea"/>
+      <stop offset="1" stop-color="#e4dbcb"/>
     </linearGradient>
-    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#232B22" flood-opacity="0.14"/>
+    <radialGradient id="soft" cx="76%" cy="29%" r="48%">
+      <stop offset="0" stop-color="#d9e6d2" stop-opacity=".88"/>
+      <stop offset="1" stop-color="#d9e6d2" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grain" width="120" height="120" patternUnits="userSpaceOnUse">
+      <circle cx="18" cy="24" r="1" fill="#232b22" opacity=".045"/>
+      <circle cx="86" cy="45" r="1" fill="#232b22" opacity=".035"/>
+      <circle cx="48" cy="92" r="1" fill="#232b22" opacity=".04"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#232b22" flood-opacity=".10"/>
     </filter>
   </defs>
+  <rect width="1200" height="630" rx="46" fill="url(#bg)"/>
+  <rect width="1200" height="630" rx="46" fill="url(#soft)"/>
+  <rect width="1200" height="630" rx="46" fill="url(#grain)"/>
 
-  <!-- 纸感米白底（保持满画布，不受缩放影响） -->
-  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g filter="url(#shadow)">
+    <rect x="86" y="76" width="1028" height="478" rx="34" fill="#fbf8f1" fill-opacity=".48" stroke="#232b22" stroke-opacity=".12"/>
+    <rect x="116" y="106" width="968" height="418" rx="26" fill="none" stroke="#3a5c3e" stroke-opacity=".16" stroke-dasharray="10 12"/>
+  </g>
 
-  <!-- 暖色柔光（背景装饰，保持满画布） -->
-  <circle cx="1000" cy="170" r="110" fill="#E4EBDD" opacity="0.55"/>
-  <circle cx="1075" cy="235" r="58" fill="#F1E6D6" opacity="0.55"/>
+  <g transform="translate(138 128)">
+    <rect width="86" height="86" rx="24" fill="#3a5c3e"/>
+    <text x="16" y="61" fill="#fbf8f1" font-family="Georgia, 'Noto Serif SC', serif" font-size="44" font-weight="700">dM</text>
+  </g>
 
-  <!-- 所有内容缩放 94% 并居中，避免渲染时被边缘裁切 -->
-  <g transform="translate(36, 18) scale(0.94)">
-    <!-- 笔记本页边线 -->
-    <rect x="40" y="40" width="1120" height="550" rx="30" fill="none" stroke="#DCD3C2" stroke-width="2"/>
+  <line x1="140" y1="248" x2="140" y2="452" stroke="#9a6b3f" stroke-width="5" stroke-linecap="round"/>
+  <text x="246" y="178" fill="#9a6b3f" font-family="IBM Plex Mono, Consolas, monospace" font-size="18" font-weight="700" letter-spacing="4">DALIYMOVE / TECH SHARE</text>
+  <text x="246" y="210" fill="#646e62" font-family="Manrope, 'Noto Sans SC', sans-serif" font-size="18">长期主义 · 个人知识分享</text>
 
-    <!-- 品牌标 dM（moss 实色，非紫蓝渐变） -->
-    <g filter="url(#soft)">
-      <rect x="88" y="118" width="92" height="92" rx="26" fill="url(#mossGrad)"/>
-    </g>
-    <text x="134" y="182" text-anchor="middle" fill="#F7F3EA" font-family="'Fraunces','Noto Serif SC','Songti SC',Georgia,serif" font-size="46" font-weight="700">dM</text>
+  <text x="180" y="304" fill="#232b22" font-family="Fraunces, Georgia, 'Noto Serif SC', serif" font-size="76" font-weight="700">daliyMove</text>
+  <text x="180" y="382" fill="#232b22" font-family="Fraunces, Georgia, 'Noto Serif SC', serif" font-size="70" font-weight="700">技术分享</text>
+  <path d="M184 394c64-14 118 14 182 0s108-14 172 0" fill="none" stroke="#4f7a52" stroke-width="5" stroke-linecap="round" opacity=".85"/>
 
-    <!-- 品牌名 -->
-    <text x="200" y="160" fill="#4A564A" font-family="'IBM Plex Mono',ui-monospace,'SFMono-Regular','Courier New',monospace" font-size="26" letter-spacing="1.5">daliyMove Tech Notes</text>
-    <text x="200" y="192" fill="#646E62" font-family="'IBM Plex Mono',ui-monospace,'SFMono-Regular','Courier New',monospace" font-size="18" letter-spacing="1">长期主义 · 个人知识分享</text>
+  <text x="184" y="438" fill="#3a4540" font-family="Manrope, 'Noto Sans SC', sans-serif" font-size="25" font-weight="700">每天一点技术，持续向前</text>
+  <text x="184" y="474" fill="#646e62" font-family="Manrope, 'Noto Sans SC', sans-serif" font-size="21">前端 · 工程实践 · 工具方法</text>
 
-    <!-- 主标题：衬线 + 手绘关键词下划线（签名元素） -->
-    <text x="86" y="300" fill="#232B22" font-family="'Fraunces','Noto Serif SC','Songti SC',Georgia,serif" font-size="80" font-weight="700">daliyMove</text>
-    <text x="86" y="376" fill="#232B22" font-family="'Fraunces','Noto Serif SC','Songti SC',Georgia,serif" font-size="64" font-weight="700">技术分享</text>
-    <path d="M84 388 q 32 -9 65 0 t 65 0 t 65 0 t 65 0" fill="none" stroke="#4F7A52" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.92"/>
+  <g transform="translate(830 130)">
+    <circle cx="112" cy="112" r="112" fill="#3a5c3e" opacity=".96"/>
+    <path d="M68 150c57-13 90-54 100-113-58 20-92 61-100 113Z" fill="#fbf8f1"/>
+    <path d="M81 143c25-33 53-62 80-85" fill="none" stroke="#3a5c3e" stroke-width="4" stroke-linecap="round" opacity=".75"/>
+  </g>
 
-    <!-- 副文 -->
-    <text x="88" y="444" fill="#4A564A" font-family="'IBM Plex Mono',ui-monospace,'SFMono-Regular','Courier New',monospace" font-size="26" letter-spacing="0.5">每天一点技术，持续向前</text>
-    <text x="88" y="480" fill="#646E62" font-family="'IBM Plex Mono',ui-monospace,'SFMono-Regular','Courier New',monospace" font-size="22" letter-spacing="0.5">前端 · 工程实践 · 工具方法</text>
-
-    <!-- 林间小径：脉络线（签名元素） -->
-    <circle cx="88" cy="514" r="6" fill="#4F7A52"/>
-    <line x1="104" y1="514" x2="1098" y2="514" stroke="#4F7A52" stroke-width="2.5" stroke-dasharray="1 14" stroke-linecap="round" opacity="0.5"/>
-    <circle cx="1104" cy="514" r="6" fill="#4F7A52"/>
-
-    <!-- 站点地址 -->
-    <text x="88" y="558" fill="#646E62" font-family="'IBM Plex Mono',ui-monospace,'SFMono-Regular','Courier New',monospace" font-size="22" letter-spacing="0.5">daliymove.github.io/daliymove-tech-share</text>
+  <g transform="translate(184 496)">
+    <circle cx="0" cy="0" r="6" fill="#4f7a52"/>
+    <path d="M18 0H880" stroke="#4f7a52" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 14" opacity=".48"/>
+    <circle cx="900" cy="0" r="6" fill="#4f7a52"/>
+    <text x="0" y="38" fill="#646e62" font-family="IBM Plex Mono, Consolas, monospace" font-size="22">daliymove.github.io/daliymove-tech-share</text>
   </g>
 </svg>
