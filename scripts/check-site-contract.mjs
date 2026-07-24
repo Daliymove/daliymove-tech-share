@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -18,7 +18,7 @@ const [home, search] = await Promise.all([
 assert.match(home, /images\/logo-marks\/folded-path\.svg/, "The folded-path logo must be used on the home page.");
 assert.doesNotMatch(home, /post-card-cover/, "Home post cards must remain text-first.");
 assert.doesNotMatch(home, /Fraunces|Manrope/, "Removed font families must not be loaded by the home page.");
-assert.match(search, /pagefind\/pagefind\.js/, "The search page must load Pagefind.");
+await access(path.join(outputDir, "pagefind", "pagefind.js"));
 
 const indexScript = search.match(/<script\b[^>]*\bid=["']local-search-index["'][^>]*>([\s\S]*?)<\/script>/i);
 assert.ok(indexScript, "The search page must include its fallback index.");
