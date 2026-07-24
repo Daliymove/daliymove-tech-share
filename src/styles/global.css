@@ -4,28 +4,28 @@
 
 :root {
   color-scheme: light;
-  --surface: #f4fbfb;
-  --surface-soft: #eaf6f7;
-  --surface-card: rgba(255, 255, 255, 0.72);
-  --text: #203943;
-  --muted: #63808a;
-  --line: rgba(89, 157, 169, 0.24);
-  --accent: #218a84;
-  --accent-strong: #176a6d;
-  --accent-secondary: #4a9fe8;
+  --surface: #f5f6f3;
+  --surface-soft: #e9ece7;
+  --surface-card: rgba(255, 255, 255, 0.84);
+  --text: #26332e;
+  --muted: #68736d;
+  --line: rgba(79, 122, 98, 0.18);
+  --accent: #4f7a62;
+  --accent-strong: #3e624e;
+  --accent-secondary: #a18f70;
 }
 
 :root.dark {
   color-scheme: dark;
-  --surface: #102a35;
-  --surface-soft: #153b48;
-  --surface-card: rgba(247, 255, 255, 0.06);
-  --text: #eafafa;
-  --muted: #9ec4cb;
-  --line: rgba(157, 221, 225, 0.19);
-  --accent: #63d6d1;
-  --accent-strong: #8ee8df;
-  --accent-secondary: #7bb9f2;
+  --surface: #18221d;
+  --surface-soft: #202c25;
+  --surface-card: rgba(255, 255, 255, 0.055);
+  --text: #e8eee8;
+  --muted: #aeb9b0;
+  --line: rgba(198, 216, 197, 0.16);
+  --accent: #a5c0a3;
+  --accent-strong: #c6d8c5;
+  --accent-secondary: #d5c6a9;
 }
 
 * {
@@ -41,8 +41,7 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(101, 214, 209, 0.16), transparent 30rem),
-    radial-gradient(circle at top right, rgba(74, 159, 232, 0.12), transparent 26rem),
+    radial-gradient(circle at 20% 0%, rgba(79, 122, 98, 0.055), transparent 30rem),
     linear-gradient(180deg, var(--surface), var(--surface-soft));
   color: var(--text);
   font-family: "Manrope", "Noto Sans SC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -62,37 +61,21 @@ body::before {
   pointer-events: none;
   content: "";
   background-image:
-    linear-gradient(rgba(78, 161, 173, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(78, 161, 173, 0.07) 1px, transparent 1px);
+    linear-gradient(rgba(79, 122, 98, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79, 122, 98, 0.045) 1px, transparent 1px);
   background-size: 42px 42px;
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent 72%);
 }
 
 :root.dark body::before {
   background-image:
-    linear-gradient(rgba(157, 221, 225, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(157, 221, 225, 0.07) 1px, transparent 1px);
-}
-
-.page-glow {
-  position: fixed;
-  inset: auto auto -8rem -6rem;
-  z-index: -1;
-  width: 22rem;
-  height: 22rem;
-  border-radius: 999px;
-  background: radial-gradient(circle, rgba(101, 214, 209, 0.18), transparent 70%);
-  filter: blur(8px);
-  pointer-events: none;
-}
-
-:root.dark .page-glow {
-  background: radial-gradient(circle, rgba(74, 159, 232, 0.16), transparent 70%);
+    linear-gradient(rgba(198, 216, 197, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198, 216, 197, 0.04) 1px, transparent 1px);
 }
 
 .brand-mark {
   overflow: hidden;
-  box-shadow: 0 10px 28px rgba(74, 159, 232, 0.24);
+  box-shadow: 0 8px 20px rgba(79, 122, 98, 0.16);
 }
 
 .brand-mark img {
@@ -112,7 +95,7 @@ img {
 }
 
 ::selection {
-  background: rgba(47, 174, 155, 0.22);
+  background: rgba(79, 122, 98, 0.2);
 }
 
 .prose-blog {
@@ -149,7 +132,7 @@ img {
   height: 1.65rem;
   place-items: center;
   border-radius: 0.55rem;
-  background: rgba(47, 174, 155, 0.12);
+  background: rgba(79, 122, 98, 0.12);
   color: var(--accent);
   font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.72rem;
@@ -185,31 +168,31 @@ img {
 
 .prose-blog a {
   color: var(--accent-strong);
-  border-bottom: 1px solid rgba(47, 174, 155, 0.38);
+  border-bottom: 1px solid rgba(79, 122, 98, 0.34);
 }
 
 .prose-blog blockquote {
   position: relative;
-  border: 1px solid rgba(47, 174, 155, 0.20);
+  border: 1px solid rgba(79, 122, 98, 0.18);
   border-left: 4px solid var(--accent);
   border-radius: 1rem;
   padding: 0.85rem 1rem 0.85rem 1.2rem;
-  background: rgba(47, 174, 155, 0.09);
+  background: rgba(79, 122, 98, 0.08);
   color: var(--muted);
-  box-shadow: 0 12px 30px rgba(31, 87, 104, 0.06);
+  box-shadow: 0 10px 24px rgba(38, 51, 46, 0.05);
 }
 
 .prose-blog code:not(pre code) {
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   padding: 0.12rem 0.34rem;
-  background: rgba(89, 157, 169, 0.12);
+  background: rgba(79, 122, 98, 0.1);
   font-size: 0.9em;
 }
 
 .prose-blog pre {
   overflow-x: auto;
-  border: 1px solid rgba(157, 221, 225, 0.20);
+  border: 1px solid rgba(198, 216, 197, 0.2);
   border-radius: 1rem;
   padding: 1.1rem;
   box-shadow: 0 18px 44px rgba(15, 12, 9, 0.18);
@@ -241,7 +224,7 @@ img {
 }
 
 .prose-blog th {
-  background: rgba(47, 174, 155, 0.12);
+  background: rgba(79, 122, 98, 0.1);
 }
 
 .skip-link {
@@ -262,7 +245,7 @@ img {
 [data-pagefind-body] mark,
 mark {
   border-radius: 0.25rem;
-  background: rgba(234, 249, 174, 0.55);
+  background: rgba(216, 191, 139, 0.38);
   color: inherit;
   padding: 0 0.15rem;
 }
@@ -280,7 +263,7 @@ mark {
 }
 
 .site-header.is-compact .header-shell {
-  box-shadow: 0 14px 38px rgba(31, 87, 104, 0.14);
+  box-shadow: 0 12px 32px rgba(38, 51, 46, 0.11);
 }
 
 .post-card {
@@ -297,29 +280,8 @@ mark {
   opacity: 0.7;
 }
 
-.post-card-cover {
-  display: grid;
-  width: 100%;
-  min-height: 12rem;
-  aspect-ratio: 16 / 10;
-  place-items: center;
-  overflow: hidden;
-  border: 1px solid rgba(89, 157, 169, 0.18);
-  border-radius: 1rem;
-  background: rgba(237, 253, 252, 0.72);
-}
-
-.post-card-cover img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 500ms ease;
-}
-
-:root.dark .post-card-cover,
 :root.dark .post-card-date {
-  border-color: rgba(157, 221, 225, 0.18);
+  border-color: rgba(198, 216, 197, 0.18);
   background: rgba(255, 255, 255, 0.045);
 }
 
@@ -331,11 +293,11 @@ mark {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(89, 157, 169, 0.20);
+  border: 1px solid rgba(79, 122, 98, 0.18);
   border-radius: 1rem;
   background: rgba(252, 254, 254, 0.82);
   color: var(--accent);
-  box-shadow: 0 10px 24px rgba(31, 87, 104, 0.08);
+  box-shadow: 0 8px 20px rgba(38, 51, 46, 0.06);
 }
 
 .post-card-date-day {
@@ -358,42 +320,25 @@ mark {
   height: 4.1rem;
 }
 
-.post-card-featured .post-card-cover {
-  min-height: 13rem;
-}
-
 .pinned-post-card {
-  border-color: rgba(74, 159, 232, 0.48);
+  border-color: rgba(161, 143, 112, 0.42);
   background:
-    linear-gradient(135deg, rgba(229, 242, 253, 0.94), rgba(255, 255, 255, 0.86) 52%, rgba(212, 247, 243, 0.76));
-  box-shadow: 0 18px 45px rgba(47, 132, 169, 0.12);
+    linear-gradient(135deg, rgba(250, 249, 246, 0.96), rgba(255, 255, 255, 0.9) 52%, rgba(234, 239, 232, 0.84));
+  box-shadow: 0 16px 38px rgba(38, 51, 46, 0.08);
 }
 
 :root.dark .pinned-post-card {
-  border-color: rgba(123, 185, 242, 0.34);
+  border-color: rgba(213, 198, 169, 0.28);
   background:
-    linear-gradient(135deg, rgba(52, 106, 146, 0.26), rgba(16, 42, 53, 0.80) 52%, rgba(33, 138, 132, 0.18));
+    linear-gradient(135deg, rgba(90, 75, 55, 0.2), rgba(24, 34, 29, 0.82) 52%, rgba(79, 122, 98, 0.14));
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
 }
 
 .pinned-post-title {
   text-decoration: underline;
-  text-decoration-color: rgba(74, 159, 232, 0.48);
+  text-decoration-color: rgba(161, 143, 112, 0.5);
   text-decoration-thickness: 0.1em;
   text-underline-offset: 0.2em;
-}
-
-@media (min-width: 640px) {
-  .post-card-cover {
-    width: min(32%, 14rem);
-    min-height: 10.5rem;
-    aspect-ratio: 4 / 3;
-  }
-
-  .post-card-featured .post-card-cover {
-    width: min(36%, 16rem);
-    min-height: 12rem;
-  }
 }
 
 .archive-filter.is-active {
@@ -403,8 +348,8 @@ mark {
 }
 
 :root.dark .archive-filter.is-active {
-  background: #63d6d1;
-  color: #102a35;
+  background: #a5c0a3;
+  color: #18221d;
 }
 
 /* 签名元素：首屏关键词手绘波浪下划线 */
@@ -481,10 +426,10 @@ mark {
   top: 0.65rem;
   right: 0.65rem;
   z-index: 1;
-  border: 1px solid rgba(157, 221, 225, 0.30);
+  border: 1px solid rgba(198, 216, 197, 0.28);
   border-radius: 0.5rem;
   padding: 0.3rem 0.55rem;
-  background: rgba(15, 23, 42, 0.72);
+  background: rgba(24, 32, 27, 0.78);
   color: #e2e8f0;
   font: inherit;
   font-size: 0.75rem;
@@ -524,7 +469,7 @@ mark {
 .zoomable-image {
   cursor: zoom-in;
   border-radius: 0.9rem;
-  box-shadow: 0 14px 35px rgba(31, 87, 104, 0.16);
+  box-shadow: 0 12px 30px rgba(38, 51, 46, 0.14);
 }
 
 .image-lightbox {
@@ -534,7 +479,7 @@ mark {
   display: grid;
   place-items: center;
   padding: 2rem;
-  background: rgba(16, 42, 53, 0.90);
+  background: rgba(24, 34, 29, 0.92);
   cursor: zoom-out;
 }
 
@@ -543,6 +488,31 @@ mark {
   max-width: min(94vw, 90rem);
   border-radius: 0.9rem;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45);
+}
+
+.image-lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  border-radius: 0.75rem;
+  background: rgba(24, 34, 29, 0.78);
+  color: white;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.image-lightbox-close:hover,
+.image-lightbox-close:focus-visible {
+  border-color: var(--accent-strong);
+  background: var(--accent);
+  outline: 2px solid white;
+  outline-offset: 2px;
 }
 
 @media (max-width: 640px) {

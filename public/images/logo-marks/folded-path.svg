@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Folded Path</title>
+  <desc id="desc">An abstract folded page and upward path for a technical notebook</desc>
+  <rect width="256" height="256" rx="64" fill="#E2EBE1"/>
+  <path d="M54 78c27-12 51-9 74 11v93c-23-20-47-24-74-12V78Z" fill="#4F7A62"/>
+  <path d="M202 78c-27-12-51-9-74 11v93c23-20 47-24 74-12V78Z" fill="#C6D8C5"/>
+  <path d="M128 89v93" fill="none" stroke="#F8F9F7" stroke-width="8" stroke-linecap="round"/>
+  <path d="M75 153 108 120l22 22 48-49" fill="none" stroke="#263E32" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m160 93 18 1-1 18" fill="none" stroke="#263E32" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="75" cy="153" r="8" fill="#A18F70"/>
+</svg>

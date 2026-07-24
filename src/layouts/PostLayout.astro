@@ -250,11 +250,39 @@ const cover = getCoverUrl(post);
       content.querySelectorAll("img").forEach((img) => {
         img.classList.add("zoomable-image");
         img.addEventListener("click", () => {
+          const returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
           const overlay = document.createElement("div");
           overlay.className = "image-lightbox";
-          overlay.innerHTML = `<img src="${img.getAttribute("src") || ""}" alt="${img.getAttribute("alt") || ""}" />`;
-          overlay.addEventListener("click", () => overlay.remove());
+          overlay.setAttribute("role", "dialog");
+          overlay.setAttribute("aria-modal", "true");
+          overlay.setAttribute("aria-label", "Image preview");
+          overlay.tabIndex = -1;
+
+          const preview = document.createElement("img");
+          preview.src = img.currentSrc || img.src;
+          preview.alt = img.alt;
+
+          const closeButton = document.createElement("button");
+          closeButton.type = "button";
+          closeButton.className = "image-lightbox-close";
+          closeButton.setAttribute("aria-label", "Close image preview");
+          closeButton.textContent = "\u00d7";
+
+          const closeLightbox = () => {
+            overlay.remove();
+            returnFocus?.focus();
+          };
+
+          closeButton.addEventListener("click", closeLightbox);
+          overlay.addEventListener("click", (event) => {
+            if (event.target === overlay) closeLightbox();
+          });
+          overlay.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") closeLightbox();
+          });
+          overlay.append(preview, closeButton);
           document.body.appendChild(overlay);
+          overlay.focus();
         });
       });
 

@@ -9,7 +9,8 @@ const posts = await getAllPosts();
 const pinnedPosts = getPinnedPosts(posts);
 const latest = getRegularPosts(posts).slice(0, 6);
 const categories = collectCategories(posts).slice(0, 6);
-const tags = collectTags(posts).slice(0, 12);
+const allTags = collectTags(posts);
+const tags = allTags.slice(0, 12);
 const categoryDotColors: Record<string, string> = {
   "大模型": "bg-bark-700",
   "知识管理": "bg-leaf-400",
@@ -22,18 +23,18 @@ const categoryDotColors: Record<string, string> = {
 
 <BaseLayout>
   <!-- HERO：纯文字叙事 -->
-  <section class="relative mx-auto max-w-4xl pb-4 pt-6 text-center md:pt-10">
-    <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-leaf-200 bg-white/70 px-3 py-1.5 text-xs font-semibold text-leaf-700 shadow-soft dark:border-leaf-300/20 dark:bg-white/5 dark:text-leaf-200">
+  <section class="relative mx-auto max-w-4xl pb-2 pt-4 text-center md:pt-7">
+    <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-leaf-200 bg-white/70 px-3 py-1.5 text-xs font-semibold text-leaf-700 shadow-soft dark:border-leaf-300/20 dark:bg-white/5 dark:text-leaf-200">
       <span class="grid h-5 w-5 place-items-center rounded-full bg-leaf-500/10 text-leaf-700 dark:text-leaf-200">
         <Icon name="pulse" class="h-3.5 w-3.5" />
       </span>
       daliyMove Tech Notes
     </div>
-    <h1 class="font-display text-4xl font-semibold leading-[1.12] tracking-tight text-ink-900 dark:text-ink-50 md:text-5xl lg:text-6xl">
+    <h1 class="font-display text-4xl font-semibold leading-[1.12] tracking-tight text-ink-900 dark:text-ink-50 md:text-5xl lg:text-[3.5rem]">
       把每天的技术推进，<br />沉淀成<span class="kw">可复用的分享</span>。
     </h1>
-    <p class="mx-auto mt-7 max-w-2xl text-lg leading-8 text-ink-600 dark:text-ink-400">{site.description}</p>
-    <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+    <p class="mx-auto mt-5 max-w-2xl text-base leading-7 text-ink-600 dark:text-ink-400 md:text-lg md:leading-8">{site.description}</p>
+    <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
       <a class="inline-flex items-center gap-2 rounded-xl bg-leaf-600 px-5 py-3 text-sm font-semibold text-white shadow-lift transition hover:-translate-y-0.5 hover:bg-leaf-700 dark:bg-leaf-500 dark:text-ink-950 dark:hover:bg-leaf-400" href={withBase("/blog/")}>
         开始阅读
         <Icon name="arrow" class="h-4 w-4" />
@@ -43,16 +44,16 @@ const categoryDotColors: Record<string, string> = {
         关于 daliyMove
       </a>
     </div>
-    <div class="mt-9 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ink-500 dark:text-ink-400">
+    <div class="mt-7 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ink-500 dark:text-ink-400">
       <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{posts.length}</strong>篇文章</span>
       <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{categories.length}</strong>个分类</span>
-      <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{tags.length}</strong>个标签</span>
+      <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{allTags.length}</strong>个标签</span>
     </div>
   </section>
 
   <!-- 主编领读 / 置顶 -->
   {pinnedPosts.length > 0 && (
-    <section class="border-b border-ink-200/70 py-12 dark:border-white/10">
+    <section class="border-b border-ink-200/70 py-9 md:py-10 dark:border-white/10">
       <div class="mb-6 flex items-end justify-between gap-4">
         <div>
           <p class="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-bark-500 dark:text-bark-300">
@@ -68,7 +69,7 @@ const categoryDotColors: Record<string, string> = {
   )}
 
   <!-- 最近更新 + 侧栏 -->
-  <section class="grid gap-10 pt-12 lg:grid-cols-[minmax(0,1fr)_20rem]">
+  <section class="grid gap-10 pt-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
     <div>
       <div class="mb-6 flex items-center justify-between gap-4">
         <h2 class="font-display text-2xl font-semibold text-ink-900 dark:text-ink-50">最近更新</h2>
