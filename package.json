@@ -14,7 +14,8 @@
     "build": "astro check && astro build && pagefind --site dist",
     "preview": "astro preview --host 127.0.0.1",
     "links": "node scripts/check-links.mjs",
-    "verify": "pnpm build && pnpm links"
+    "contracts": "node scripts/check-site-contract.mjs",
+    "verify": "pnpm build && pnpm links && pnpm contracts"
   },
   "dependencies": {
     "@astrojs/mdx": "7.0.2",

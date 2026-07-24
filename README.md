@@ -7,6 +7,8 @@
 如果系统已经安装 Node.js 和 pnpm，可以使用：
 
 ```powershell
+corepack enable
+corepack prepare pnpm@10.18.3 --activate
 pnpm install
 pnpm dev
 ```

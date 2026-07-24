@@ -44,6 +44,9 @@ jobs:
       - name: Check internal links
         run: pnpm links
 
+      - name: Check site contracts
+        run: pnpm contracts
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

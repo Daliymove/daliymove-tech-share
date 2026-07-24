@@ -7,9 +7,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Manrope", "Noto Sans SC", ...defaultTheme.fontFamily.sans],
-        display: ["Fraunces", "Noto Serif SC", "ui-serif", "Georgia", "serif"],
-        serif: ["Noto Serif SC", "Fraunces", ...defaultTheme.fontFamily.serif],
+        sans: ["Noto Sans SC", ...defaultTheme.fontFamily.sans],
+        display: ["Noto Serif SC", "ui-serif", "Georgia", "serif"],
+        serif: ["Noto Serif SC", ...defaultTheme.fontFamily.serif],
         mono: ["IBM Plex Mono", ...defaultTheme.fontFamily.mono],
       },
       colors: {
