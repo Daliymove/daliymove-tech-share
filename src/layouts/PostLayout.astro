@@ -8,6 +8,9 @@ import {
   getAllPosts,
   getCategoryUrl,
   getCoverUrl,
+  getOgImageAbsoluteUrl,
+  getOgImageUrl,
+  getPostAbsoluteUrl,
   getPostUrl,
   getReadingTime,
   getRelatedPosts,
@@ -15,6 +18,7 @@ import {
   withBase,
   type BlogPost,
 } from "../lib/posts";
+import { site } from "../lib/site";
 
 interface Props {
   post: BlogPost;
@@ -27,15 +31,54 @@ const posts = await getAllPosts();
 const { prev, next } = getAdjacentPosts(posts, post);
 const related = getRelatedPosts(posts, post, 3);
 const cover = getCoverUrl(post);
+const hasCover = Boolean(post.data.cover);
+const ogImage = getOgImageUrl(post);
+const articleUrl = getPostAbsoluteUrl(post);
+const articleStructuredData = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  url: articleUrl,
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": articleUrl,
+  },
+  datePublished: post.data.pubDate.toISOString(),
+  ...(post.data.updatedDate ? { dateModified: post.data.updatedDate.toISOString() } : {}),
+  inLanguage: "zh-CN",
+  articleSection: post.data.category,
+  ...(post.data.tags.length ? { keywords: post.data.tags.join(", ") } : {}),
+  image: {
+    "@type": "ImageObject",
+    url: getOgImageAbsoluteUrl(post),
+    caption: post.data.title,
+  },
+  author: {
+    "@type": "Person",
+    name: site.author,
+  },
+  isPartOf: {
+    "@type": "Blog",
+    name: site.title,
+    url: site.url,
+  },
+}).replace(/</g, "\\u003c");
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.description}
-  image={cover}
+  image={ogImage}
+  imageAlt={`文章分享图：${post.data.title}`}
   type="article"
+  articlePublishedTime={post.data.pubDate.toISOString()}
+  articleModifiedTime={post.data.updatedDate?.toISOString()}
+  articleSection={post.data.category}
+  articleTags={post.data.tags}
   canonicalPath={`/blog/${post.id.replace(/\.(md|mdx)$/i, "").replace(/\/index$/, "")}/`}
 >
+  <script is:inline type="application/ld+json" set:html={articleStructuredData}></script>
   <article class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_17rem]" data-pagefind-body data-reading-article>
     <div class="min-w-0">
       <a class="inline-flex items-center gap-2 text-sm font-medium text-ink-500 transition hover:text-leaf-700 dark:text-ink-300 dark:hover:text-leaf-300" href={withBase("/blog/")}>
@@ -88,12 +131,14 @@ const cover = getCoverUrl(post);
             <a class="rounded-full bg-ink-100/80 px-3 py-1 text-sm text-ink-600 transition hover:bg-leaf-100 hover:text-leaf-700 dark:bg-white/10 dark:text-ink-200 dark:hover:bg-leaf-300/10" href={getTagUrl(tag)}>#{tag}</a>
           ))}
         </div>
-        <div class="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_17rem]">
-          <div class="overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/60 shadow-soft dark:border-white/10 dark:bg-white/5">
-            <img class="h-56 w-full object-cover md:h-72" src={cover} alt={`文章封面：${post.data.title}`} loading="eager" />
-          </div>
-          <aside class="rounded-[1.35rem] border border-white/70 bg-white/68 p-5 shadow-soft backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.055]">
-            <p class="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-ink-400">Article Brief</p>
+        <div class:list={["mt-8 grid gap-4", hasCover && "lg:grid-cols-[minmax(0,1fr)_17rem]"]}>
+          {hasCover && (
+            <div class="overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/60 shadow-soft dark:border-white/10 dark:bg-white/5">
+              <img class="h-56 w-full object-cover md:h-72" src={cover} alt={`文章封面：${post.data.title}`} loading="eager" />
+            </div>
+          )}
+          <aside class:list={["hidden rounded-[1.35rem] border border-white/70 bg-white/68 p-5 shadow-soft backdrop-blur-xl lg:block dark:border-white/10 dark:bg-white/[0.055]", !hasCover && "lg:justify-self-end lg:w-[17rem]"]}>
+            <p class="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-ink-500 dark:text-ink-300">Article Brief</p>
             <dl class="mt-4 space-y-3 text-sm">
               <div class="flex items-center justify-between gap-4 border-b border-ink-200/60 pb-3 dark:border-white/10">
                 <dt class="inline-flex items-center gap-2 text-ink-500 dark:text-ink-300"><Icon name="calendar" class="h-3.5 w-3.5" />发布</dt>
@@ -138,13 +183,13 @@ const cover = getCoverUrl(post);
       <section class="mt-12 grid gap-4 border-t border-ink-200/70 pt-8 md:grid-cols-2 dark:border-white/10">
         {prev ? (
           <a class="group rounded-2xl border border-white/70 bg-white/70 p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-leaf-200 dark:border-white/10 dark:bg-white/5" href={getPostUrl(prev)}>
-            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-400">上一篇</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-500 dark:text-ink-300">上一篇</p>
             <p class="mt-2 text-base font-semibold text-ink-950 transition group-hover:text-leaf-700 dark:text-white dark:group-hover:text-leaf-300">{prev.data.title}</p>
           </a>
         ) : <div></div>}
         {next ? (
           <a class="group rounded-2xl border border-white/70 bg-white/70 p-5 text-right shadow-soft transition hover:-translate-y-0.5 hover:border-leaf-200 dark:border-white/10 dark:bg-white/5" href={getPostUrl(next)}>
-            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-400">下一篇</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-500 dark:text-ink-300">下一篇</p>
             <p class="mt-2 text-base font-semibold text-ink-950 transition group-hover:text-leaf-700 dark:text-white dark:group-hover:text-leaf-300">{next.data.title}</p>
           </a>
         ) : <div></div>}
@@ -166,7 +211,7 @@ const cover = getCoverUrl(post);
     {toc.length > 0 && (
       <aside class="hidden lg:block">
         <div class="sticky top-28 rounded-2xl border border-white/70 bg-white/70 p-5 text-sm shadow-soft backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
-          <p class="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink-400">
+          <p class="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink-500 dark:text-ink-300">
             <Icon name="layers" class="h-3.5 w-3.5" />
             本页目录
           </p>
@@ -249,14 +294,18 @@ const cover = getCoverUrl(post);
 
       content.querySelectorAll("img").forEach((img) => {
         img.classList.add("zoomable-image");
-        img.addEventListener("click", () => {
-          const returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        img.tabIndex = 0;
+        img.setAttribute("role", "button");
+        img.setAttribute("aria-label", `放大查看图片：${img.alt || "图片"}`);
+
+        const openLightbox = () => {
+          const returnFocus = img;
+          const previousBodyOverflow = document.body.style.overflow;
           const overlay = document.createElement("div");
           overlay.className = "image-lightbox";
           overlay.setAttribute("role", "dialog");
           overlay.setAttribute("aria-modal", "true");
-          overlay.setAttribute("aria-label", "Image preview");
-          overlay.tabIndex = -1;
+          overlay.setAttribute("aria-label", "图片预览");
 
           const preview = document.createElement("img");
           preview.src = img.currentSrc || img.src;
@@ -265,12 +314,13 @@ const cover = getCoverUrl(post);
           const closeButton = document.createElement("button");
           closeButton.type = "button";
           closeButton.className = "image-lightbox-close";
-          closeButton.setAttribute("aria-label", "Close image preview");
+          closeButton.setAttribute("aria-label", "关闭图片预览");
           closeButton.textContent = "\u00d7";
 
           const closeLightbox = () => {
+            document.body.style.overflow = previousBodyOverflow;
             overlay.remove();
-            returnFocus?.focus();
+            returnFocus.focus();
           };
 
           closeButton.addEventListener("click", closeLightbox);
@@ -279,10 +329,22 @@ const cover = getCoverUrl(post);
           });
           overlay.addEventListener("keydown", (event) => {
             if (event.key === "Escape") closeLightbox();
+            if (event.key === "Tab") {
+              event.preventDefault();
+              closeButton.focus();
+            }
           });
           overlay.append(preview, closeButton);
           document.body.appendChild(overlay);
-          overlay.focus();
+          document.body.style.overflow = "hidden";
+          closeButton.focus();
+        };
+
+        img.addEventListener("click", openLightbox);
+        img.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          openLightbox();
         });
       });
 

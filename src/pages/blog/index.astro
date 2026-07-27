@@ -13,10 +13,10 @@ const categories = collectCategories(posts);
 <BaseLayout title="文章">
   <PageHeader title="文章" eyebrow="Archive" description="这里收纳所有公开笔记。可按分类筛选，从最新文章开始慢慢翻。" />
   <section>
-    <div class="mb-7 flex flex-wrap items-center gap-2" aria-label="按分类筛选文章">
-      <button class="archive-filter is-active rounded-full border border-ink-200 bg-white/70 px-4 py-2 text-sm font-semibold text-ink-700 shadow-soft transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" type="button" data-category="all" aria-pressed="true">全部 <span class="opacity-60">{posts.length}</span></button>
+    <div class="mb-7 flex flex-wrap items-center gap-2" role="group" aria-label="按分类筛选文章">
+      <button class="archive-filter is-active rounded-full border border-ink-200 bg-white/70 px-4 py-2 text-sm font-semibold text-ink-700 shadow-soft transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" type="button" data-category="all" aria-controls="archive-list archive-empty" aria-pressed="true">全部 <span class="opacity-60">{posts.length}</span></button>
       {categories.map(([category, count]) => (
-        <button class="archive-filter rounded-full border border-ink-200 bg-white/55 px-4 py-2 text-sm text-ink-600 transition hover:border-leaf-300 hover:bg-leaf-50 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-leaf-300/10" type="button" data-category={category} aria-pressed="false">{category} <span class="opacity-60">{count}</span></button>
+        <button class="archive-filter rounded-full border border-ink-200 bg-white/55 px-4 py-2 text-sm text-ink-600 transition hover:border-leaf-300 hover:bg-leaf-50 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-leaf-300/10" type="button" data-category={category} aria-controls="archive-list archive-empty" aria-pressed="false">{category} <span class="opacity-60">{count}</span></button>
       ))}
     </div>
     {pinnedPosts.length > 0 && (
@@ -35,12 +35,12 @@ const categories = collectCategories(posts);
     <section class="border-t border-ink-200/70 pt-8 dark:border-white/10" aria-labelledby="regular-posts-heading">
       <div class="mb-5 flex items-end justify-between gap-4">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-400">All posts</p>
+          <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-500 dark:text-ink-300">All posts</p>
           <h2 id="regular-posts-heading" class="mt-1 text-xl font-semibold text-ink-950 dark:text-white">全部文章</h2>
         </div>
-        <p id="archive-status" class="text-sm text-ink-500 dark:text-ink-300">普通文章 {regularPosts.length} 篇 · 置顶 {pinnedPosts.length} 篇</p>
+        <p id="archive-status" class="text-sm text-ink-500 dark:text-ink-300" role="status" aria-live="polite" aria-atomic="true">普通文章 {regularPosts.length} 篇 · 置顶 {pinnedPosts.length} 篇</p>
       </div>
-      <div id="archive-list" class="space-y-4">
+      <div id="archive-list" class="space-y-4" aria-busy="false">
         {regularPosts.map((post) => <div data-archive-item data-regular-item data-post-category={post.data.category}><PostCard post={post} /></div>)}
       </div>
     </section>
@@ -54,34 +54,68 @@ const categories = collectCategories(posts);
     const pinnedSection = document.querySelector<HTMLElement>("[data-pinned-section]");
     const status = document.querySelector("#archive-status");
     const empty = document.querySelector("#archive-empty");
+    const list = document.querySelector("#archive-list");
+
+    type HistoryMode = "push" | "replace" | "none";
+
+    function readCategoryFromUrl() {
+      return new URL(window.location.href).searchParams.get("category") || "all";
+    }
+
+    function updateCategoryUrl(category: string, mode: Exclude<HistoryMode, "none">) {
+      const url = new URL(window.location.href);
+      if (category === "all") {
+        url.searchParams.delete("category");
+      } else {
+        url.searchParams.set("category", category);
+      }
+      if (url.href === window.location.href) return;
+      window.history[mode === "push" ? "pushState" : "replaceState"](null, "", url);
+    }
+
+    function applyFilter(requestedCategory: string, historyMode: HistoryMode = "none") {
+      const matchingFilter = Array.from(filters).find((filter) => filter.dataset.category === requestedCategory);
+      const category = matchingFilter?.dataset.category ?? "all";
+      let visible = 0;
+      let visiblePinned = 0;
+      let visibleRegular = 0;
+
+      list?.setAttribute("aria-busy", "true");
+      items.forEach((item) => {
+        const match = category === "all" || item.dataset.postCategory === category;
+        item.classList.toggle("hidden", !match);
+        if (!match) return;
+        visible += 1;
+        if (item.hasAttribute("data-pinned-item")) visiblePinned += 1;
+        if (item.hasAttribute("data-regular-item")) visibleRegular += 1;
+      });
+      pinnedSection?.classList.toggle("hidden", pinnedItems.length > 0 && visiblePinned === 0);
+      filters.forEach((button) => {
+        const active = button.dataset.category === category;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      if (status) {
+        status.textContent = category === "all"
+          ? `普通文章 ${visibleRegular} 篇 · 置顶 ${visiblePinned} 篇`
+          : `正在浏览「${category}」的 ${visible} 篇文章（置顶 ${visiblePinned} 篇）`;
+      }
+      empty?.classList.toggle("hidden", visible > 0);
+      list?.setAttribute("aria-busy", "false");
+
+      if (historyMode !== "none") {
+        updateCategoryUrl(category, historyMode);
+      }
+    }
 
     filters.forEach((filter) => {
       filter.addEventListener("click", () => {
-        const category = filter.dataset.category ?? "all";
-        let visible = 0;
-        let visiblePinned = 0;
-        let visibleRegular = 0;
-        items.forEach((item) => {
-          const match = category === "all" || item.dataset.postCategory === category;
-          item.classList.toggle("hidden", !match);
-          if (!match) return;
-          visible += 1;
-          if (item.hasAttribute("data-pinned-item")) visiblePinned += 1;
-          if (item.hasAttribute("data-regular-item")) visibleRegular += 1;
-        });
-        pinnedSection?.classList.toggle("hidden", pinnedItems.length > 0 && visiblePinned === 0);
-        filters.forEach((button) => {
-          const active = button === filter;
-          button.classList.toggle("is-active", active);
-          button.setAttribute("aria-pressed", String(active));
-        });
-        if (status) {
-          status.textContent = category === "all"
-            ? `普通文章 ${visibleRegular} 篇 · 置顶 ${visiblePinned} 篇`
-            : `正在浏览「${category}」的 ${visible} 篇文章（置顶 ${visiblePinned} 篇）`;
-        }
-        empty?.classList.toggle("hidden", visible > 0);
+        applyFilter(filter.dataset.category ?? "all", "push");
       });
     });
+
+    const initialCategory = readCategoryFromUrl();
+    applyFilter(initialCategory, initialCategory === "all" || Array.from(filters).some((filter) => filter.dataset.category === initialCategory) ? "none" : "replace");
+    window.addEventListener("popstate", () => applyFilter(readCategoryFromUrl()));
   </script>
 </BaseLayout>

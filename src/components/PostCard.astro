@@ -1,5 +1,5 @@
 ---
-import { formatDate, getPostUrl, getReadingTime, getTagUrl, type BlogPost } from "../lib/posts";
+import { formatDate, getCategoryUrl, getPostUrl, getReadingTime, getTagUrl, type BlogPost } from "../lib/posts";
 import Icon from "./Icon.astro";
 
 interface Props {
@@ -39,10 +39,10 @@ const year = post.data.pubDate.getFullYear();
             主编领读
           </span>
         )}
-        <span class="inline-flex items-center gap-1 rounded-full border border-leaf-200 bg-leaf-50 px-2.5 py-1 text-leaf-700 dark:border-leaf-300/20 dark:bg-leaf-300/10 dark:text-leaf-100">
+        <a class="inline-flex items-center gap-1 rounded-full border border-leaf-200 bg-leaf-50 px-2.5 py-1 text-leaf-700 transition hover:border-leaf-300 hover:bg-leaf-100 dark:border-leaf-300/20 dark:bg-leaf-300/10 dark:text-leaf-100 dark:hover:bg-leaf-300/20" href={getCategoryUrl(post.data.category)}>
           <Icon name="grid" class="h-3 w-3" />
           {post.data.category}
-        </span>
+        </a>
         {post.data.series && <span class="rounded-full border border-bark-300/50 bg-bark-100 px-2.5 py-1 text-bark-700 dark:border-bark-300/25 dark:bg-bark-500/15 dark:text-bark-300">系列 · {post.data.series}</span>}
         {compact && !showDate && <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>}
         <span class="inline-flex items-center gap-1">
@@ -51,7 +51,7 @@ const year = post.data.pubDate.getFullYear();
         </span>
       </div>
 
-      <h2 class:list={["mt-3 font-display font-semibold leading-snug tracking-normal text-ink-950 transition group-hover:text-leaf-700 dark:text-ink-50 dark:group-hover:text-leaf-300", featured ? "text-2xl md:text-4xl" : compact ? "text-base md:text-lg" : "text-xl md:text-2xl", post.data.pinned && "pinned-post-title"]}>
+      <h2 class:list={["post-card-heading mt-3 font-display font-semibold leading-snug tracking-normal text-ink-950 transition group-hover:text-leaf-700 dark:text-ink-50 dark:group-hover:text-leaf-300", featured ? "text-2xl md:text-4xl" : compact ? "text-base md:text-lg" : "text-xl md:text-2xl", post.data.pinned && "pinned-post-title"]}>
         <a class="post-card-title-link" href={postUrl}>{post.data.title}</a>
       </h2>
 

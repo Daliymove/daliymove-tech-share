@@ -12,7 +12,6 @@ cover: "/images/posts/frameworks.svg"
 draft: false
 ---
 
-# Astro 与 Vue/其他博客框架的区别
 
 这份文档用于说明当前博客项目为什么选择 Astro，以及它和 Vue、Nuxt、VitePress、Hexo、Hugo、Jekyll 等常见博客方案的主要差异。
 

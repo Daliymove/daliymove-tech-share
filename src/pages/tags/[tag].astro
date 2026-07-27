@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 const { tag, posts } = Astro.props;
 ---
 
-<BaseLayout title={`标签：${tag}`}>
+<BaseLayout title={`标签：${tag}`} noindex={posts.length <= 1}>
   <PageHeader title={`#${tag}`} eyebrow="Tag" description={`包含这个标签的文章共有 ${posts.length} 篇。`} />
   <div class="space-y-4">
     {posts.map((post) => <PostCard post={post} />)}

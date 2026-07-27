@@ -21,7 +21,7 @@ const localSearchIndex = posts.map((post) => {
 const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u003c");
 ---
 
-<BaseLayout title="搜索">
+<BaseLayout title="搜索" noindex>
   <PageHeader title="搜索" eyebrow="Search" description="支持全文搜索。构建后优先使用 Pagefind 索引；开发模式下会自动回退到本地文章索引。" />
 
   <section class="relative overflow-hidden rounded-2xl border border-white/70 bg-white/70 p-5 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.055] md:p-7">
@@ -39,26 +39,26 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
       <div class="min-w-0 flex-1">
         <label class="mb-3 block text-sm font-medium text-ink-700 dark:text-ink-100" for="search-input">输入关键词</label>
         <div class="relative">
-          <input id="search-input" class="w-full rounded-2xl border border-ink-200 bg-white/88 px-5 py-4 pr-24 text-ink-900 outline-none ring-leaf-300 transition placeholder:text-ink-400 focus:border-leaf-300 focus:ring-2 dark:border-white/10 dark:bg-ink-950/70 dark:text-ink-50 dark:placeholder:text-ink-500" type="search" placeholder="例如：Astro、学习系统、Markdown" autocomplete="off" spellcheck="false" />
-          <button id="search-clear" class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-xl border border-ink-200 bg-white px-3 py-1.5 text-xs font-semibold text-ink-500 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:text-leaf-200" type="button">清空</button>
+          <input id="search-input" class="w-full rounded-2xl border border-ink-200 bg-white/88 px-5 py-4 pr-24 text-ink-900 outline-none ring-leaf-300 transition placeholder:text-ink-400 focus:border-leaf-300 focus:ring-2 dark:border-white/10 dark:bg-ink-950/70 dark:text-ink-50 dark:placeholder:text-ink-500" type="search" placeholder="例如：Astro、学习系统、Markdown" autocomplete="off" spellcheck="false" aria-controls="search-results" aria-describedby="search-status search-summary" />
+          <button id="search-clear" class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-xl border border-ink-200 bg-white px-3 py-1.5 text-xs font-semibold text-ink-500 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:text-leaf-200" type="button" aria-label="清空搜索词">清空</button>
         </div>
       </div>
-      <div class="rounded-2xl border border-ink-200/80 bg-ink-50/75 px-4 py-3 text-sm text-ink-500 dark:border-white/10 dark:bg-white/5 dark:text-ink-300">
+      <div id="search-summary" class="rounded-2xl border border-ink-200/80 bg-ink-50/75 px-4 py-3 text-sm text-ink-500 dark:border-white/10 dark:bg-white/5 dark:text-ink-300">
         <span id="search-count" class="font-semibold text-ink-950 dark:text-white">0</span> 条结果
       </div>
     </div>
 
-    <div class="mt-4 flex flex-wrap gap-2" aria-label="常用搜索词">
+    <div class="mt-4 flex flex-wrap gap-2" role="group" aria-label="常用搜索词">
       {["Astro", "Markdown", "学习", "复盘", "知识管理"].map((keyword) => (
         <button class="search-chip rounded-full border border-ink-200 bg-paper-50/75 px-3 py-1.5 text-xs font-medium text-ink-600 shadow-soft transition hover:-translate-y-0.5 hover:border-leaf-300 hover:bg-leaf-50 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-leaf-300/10 dark:hover:text-leaf-200" type="button" data-query={keyword}>{keyword}</button>
       ))}
     </div>
 
     <div class="mt-5 rounded-2xl border border-ink-200/80 bg-ink-50/70 px-4 py-3 dark:border-white/10 dark:bg-ink-950/45">
-      <p id="search-status" class="text-sm text-ink-500 dark:text-ink-300">正在准备搜索索引...</p>
+      <p id="search-status" class="text-sm text-ink-500 dark:text-ink-300" role="status" aria-live="polite" aria-atomic="true">输入关键词后加载完整搜索索引。</p>
     </div>
 
-    <div id="search-results" class="mt-6 grid gap-4" aria-live="polite"></div>
+    <div id="search-results" class="mt-6 grid gap-4" aria-busy="false" aria-labelledby="search-status"></div>
   </section>
 
   <script is:inline id="local-search-index" type="application/json" set:html={localSearchIndexJson} />
@@ -87,7 +87,7 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
 
     const input = document.querySelector("#search-input") as HTMLInputElement | null;
     const clearButton = document.querySelector("#search-clear") as HTMLButtonElement | null;
-    const results = document.querySelector("#search-results");
+    const results = document.querySelector<HTMLElement>("#search-results");
     const status = document.querySelector("#search-status");
     const count = document.querySelector("#search-count");
     const chips = document.querySelectorAll<HTMLButtonElement>(".search-chip");
@@ -100,6 +100,8 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
     let searchTimer: number | undefined;
     let searchToken = 0;
     let engineLabel = "本地索引";
+
+    type HistoryMode = "push" | "replace" | "none";
 
     const localIndex: LocalSearchItem[] = (() => {
       try {
@@ -115,6 +117,10 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
 
     function setCount(value: number) {
       if (count) count.textContent = String(value);
+    }
+
+    function setResultsBusy(isBusy: boolean) {
+      results?.setAttribute("aria-busy", String(isBusy));
     }
 
     function updateClearButton() {
@@ -136,8 +142,18 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
       }[char] ?? char));
     }
 
+    // Pagefind may return highlighted excerpts as HTML. Preserve only its
+    // simple <mark> wrapper; escape everything else before it reaches the
+    // result template.
+    function sanitizeExcerpt(value: unknown) {
+      return escapeHtml(value)
+        .replace(/&lt;mark&gt;/gi, "<mark>")
+        .replace(/&lt;\/mark&gt;/gi, "</mark>");
+    }
+
     function renderEmpty(title: string, description: string) {
       if (!results) return;
+      setResultsBusy(false);
       results.innerHTML = `
         <div class="rounded-2xl border border-dashed border-ink-200 bg-white/50 p-8 text-center dark:border-white/10 dark:bg-white/[0.035]">
           <div class="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-leaf-500/10 text-leaf-700 dark:text-leaf-300">⌕</div>
@@ -149,6 +165,7 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
 
     function renderResults(items: SearchResultItem[], total: number, elapsed: number, query: string) {
       if (!results) return;
+      setResultsBusy(false);
       setCount(total);
 
       if (!items.length) {
@@ -169,8 +186,8 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
                 ${item.date ? `<span>${escapeHtml(item.date)}</span>` : ""}
               </div>
               <h2 class="mt-2 font-display text-xl font-semibold leading-snug text-ink-950 transition group-hover:text-leaf-700 dark:text-ink-50 dark:group-hover:text-leaf-300">${escapeHtml(item.title)}</h2>
-              <p class="mt-2 text-sm leading-7 text-ink-600 dark:text-ink-300">${item.excerpt || "没有可显示的摘要。"}</p>
-              <p class="mt-3 truncate font-mono text-xs text-ink-400 dark:text-ink-500">${escapeHtml(item.url)}</p>
+              <p class="mt-2 text-sm leading-7 text-ink-600 dark:text-ink-300">${sanitizeExcerpt(item.excerpt || "没有可显示的摘要。")}</p>
+              <p class="mt-3 truncate font-mono text-xs text-ink-500 dark:text-ink-300">${escapeHtml(item.url)}</p>
             </div>
           </div>
         </a>
@@ -307,13 +324,29 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
       }
     }
 
-    async function runSearch(query: string) {
+    function updateSearchUrl(query: string, mode: Exclude<HistoryMode, "none">) {
+      const url = new URL(window.location.href);
+      if (query) {
+        url.searchParams.set("q", query);
+      } else {
+        url.searchParams.delete("q");
+      }
+      if (url.href === window.location.href) return;
+      window.history[mode === "push" ? "pushState" : "replaceState"](null, "", url);
+    }
+
+    async function runSearch(query: string, historyMode: HistoryMode = "replace") {
       const trimmed = query.trim();
       const token = ++searchToken;
       updateClearButton();
       setCount(0);
 
+      if (historyMode !== "none") {
+        updateSearchUrl(trimmed, historyMode);
+      }
+
       if (!results) return;
+      setResultsBusy(true);
       results.innerHTML = "";
 
       if (!trimmed) {
@@ -361,16 +394,23 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
         if (!input) return;
         input.value = chip.dataset.query ?? "";
         input.focus();
-        runSearch(input.value);
+        runSearch(input.value, "push");
       });
     });
 
-    renderEmpty("开始一次搜索", "可以搜索技术关键词、文章标题、分类线索，或者点击上方常用搜索词。");
+    const initialQuery = new URL(window.location.href).searchParams.get("q")?.trim() ?? "";
+    if (input) input.value = initialQuery;
     updateClearButton();
-    loadPagefind().finally(() => {
-      if (!pagefindReady) {
-        setStatus(`本地文章索引已就绪（共 ${localIndex.length} 篇）。输入关键词即可搜索。`);
-      }
+    if (initialQuery) {
+      void runSearch(initialQuery, "none");
+    } else {
+      renderEmpty("开始一次搜索", "可以搜索技术关键词、文章标题、分类线索，或者点击上方常用搜索词。");
+    }
+
+    window.addEventListener("popstate", () => {
+      const query = new URL(window.location.href).searchParams.get("q")?.trim() ?? "";
+      if (input) input.value = query;
+      void runSearch(query, "none");
     });
   </script>
 </BaseLayout>

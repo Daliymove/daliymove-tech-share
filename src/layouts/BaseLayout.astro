@@ -8,18 +8,28 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  imageAlt?: string;
   type?: "website" | "article";
   canonicalPath?: string;
   noindex?: boolean;
+  articlePublishedTime?: string;
+  articleModifiedTime?: string;
+  articleSection?: string;
+  articleTags?: string[];
 }
 
 const {
   title,
   description = site.description,
   image = withBase("/images/og/default.png"),
+  imageAlt,
   type = "website",
   canonicalPath,
   noindex = false,
+  articlePublishedTime,
+  articleModifiedTime,
+  articleSection,
+  articleTags = [],
 } = Astro.props;
 
 const pageTitle = title ? `${title} | ${site.title}` : site.title;
@@ -33,6 +43,7 @@ const routePath = Astro.url.pathname.replace(import.meta.env.BASE_URL, "/") || "
 const canonical = absoluteUrl(canonicalPath ?? routePath);
 const ogPath = image.replace(import.meta.env.BASE_URL, "/") || "/images/og/default.png";
 const ogImage = image.startsWith("http") ? image : absoluteUrl(ogPath);
+const ogImageAlt = imageAlt ?? `${title ?? site.title} 的分享图`;
 ---
 
 <!doctype html>
@@ -45,13 +56,20 @@ const ogImage = image.startsWith("http") ? image : absoluteUrl(ogPath);
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
     <meta name="description" content={description} />
     <meta name="author" content={site.author} />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#18221D" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#F5F6F3" media="(prefers-color-scheme: light)" />
-    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    <meta name="theme-color" content="#F5F6F3" data-theme-color />
+    {noindex && <meta name="robots" content="noindex,follow" />}
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href={faviconHref} />
     <link rel="alternate" type="application/rss+xml" title={`${site.title} RSS`} href={rssHref} />
@@ -62,15 +80,31 @@ const ogImage = image.startsWith("http") ? image : absoluteUrl(ogPath);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    {type === "article" && articlePublishedTime && <meta property="article:published_time" content={articlePublishedTime} />}
+    {type === "article" && articleModifiedTime && <meta property="article:modified_time" content={articleModifiedTime} />}
+    {type === "article" && articleSection && <meta property="article:section" content={articleSection} />}
+    {type === "article" && articleTags.map((tag) => <meta property="article:tag" content={tag} />)}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
     <title>{pageTitle}</title>
     <script is:inline>
-      const savedTheme = localStorage.getItem("theme");
+      const themeRoot = document.documentElement;
+      let savedTheme = null;
+      try {
+        savedTheme = localStorage.getItem("theme");
+      } catch {}
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      document.documentElement.classList.toggle("dark", savedTheme ? savedTheme === "dark" : prefersDark);
+      const isDarkTheme = savedTheme ? savedTheme === "dark" : prefersDark;
+      themeRoot.classList.toggle("dark", isDarkTheme);
+      themeRoot.dataset.theme = isDarkTheme ? "dark" : "light";
+      themeRoot.style.colorScheme = isDarkTheme ? "dark" : "light";
+      document.querySelector("meta[data-theme-color]")?.setAttribute("content", isDarkTheme ? "#18221D" : "#F5F6F3");
     </script>
   </head>
   <body>
@@ -88,7 +122,7 @@ const ogImage = image.startsWith("http") ? image : absoluteUrl(ogPath);
               <span class="block text-xs text-ink-500 dark:text-ink-300">{site.tagline}</span>
             </span>
           </a>
-          <nav class="hidden items-center gap-1 rounded-full border border-ink-200/70 bg-white/65 p-1 md:flex dark:border-white/10 dark:bg-white/5" aria-label="主导航">
+          <nav class="hidden items-center gap-1 rounded-full border border-ink-200/70 bg-white/65 p-1 lg:flex dark:border-white/10 dark:bg-white/5" aria-label="主导航">
             {site.nav.map((item) => {
               const href = withBase(item.href);
               const active = currentPath === href || (item.href !== "/" && currentPath.startsWith(href));
@@ -101,21 +135,16 @@ const ogImage = image.startsWith("http") ? image : absoluteUrl(ogPath);
             })}
           </nav>
           <div class="flex items-center gap-2">
-            <a class="hidden items-center gap-1.5 rounded-xl border border-ink-200 bg-white/70 px-3.5 py-2 text-sm font-medium text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 sm:inline-flex dark:border-white/10 dark:bg-white/5 dark:text-ink-100 dark:hover:border-leaf-500" href={searchHref} aria-label="打开搜索页，快捷键 Ctrl 或 Cmd + K">
-              <Icon name="search" class="h-4 w-4" />
-              搜索
-              <kbd class="ml-1 rounded-md border border-ink-200 bg-ink-50 px-1.5 py-0.5 text-[10px] font-semibold text-ink-500 dark:border-white/10 dark:bg-white/5 dark:text-ink-300">⌘K</kbd>
-            </a>
             <a class="grid h-10 w-10 place-items-center rounded-xl border border-ink-200 bg-white/70 text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" href={rssHref} aria-label="RSS 订阅" title="RSS 订阅">
               <Icon name="rss" class="h-4 w-4" />
             </a>
-            <button class="theme-toggle grid h-10 w-10 place-items-center rounded-xl border border-ink-200 bg-white/70 text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" type="button" aria-label="切换深浅色模式">
+            <button class="theme-toggle grid h-10 w-10 place-items-center rounded-xl border border-ink-200 bg-white/70 text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" type="button" aria-label="切换至深色模式" aria-pressed="false" title="切换至深色模式">
               <span class="theme-icon-light" aria-hidden="true"><Icon name="sun" class="h-4 w-4" /></span>
               <span class="theme-icon-dark hidden" aria-hidden="true"><Icon name="moon" class="h-4 w-4" /></span>
             </button>
           </div>
         </div>
-        <nav class="mt-3 flex gap-1 overflow-x-auto border-t border-ink-200/70 pt-3 md:hidden dark:border-white/10" aria-label="移动端导航">
+        <nav class="mt-3 flex gap-1 overflow-x-auto border-t border-ink-200/70 pt-3 lg:hidden dark:border-white/10" aria-label="移动端导航">
           {site.nav.map((item) => {
             const href = withBase(item.href);
             const active = currentPath === href || (item.href !== "/" && currentPath.startsWith(href));
@@ -136,7 +165,7 @@ const ogImage = image.startsWith("http") ? image : absoluteUrl(ogPath);
           <p class="font-medium text-ink-700 dark:text-ink-100">© {new Date().getFullYear()} {site.title}</p>
           <p class="mt-1">{site.tagline}</p>
         </div>
-        <div class="flex flex-wrap items-center gap-3 text-ink-400 dark:text-ink-400">
+        <div class="flex flex-wrap items-center gap-3 text-ink-500 dark:text-ink-300">
           <a class="hover:text-leaf-700 dark:hover:text-leaf-300" href={rssHref}>RSS</a>
           <span>·</span>
           <a class="hover:text-leaf-700 dark:hover:text-leaf-300" href={searchHref}>搜索</a>
@@ -151,23 +180,45 @@ const ogImage = image.startsWith("http") ? image : absoluteUrl(ogPath);
       const lightIcon = document.querySelector(".theme-icon-light");
       const darkIcon = document.querySelector(".theme-icon-dark");
       const header = document.querySelector(".site-header");
+      const themeColor = document.querySelector("meta[data-theme-color]");
+
+      function applyTheme(isDark) {
+        root.classList.toggle("dark", isDark);
+        root.dataset.theme = isDark ? "dark" : "light";
+        root.style.colorScheme = isDark ? "dark" : "light";
+        themeColor?.setAttribute("content", isDark ? "#18221D" : "#F5F6F3");
+      }
+
       function syncIcon() {
         const isDark = root.classList.contains("dark");
         lightIcon?.classList.toggle("hidden", isDark);
         darkIcon?.classList.toggle("hidden", !isDark);
+        button?.setAttribute("aria-pressed", String(isDark));
+        const label = isDark ? "切换至浅色模式" : "切换至深色模式";
+        button?.setAttribute("aria-label", label);
+        button?.setAttribute("title", label);
       }
+
       button?.addEventListener("click", () => {
         const next = !root.classList.contains("dark");
-        root.classList.toggle("dark", next);
-        localStorage.setItem("theme", next ? "dark" : "light");
+        applyTheme(next);
+        try {
+          localStorage.setItem("theme", next ? "dark" : "light");
+        } catch {}
         syncIcon();
       });
       syncIcon();
 
-      const onScroll = () => {
+      let scrollFrame = 0;
+      const updateHeader = () => {
+        scrollFrame = 0;
         header?.classList.toggle("is-compact", window.scrollY > 12);
       };
-      onScroll();
+      const onScroll = () => {
+        if (scrollFrame) return;
+        scrollFrame = window.requestAnimationFrame(updateHeader);
+      };
+      updateHeader();
       window.addEventListener("scroll", onScroll, { passive: true });
 
       window.addEventListener("keydown", (event) => {

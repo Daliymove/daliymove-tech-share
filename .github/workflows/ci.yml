@@ -1,20 +1,22 @@
-name: Deploy to GitHub Pages
+name: Validate site
 
 on:
-  push:
+  pull_request:
     branches: [master, main]
   workflow_dispatch:
 
+# Pull-request validation never receives deployment or repository-write scopes.
+permissions:
+  contents: read
+
 concurrency:
-  group: pages
+  group: validate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    permissions:
-      contents: read
     env:
       npm_config_registry: https://registry.npmjs.org/
       COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
@@ -33,8 +35,6 @@ jobs:
           # Disable setup-node's implicit pnpm cache discovery until then.
           package-manager-cache: false
 
-      # Node 22 includes Corepack. Invoke pnpm through it directly rather than
-      # creating a global shim or relying on the older setup action's Node.js 20 runtime.
       - name: Prepare pnpm
         run: corepack prepare pnpm@10.18.3 --activate
 
@@ -42,7 +42,7 @@ jobs:
         run: corepack pnpm install --frozen-lockfile --registry https://registry.npmjs.org/
 
       # Keep known moderate/high advisories visible until the locked package
-      # updates can be applied, without blocking the Pages deployment.
+      # updates can be applied, without blocking pull-request validation.
       - name: Report dependency advisories
         continue-on-error: true
         run: corepack pnpm run audit:report
@@ -61,23 +61,3 @@ jobs:
 
       - name: Check site contracts
         run: corepack pnpm contracts
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5

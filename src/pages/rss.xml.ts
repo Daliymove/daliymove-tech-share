@@ -1,9 +1,11 @@
 import rss from "@astrojs/rss";
-import { getAllPosts, getPostAbsoluteUrl, getSlug } from "../lib/posts";
+import { getAllPosts, getPostAbsoluteUrl, getSlug, sortPostsByPublicationDate } from "../lib/posts";
 import { site } from "../lib/site";
 
 export async function GET() {
-  const posts = await getAllPosts();
+  // RSS readers expect a chronological feed. Pinned and featured ordering is
+  // useful for on-site cards, but should not move older entries above newer ones.
+  const posts = sortPostsByPublicationDate(await getAllPosts());
   return rss({
     title: site.title,
     description: site.description,

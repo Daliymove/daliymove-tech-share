@@ -15,7 +15,10 @@
     "preview": "astro preview --host 127.0.0.1",
     "links": "node scripts/check-links.mjs",
     "contracts": "node scripts/check-site-contract.mjs",
-    "verify": "pnpm build && pnpm links && pnpm contracts"
+    "content:seo": "node scripts/check-content-seo.mjs",
+    "audit": "pnpm audit --audit-level=critical",
+    "audit:report": "pnpm audit --audit-level=moderate",
+    "verify": "pnpm content:seo && pnpm build && pnpm links && pnpm contracts"
   },
   "dependencies": {
     "@astrojs/mdx": "7.0.2",

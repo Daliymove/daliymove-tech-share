@@ -27,6 +27,9 @@ http://127.0.0.1:4321
 pnpm build
 pnpm links       # 检查构建产物中的内部链接
 pnpm verify      # 构建并检查链接
+pnpm content:seo # 检查正文标题层级与社交图字段
+pnpm run audit          # 阻断 Critical 级别依赖告警
+pnpm run audit:report   # 报告 Moderate 及以上依赖告警
 pnpm preview
 ```
 
@@ -45,6 +48,7 @@ updatedDate: 2026-07-20       # 可选
 category: "前端"
 tags: ["Astro", "实践"]
 cover: "/images/posts/example/cover.webp" # 可选
+ogImage: "/images/og/posts/example.jpg"   # 可选；1200×630 的社交分享图
 series: "个人博客搭建"        # 可选
 featured: false
 pinned: false
@@ -59,7 +63,9 @@ draft: false
 - 文章图片：`public/images/posts/<文章-slug>/`，例如 `public/images/posts/astro-first-day/cover.webp`
 - 站点和默认分享图：`public/images/og/`
 - 在文章中以 `/images/posts/<文章-slug>/file.webp` 引用；构建会自动处理 GitHub Pages 的项目路径。
-- 建议为封面提供 1200×630 的 WebP/PNG，并保留有意义的文件名和 `alt` 文本。
+- `cover` 仅用于文章正文页，可使用 SVG/WebP/PNG；未设置时正文不会补一张默认大图。
+- `ogImage` 仅用于社交分享和搜索引擎预览，建议使用 1200×630 的 PNG/JPG/WebP/AVIF；未设置时会回退到站点默认 PNG，不会使用 SVG 封面。
+- 为图片保留有意义的文件名和 `alt` 文本。
 
 ## 目录结构
 

@@ -54,6 +54,26 @@ export function getCoverAbsoluteUrl(post?: BlogPost) {
   return absoluteUrl("/images/og/default.png");
 }
 
+/**
+ * Social cards should use a raster image. Article covers can remain SVGs or be
+ * omitted without affecting sharing metadata.
+ */
+export function getOgImageUrl(post?: BlogPost) {
+  const image = post?.data.ogImage;
+  if (image) return image.startsWith("http") ? image : withBase(image);
+  return withBase("/images/og/default.png");
+}
+
+export function getOgImageAbsoluteUrl(post?: BlogPost) {
+  const image = post?.data.ogImage;
+  if (image) return image.startsWith("http") ? image : absoluteUrl(image);
+  return absoluteUrl("/images/og/default.png");
+}
+
+export function sortPostsByPublicationDate(posts: BlogPost[]) {
+  return [...posts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+}
+
 export async function getAllPosts() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
   return posts.sort((a, b) => {

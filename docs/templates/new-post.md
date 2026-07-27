@@ -7,7 +7,8 @@ category: "前端"
 tags:
   - 笔记
   - 实践
-cover: "/images/posts/your-post-slug/cover.webp" # 可选；没有图片时删除此行并使用默认 OG 图
+cover: "/images/posts/your-post-slug/cover.webp" # 可选；用于文章正文页
+ogImage: "/images/og/posts/your-post-slug.jpg" # 可选；用于社交分享，建议 1200×630 的栅格图
 series: ""
 featured: false
 pinned: false
