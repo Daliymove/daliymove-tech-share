@@ -17,6 +17,8 @@ export default defineConfig({
     command: `pnpm preview -- --port ${port}`,
     url: `${baseURL}/`,
     reuseExistingServer: !process.env.CI,
-    timeout: 30_000,
+    timeout: 60_000,
+    stdout: "pipe",
+    stderr: "pipe",
   },
 });

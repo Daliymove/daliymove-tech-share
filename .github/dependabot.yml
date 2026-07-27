@@ -5,6 +5,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # Tailwind 4 moves the PostCSS plugin to @tailwindcss/postcss and needs
+      # a dedicated migration, rather than an unattended dependency bump.
+      - dependency-name: tailwindcss
+        update-types: ["version-update:semver-major"]
 
   # Workflow commits are pinned to immutable SHAs; Dependabot updates them in
   # reviewable pull requests when new action releases are available.
