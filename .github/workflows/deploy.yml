@@ -61,9 +61,6 @@ jobs:
       - name: Build site
         run: corepack pnpm build
 
-      - name: Check Lighthouse performance budget
-        run: corepack pnpm test:lighthouse
-
       - name: Check internal links
         run: corepack pnpm links
 

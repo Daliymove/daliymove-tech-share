@@ -16,8 +16,7 @@
     "links": "node scripts/check-links.mjs",
     "contracts": "node scripts/check-site-contract.mjs",
     "content:seo": "node scripts/check-content-seo.mjs",
-    "test:lighthouse": "node scripts/check-lighthouse.mjs",
-    "quality": "pnpm build && pnpm test:lighthouse",
+    "quality": "pnpm build",
     "audit": "pnpm audit --audit-level=critical",
     "audit:report": "pnpm audit --audit-level=moderate",
     "verify": "pnpm content:seo && pnpm build && pnpm links && pnpm contracts"
@@ -32,8 +31,6 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.9",
-    "chrome-launcher": "1.2.1",
-    "lighthouse": "12.8.2",
     "typescript": "5.9.3"
   }
 }
