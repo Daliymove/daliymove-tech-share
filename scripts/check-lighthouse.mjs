@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import chromeLauncher from "chrome-launcher";
+import { launch } from "chrome-launcher";
 import lighthouse from "lighthouse";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -35,7 +35,7 @@ const preview = spawn(command, ["exec", "astro", "preview", "--host", "127.0.0.1
 let chrome;
 try {
   await waitForServer();
-  chrome = await chromeLauncher.launch({
+  chrome = await launch({
     chromeFlags: ["--headless=new", "--no-sandbox"],
   });
   const result = await lighthouse(url, {
