@@ -3,7 +3,7 @@ title: "FDE工程师转型手册"
 description: "Java开发转型FDE手册最终奥义"
 pubDate: 2026-07-20
 updatedDate: 2026-07-20
-category: "前端"
+category: "AI 工程"
 tags:
   - 笔记
   - 实践
@@ -1273,3 +1273,8 @@ FDE 面试非常看重故事线。
         ↓
 第 6 阶段：简历重构与 FDE 岗位投递
 ```
+
+## 延伸阅读
+
+- 模型服务的基础概念可先阅读 [vLLM 里的 checkpoint 是什么](../vllm-checkpoint-docs/)；作品展示涉及的内容站与前端取舍可参考[Astro、Vue 与其他博客框架的区别](../astro-vs-vue-blog-frameworks/)。
+- 官方资料：[vLLM 文档](https://docs.vllm.ai/) 和 [Hugging Face Transformers 文档](https://huggingface.co/docs/transformers/index)。

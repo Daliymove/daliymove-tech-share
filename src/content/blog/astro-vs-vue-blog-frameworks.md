@@ -3,7 +3,7 @@ title: "Astro博客框架对比"
 description: "Astro 与 Vue/其他博客框架的区别"
 pubDate: 2026-07-21
 updatedDate: 2026-07-21
-category: "前端"
+category: "前端与工具"
 tags:
   - 笔记
   - 实践
@@ -194,3 +194,8 @@ Astro 和 Vue 并不是谁替代谁的关系。Vue 更像是构建应用界面�
 这个博客项目目前的目标是“用 Markdown 持续写作，并生成一个轻快、可搜索、可部署的静态站点”。从这个目标看，Astro 是一个很合适的选择：它保留了现代前端的组件化能力，又不会让一个博客背上完整前端应用的重量。
 
 后续如果只是增加 RSS、sitemap、文章封面、上一篇/下一篇、评论、部署流程，Astro 都能很好地继续支撑。如果未来变成有用户系统和后台管理的复杂产品，再考虑 Nuxt 或其他全栈方案会更自然。
+
+## 延伸阅读
+
+- 继续了解本站的实现取舍：[用 Astro 搭建个人博客的第一天](../first-day-with-astro/)；内容长期维护可结合[用 Markdown 管理长期知识](../why-markdown-for-knowledge/)。
+- 官方资料：[Astro 为什么适合内容站](https://docs.astro.build/zh-cn/concepts/why-astro/) 和 [Vue 官方指南](https://cn.vuejs.org/guide/introduction.html)。

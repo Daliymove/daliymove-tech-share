@@ -6,8 +6,8 @@ updates:
       interval: weekly
     open-pull-requests-limit: 5
 
-  # Workflows intentionally track maintained major tags so runtime upgrades are
-  # received promptly; Dependabot turns every change into a reviewable PR.
+  # Workflow commits are pinned to immutable SHAs; Dependabot updates them in
+  # reviewable pull requests when new action releases are available.
   - package-ecosystem: github-actions
     directory: /
     schedule:

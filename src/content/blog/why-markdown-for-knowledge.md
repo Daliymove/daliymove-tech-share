@@ -3,7 +3,7 @@ title: "为什么我用 Markdown 管理长期知识"
 description: "从文件、链接、可迁移性和写作摩擦几个角度，梳理 Markdown 适合作为个人知识底座的原因。"
 pubDate: 2026-07-10
 updatedDate: 2026-07-10
-category: "知识管理"
+category: "知识与学习"
 tags:
   - Markdown
   - 知识管理
@@ -49,3 +49,8 @@ const note = {
 Markdown 的最大优势是可迁移。今天可以用 Astro 渲染成本地博客，明天可以迁移到别的静态站点框架，甚至直接作为纯文本归档。内容不被平台锁住，心里会安稳很多。
 
 > 好的知识系统不是一开始就完美，而是能陪你慢慢长大。
+
+## 延伸阅读
+
+- 如何把记录打磨成可复用内容，见[把学习笔记写成可复用资产](../reusable-learning-notes/)；实际落地到静态博客的过程见[用 Astro 搭建个人博客的第一天](../first-day-with-astro/)。
+- 官方资料：[CommonMark 规范](https://spec.commonmark.org/) 和 [Git 文档：记录历史](https://git-scm.com/book/zh/v2/Git-%E5%9F%BA%E7%A1%80-%E6%9F%A5%E7%9C%8B%E6%8F%90%E4%BA%A4%E5%8E%86%E5%8F%B2)。

@@ -2,21 +2,43 @@
 import PageHeader from "../components/PageHeader.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/Icon.astro";
+import { site } from "../lib/site";
+
+const profileStructuredData = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  mainEntity: {
+    "@type": "Person",
+    name: site.author,
+    url: site.github,
+    sameAs: [site.github],
+    knowsAbout: ["AI 工程", "前端工程", "开发工具", "知识管理"],
+  },
+}).replace(/</g, "\\u003c");
 ---
 
 <BaseLayout title="关于">
+  <script is:inline type="application/ld+json" set:html={profileStructuredData}></script>
   <PageHeader title="关于 daliyMove技术分享" eyebrow="About" description="这里记录每天推进一点的技术实践：前端、工程化、工具方法，以及能复用的经验。" />
   <div class="prose-blog max-w-3xl rounded-2xl border border-white/70 bg-white/72 p-7 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
     <p>你好，我是 <strong>daliyMove</strong>。这个站点是我的技术分享站，用来把零散经验整理成更清晰、可检索、可复用的内容。</p>
     <p>我希望这里不是信息堆叠，而是持续前进的技术笔记。文章会尽量写清楚问题背景、实践过程、踩过的坑，以及下次能直接拿走的结论。</p>
+    <h2>技术背景</h2>
+    <p>我的实践从 Java 开发与前端工程出发，当前重点投入 AI 工程、工具链和面向真实业务场景的解决方案。这里的内容会保留可验证的过程，而不只给出结论。</p>
     <h2>关注主题</h2>
     <ul>
-      <li>前端与工程实践</li>
-      <li>开发工具与效率方法</li>
-      <li>学习系统与技术复盘</li>
+      <li>AI 工程：模型、检索、部署和解决方案落地</li>
+      <li>前端与工具：内容站、工程实践和开发工具</li>
+      <li>知识与学习、个人系统：把经验沉淀为可复用的方法</li>
     </ul>
-    <h2>更新节奏</h2>
-    <p>先以稳定记录为主，等内容沉淀得更厚，再逐步扩展 RSS、部署、评论和更完整的知识导航。</p>
+    <h2>内容更新原则</h2>
+    <ul>
+      <li>优先发布亲自实践、可复现或明确标注边界的内容。</li>
+      <li>重要结论尽量链接到一手文档或权威资料，并随实践更新文章。</li>
+      <li>当主题持续积累后再扩写为长期专题，避免制造薄而重复的归档页。</li>
+    </ul>
+    <h2>联系</h2>
+    <p>可通过 <a href={site.github} target="_blank" rel="me noreferrer">GitHub @Daliymove</a> 查看项目与联系我。</p>
     <div class="not-prose mt-8 grid gap-3 sm:grid-cols-3">
       <div class="rounded-xl border border-ink-200/70 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
         <div class="mb-2 text-leaf-700 dark:text-leaf-300"><Icon name="code" class="h-5 w-5" /></div>

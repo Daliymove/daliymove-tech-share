@@ -2,7 +2,7 @@
 title: "把学习笔记写成可复用资产"
 description: "一篇关于如何从零散记录过渡到可复用知识资产的小方法论。"
 pubDate: 2026-07-08
-category: "学习方法"
+category: "知识与学习"
 tags:
   - 学习笔记
   - 方法论
@@ -34,3 +34,8 @@ draft: false
 ## 定期回收碎片
 
 碎片记录并不可怕，真正的问题是永远不回收。可以每周留出半小时，把散乱笔记归并到文章、分类或标签里。这个过程像给知识做一次小型打扫。
+
+## 延伸阅读
+
+- 可把载体选择和版本管理放到[为什么我用 Markdown 管理长期知识](../why-markdown-for-knowledge/)中一起考虑；定期回收的节奏可配合[一份轻量的个人复盘清单](../lightweight-weekly-review/)。
+- 参考资料：[Cornell Note Taking System](https://lsc.cornell.edu/how-to-study/taking-notes/cornell-note-taking-system/) 和 [CommonMark 规范](https://spec.commonmark.org/)。

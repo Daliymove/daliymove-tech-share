@@ -3,6 +3,7 @@ export const site = {
   shortTitle: "daliyMove",
   description: "持续输出前端、工程实践与工具方法的技术分享站，记录每天前进一点的思考与复盘。",
   author: "daliyMove",
+  github: "https://github.com/Daliymove",
   tagline: "每天一点技术，持续向前",
   url: "https://daliymove.github.io/daliymove-tech-share",
   locale: "zh_CN",

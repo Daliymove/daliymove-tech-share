@@ -2,7 +2,7 @@
 title: "用 Astro 搭建个人博客的第一天"
 description: "记录从技术选型到内容集合、页面结构、搜索方案的第一版搭建思路。"
 pubDate: 2026-07-09
-category: "编程"
+category: "前端与工具"
 tags:
   - Astro
   - TypeScript
@@ -49,3 +49,8 @@ const blog = defineCollection({
 ## 后续可以扩展什么
 
 等文章数量起来以后，可以继续补 RSS、站点地图、评论、部署流水线和图片管理。现在先让写作链路顺起来，这比一开始把系统做得很重更重要。
+
+## 延伸阅读
+
+- 框架选型可对照[Astro、Vue 与其他博客框架的区别](../astro-vs-vue-blog-frameworks/)；内容文件的长期组织可参考[为什么我用 Markdown 管理长期知识](../why-markdown-for-knowledge/)。
+- 官方资料：[Astro Content Collections](https://docs.astro.build/zh-cn/guides/content-collections/) 和 [Astro 部署指南](https://docs.astro.build/zh-cn/guides/deploy/)。

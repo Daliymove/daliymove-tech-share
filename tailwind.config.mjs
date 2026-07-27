@@ -7,10 +7,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Noto Sans SC", ...defaultTheme.fontFamily.sans],
-        display: ["Noto Serif SC", "ui-serif", "Georgia", "serif"],
-        serif: ["Noto Serif SC", ...defaultTheme.fontFamily.serif],
-        mono: ["IBM Plex Mono", ...defaultTheme.fontFamily.mono],
+        // Prefer locally available CJK-capable system fonts. This keeps first
+        // paint independent of Google Fonts in mainland China.
+        sans: ["ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "PingFang SC", "Microsoft YaHei", ...defaultTheme.fontFamily.sans],
+        display: ["ui-serif", "Songti SC", "STSong", "SimSun", "Georgia", "serif"],
+        serif: ["ui-serif", "Songti SC", "STSong", "SimSun", ...defaultTheme.fontFamily.serif],
+        mono: ["ui-monospace", "SFMono-Regular", "Cascadia Code", "Consolas", ...defaultTheme.fontFamily.mono],
       },
       colors: {
         // 雾灰松绿：长期阅读时保持低对比、低饱和

@@ -2,7 +2,7 @@
 title: "一份轻量的个人复盘清单"
 description: "用于每周回看目标、项目、输入输出和精力状态的简短清单。"
 pubDate: 2026-07-07
-category: "生活系统"
+category: "个人系统"
 tags:
   - 复盘
   - 个人系统
@@ -32,3 +32,8 @@ draft: false
 ## 让复盘服务行动
 
 复盘不是写给过去看的，而是写给下周看的。最后一定要落到一个具体动作，越小越好。
+
+## 延伸阅读
+
+- 复盘后的材料可以整理为[可复用的学习笔记](../reusable-learning-notes/)；长期沉淀的文件策略见[为什么我用 Markdown 管理长期知识](../why-markdown-for-knowledge/)。
+- 参考资料：[Atlassian 的每周复盘方法](https://www.atlassian.com/blog/productivity/weekly-review) 和 [Getting Things Done 的每周回顾说明](https://gettingthingsdone.com/weekly-review/)。

@@ -24,6 +24,14 @@ const blog = defineCollection({
     featured: z.boolean().default(false),
     pinned: z.boolean().default(false),
     draft: z.boolean().default(false),
+  }).superRefine((data, context) => {
+    if (data.updatedDate && data.updatedDate < data.pubDate) {
+      context.addIssue({
+        code: "custom",
+        path: ["updatedDate"],
+        message: "updatedDate must not be earlier than pubDate.",
+      });
+    }
   }),
 });
 

@@ -3,7 +3,7 @@ title: "vLLM里的checkpoint是什么？"
 description: "checkpoint核心的意思是：训练好的模型在某个时刻保存下来的一整套状态文件；vLLM 将它加载进来，用于推理。"
 pubDate: 2026-07-22
 updatedDate: 2026-07-22
-category: "大模型"
+category: "AI 工程"
 tags:
   - vllm
   - 大模型训练
@@ -332,3 +332,8 @@ INT4 ：约 16GB
 ## 一句话总结
 
 > **Checkpoint 是模型的“长期记忆/训练存档”，vLLM 是把它高效装载到设备上、并用 KV Cache 处理大量实时请求的推理引擎。**
+
+## 延伸阅读
+
+- 想把模型推理接入业务方案，可接着看 [Java 开发转型 FDE 的学习路线](../FDE-study-line/)；需要为技术说明搭建内容站时，可参考[用 Astro 搭建个人博客的第一天](../first-day-with-astro/)。
+- 官方资料：[vLLM 模型与加载说明](https://docs.vllm.ai/en/latest/models/supported_models.html) 和 [Hugging Face 模型文档](https://huggingface.co/docs/hub/models-the-hub)。

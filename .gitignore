@@ -11,3 +11,5 @@ Thumbs.db
 pnpm-store/
 .workbuddy/
 .playwright-cli/
+playwright-report/
+test-results/

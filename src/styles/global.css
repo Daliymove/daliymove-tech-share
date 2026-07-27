@@ -359,19 +359,6 @@ mark {
   color: #18221d;
 }
 
-/* 签名元素：首屏关键词手绘波浪下划线 */
-.kw {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M2 9 Q 14 3 26 9 T 50 9 T 74 9 T 98 9 T 122 9' fill='none' stroke='%234F7A62' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: repeat-x;
-  background-position: 0 92%;
-  background-size: 120px 12px;
-  padding-bottom: 4px;
-}
-
-:root.dark .kw {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M2 9 Q 14 3 26 9 T 50 9 T 74 9 T 98 9 T 122 9' fill='none' stroke='%23A5C0A3' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
-}
-
 /* 签名元素：「林间小径」竖向脉络线 */
 .trail {
   position: relative;
@@ -522,9 +509,19 @@ mark {
   outline-offset: 2px;
 }
 
+.image-lightbox-hint {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  margin: 0;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.875rem;
+}
+
 @media (max-width: 640px) {
   body::before {
-    background-size: 30px 30px;
+    display: none;
   }
 
   .site-header {
@@ -535,6 +532,11 @@ mark {
   .site-header .header-shell {
     border-radius: 1rem;
     backdrop-filter: none;
+  }
+
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl {
+    backdrop-filter: none !important;
   }
 
   .prose-blog {
