@@ -3,6 +3,8 @@ import { site } from "./site";
 
 export type BlogPost = CollectionEntry<"blog">;
 
+export const defaultImagePath = "/images/og/gpt-image-2-1785139765053.png";
+
 export function withBase(path = "/") {
   const base = import.meta.env.BASE_URL || "/";
   const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
@@ -43,15 +45,15 @@ export function getCoverUrl(post: BlogPost) {
   if (post.data.cover) {
     return post.data.cover.startsWith("http") ? post.data.cover : withBase(post.data.cover);
   }
-  return withBase("/images/og/default.png");
+  return withBase(defaultImagePath);
 }
 
 export function getCoverAbsoluteUrl(post?: BlogPost) {
-  if (!post) return absoluteUrl("/images/og/default.png");
+  if (!post) return absoluteUrl(defaultImagePath);
   if (post.data.cover) {
     return post.data.cover.startsWith("http") ? post.data.cover : absoluteUrl(post.data.cover);
   }
-  return absoluteUrl("/images/og/default.png");
+  return absoluteUrl(defaultImagePath);
 }
 
 /**
@@ -61,13 +63,13 @@ export function getCoverAbsoluteUrl(post?: BlogPost) {
 export function getOgImageUrl(post?: BlogPost) {
   const image = post?.data.ogImage;
   if (image) return image.startsWith("http") ? image : withBase(image);
-  return withBase("/images/og/default.png");
+  return withBase(defaultImagePath);
 }
 
 export function getOgImageAbsoluteUrl(post?: BlogPost) {
   const image = post?.data.ogImage;
   if (image) return image.startsWith("http") ? image : absoluteUrl(image);
-  return absoluteUrl("/images/og/default.png");
+  return absoluteUrl(defaultImagePath);
 }
 
 export function sortPostsByPublicationDate(posts: BlogPost[]) {
