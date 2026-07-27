@@ -335,5 +335,5 @@ INT4 ：约 16GB
 
 ## 延伸阅读
 
-- 想把模型推理接入业务方案，可接着看 [Java 开发转型 FDE 的学习路线](../FDE-study-line/)；需要为技术说明搭建内容站时，可参考[用 Astro 搭建个人博客的第一天](../first-day-with-astro/)。
+- 想把模型推理接入业务方案，可接着看 [Java 开发转型 FDE 的学习路线](../fde-study-line/)；需要为技术说明搭建内容站时，可参考[用 Astro 搭建个人博客的第一天](../first-day-with-astro/)。
 - 官方资料：[vLLM 模型与加载说明](https://docs.vllm.ai/en/latest/models/supported_models.html) 和 [Hugging Face 模型文档](https://huggingface.co/docs/hub/models-the-hub)。
