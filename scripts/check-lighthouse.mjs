@@ -4,7 +4,6 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import chromeLauncher from "chrome-launcher";
 import lighthouse from "lighthouse";
-import { chromium } from "@playwright/test";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const port = 4174;
@@ -37,7 +36,6 @@ let chrome;
 try {
   await waitForServer();
   chrome = await chromeLauncher.launch({
-    chromePath: chromium.executablePath(),
     chromeFlags: ["--headless=new", "--no-sandbox"],
   });
   const result = await lighthouse(url, {

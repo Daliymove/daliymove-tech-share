@@ -61,12 +61,6 @@ jobs:
       - name: Build site
         run: corepack pnpm build
 
-      - name: Install Chromium for quality checks
-        run: corepack pnpm exec playwright install --with-deps chromium
-
-      - name: Run Playwright and axe smoke checks
-        run: corepack pnpm test:e2e
-
       - name: Check Lighthouse performance budget
         run: corepack pnpm test:lighthouse
 

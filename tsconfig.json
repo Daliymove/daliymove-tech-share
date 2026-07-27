@@ -6,5 +6,4 @@
       "@/*": ["src/*"]
     }
   },
-  "exclude": ["playwright.config.ts", "tests"]
 }
