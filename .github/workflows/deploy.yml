@@ -33,10 +33,15 @@ jobs:
           # Disable setup-node's implicit pnpm cache discovery until then.
           package-manager-cache: false
 
-      # Node 22 includes Corepack. Invoke pnpm through it directly rather than
-      # creating a global shim or relying on the older setup action's Node.js 20 runtime.
+      # Node 22 includes Corepack. Enable its pnpm shim so lifecycle scripts
+      # use the pinned version without relying on the older setup action's Node.js 20 runtime.
       - name: Prepare pnpm
-        run: corepack prepare pnpm@10.18.3 --activate
+        run: |
+          # Make the pinned Corepack package manager available to lifecycle scripts,
+          # not only to commands invoked as `corepack pnpm`.
+          corepack enable pnpm
+          corepack prepare pnpm@10.18.3 --activate
+          pnpm --version
 
       - name: Install dependencies
         run: corepack pnpm install --frozen-lockfile --registry https://registry.npmjs.org/

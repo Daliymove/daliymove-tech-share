@@ -36,7 +36,12 @@ jobs:
           package-manager-cache: false
 
       - name: Prepare pnpm
-        run: corepack prepare pnpm@10.18.3 --activate
+        run: |
+          # Make the pinned Corepack package manager available to lifecycle scripts,
+          # not only to commands invoked as `corepack pnpm`.
+          corepack enable pnpm
+          corepack prepare pnpm@10.18.3 --activate
+          pnpm --version
 
       - name: Install dependencies
         run: corepack pnpm install --frozen-lockfile --registry https://registry.npmjs.org/
