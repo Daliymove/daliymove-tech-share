@@ -14,7 +14,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: `pnpm preview -- --port ${port}`,
+    command: `pnpm exec astro preview --host 127.0.0.1 --port ${port}`,
     url: `${baseURL}/`,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

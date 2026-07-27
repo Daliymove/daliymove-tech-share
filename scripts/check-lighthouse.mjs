@@ -28,7 +28,7 @@ function waitForServer(timeoutMs = 30_000) {
   });
 }
 
-const preview = spawn(command, ["preview", "--", "--port", String(port)], {
+const preview = spawn(command, ["exec", "astro", "preview", "--host", "127.0.0.1", "--port", String(port)], {
   cwd: root,
   stdio: "ignore",
 });
