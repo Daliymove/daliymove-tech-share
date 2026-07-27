@@ -109,7 +109,7 @@ const categoryDotColors: Record<string, string> = {
         </h2>
         <div class="flex flex-wrap gap-2">
           {tags.map(([tag, count]) => (
-            <a class="rounded-full border border-ink-200/80 bg-white/55 px-3 py-1.5 text-xs text-ink-600 transition hover:border-leaf-300 hover:bg-leaf-50 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-leaf-300/10 dark:hover:text-leaf-200" href={getTagUrl(tag)}>
+            <a class="inline-flex items-center max-lg:min-h-11 rounded-full border border-ink-200/80 bg-white/55 px-3 py-1.5 text-xs text-ink-600 transition hover:border-leaf-300 hover:bg-leaf-50 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-leaf-300/10 dark:hover:text-leaf-200" href={getTagUrl(tag)}>
               #{tag} <span class="font-mono text-ink-500 dark:text-ink-300">{count}</span>
             </a>
           ))}
