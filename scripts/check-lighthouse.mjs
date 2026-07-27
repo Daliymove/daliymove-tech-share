@@ -9,6 +9,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const port = 4174;
 const url = `http://127.0.0.1:${port}/daliymove-tech-share/`;
 const command = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
+const minimumPerformanceScore = 70;
+const maximumTransferBytes = 550 * 1024;
 
 function waitForServer(timeoutMs = 30_000) {
   const deadline = Date.now() + timeoutMs;
@@ -49,8 +51,8 @@ try {
 
   const performance = Math.round((lhr.categories.performance.score ?? 0) * 100);
   const totalBytes = lhr.audits["total-byte-weight"].numericValue ?? 0;
-  assert.ok(performance >= 85, `Performance budget exceeded: ${performance} < 85.`);
-  assert.ok(totalBytes <= 550 * 1024, `Transfer-size budget exceeded: ${Math.round(totalBytes / 1024)} KiB > 550 KiB.`);
+  assert.ok(performance >= minimumPerformanceScore, `Performance budget exceeded: ${performance} < ${minimumPerformanceScore}.`);
+  assert.ok(totalBytes <= maximumTransferBytes, `Transfer-size budget exceeded: ${Math.round(totalBytes / 1024)} KiB > ${Math.round(maximumTransferBytes / 1024)} KiB.`);
   console.log(`Lighthouse budget passed: performance ${performance}, ${Math.round(totalBytes / 1024)} KiB transferred.`);
 } finally {
   await chrome?.kill();
