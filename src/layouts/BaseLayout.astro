@@ -121,10 +121,10 @@ const ogImageAlt = imageAlt ?? `${title ?? site.title} 的分享图`;
             })}
           </nav>
           <div class="flex items-center gap-2">
-            <a class="grid h-10 w-10 place-items-center rounded-xl border border-ink-200 bg-white/70 text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" href={rssHref} aria-label="RSS 订阅" title="RSS 订阅">
+            <a class="utility-icon-button" href={rssHref} aria-label="RSS 订阅" title="RSS 订阅">
               <Icon name="rss" class="h-4 w-4" />
             </a>
-            <button class="theme-toggle grid h-10 w-10 place-items-center rounded-xl border border-ink-200 bg-white/70 text-ink-700 transition hover:border-leaf-300 hover:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-100" type="button" aria-label="切换至深色模式" aria-pressed="false" title="切换至深色模式">
+            <button class="utility-icon-button theme-toggle" type="button" aria-label="切换至深色模式" aria-pressed="false" title="切换至深色模式">
               <span class="theme-icon-light" aria-hidden="true"><Icon name="sun" class="h-4 w-4" /></span>
               <span class="theme-icon-dark hidden" aria-hidden="true"><Icon name="moon" class="h-4 w-4" /></span>
             </button>

@@ -92,7 +92,22 @@ const articleStructuredData = JSON.stringify({
 >
   <script is:inline type="application/ld+json" set:html={articleStructuredData}></script>
   <script is:inline type="application/ld+json" set:html={breadcrumbStructuredData}></script>
-  <article class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_17rem]" data-pagefind-body data-reading-article>
+  <article class:list={["grid gap-8 lg:gap-16", toc.length > 0 && "lg:grid-cols-[14rem_minmax(0,1fr)] xl:gap-20"]} data-pagefind-body data-reading-article>
+    {toc.length > 0 && (
+      <aside class="hidden lg:block">
+        <div class="sticky top-28 text-sm">
+          <p class="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-ink-600 dark:text-ink-200">
+            <Icon name="layers" class="h-3.5 w-3.5" />
+            本页目录
+          </p>
+          <nav class="space-y-2.5" data-toc-nav>
+            {toc.map((heading) => (
+              <a class:list={["toc-link block leading-5 text-ink-600 transition hover:text-leaf-700 dark:text-ink-200 dark:hover:text-leaf-300", heading.depth === 3 ? "pl-2 text-xs font-medium" : "font-semibold"]} href={`#${heading.slug}`} data-toc-slug={heading.slug}>{heading.text}</a>
+            ))}
+          </nav>
+        </div>
+      </aside>
+    )}
     <div class="min-w-0">
       <a class="inline-flex items-center gap-2 text-sm font-medium text-ink-500 transition hover:text-leaf-700 dark:text-ink-300 dark:hover:text-leaf-300" href={withBase("/blog/")}>
         <span aria-hidden="true">←</span>
@@ -117,8 +132,8 @@ const articleStructuredData = JSON.stringify({
             </span>
           )}
         </div>
-        <h1 class="mt-5 max-w-4xl font-display text-4xl font-semibold leading-tight tracking-tight text-ink-950 dark:text-white md:text-6xl" data-pagefind-meta="title">{post.data.title}</h1>
-        <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-600 dark:text-ink-300">{post.data.description}</p>
+        <h1 class="mt-4 font-display text-3xl font-extrabold leading-tight tracking-normal text-ink-950 dark:text-white md:text-5xl" data-pagefind-meta="title">{post.data.title}</h1>
+        <p class="mt-4 text-base leading-7 text-ink-600 dark:text-ink-300">{post.data.description}</p>
         {post.data.pinned && (
           <p class="mt-5 inline-flex items-center gap-2 rounded-xl border border-amber-200/80 bg-amber-50/80 px-3.5 py-2 text-sm text-amber-800 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100">
             <Icon name="pin" class="h-4 w-4 shrink-0" />
@@ -147,7 +162,7 @@ const articleStructuredData = JSON.stringify({
         <div class:list={["mt-8 grid gap-4", hasCover && "lg:grid-cols-[minmax(0,1fr)_17rem]"]}>
           {hasCover && (
             <div class="overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/60 shadow-soft dark:border-white/10 dark:bg-white/5">
-              <img class="h-56 w-full object-cover md:h-72" src={cover} alt={`文章封面：${post.data.title}`} loading="eager" data-image-preview />
+              <img class="h-48 w-full object-cover md:h-64" src={cover} alt={`文章封面：${post.data.title}`} loading="eager" data-image-preview />
             </div>
           )}
           <aside class:list={["hidden rounded-[1.35rem] border border-white/70 bg-white/68 p-5 shadow-soft backdrop-blur-xl lg:block dark:border-white/10 dark:bg-white/[0.055]", !hasCover && "lg:justify-self-end lg:w-[17rem]"]}>
@@ -177,19 +192,19 @@ const articleStructuredData = JSON.stringify({
       </header>
 
       {toc.length > 0 && (
-        <details class="mt-6 rounded-2xl border border-white/70 bg-white/70 p-4 shadow-soft backdrop-blur-xl lg:hidden dark:border-white/10 dark:bg-white/5">
-          <summary class="cursor-pointer list-none text-sm font-semibold text-ink-800 dark:text-ink-100">
+        <details class="mt-6 lg:hidden">
+          <summary class="cursor-pointer list-none text-sm font-bold text-ink-800 dark:text-ink-100">
             本页目录
           </summary>
-          <nav class="mt-3 space-y-2 border-l border-ink-200 pl-4 dark:border-white/10">
+          <nav class="mt-3 space-y-2.5">
             {toc.map((heading) => (
-              <a class:list={["block leading-6 text-ink-500 transition hover:text-leaf-700 dark:text-ink-300 dark:hover:text-leaf-300", heading.depth === 3 && "pl-3 text-xs"]} href={`#${heading.slug}`}>{heading.text}</a>
+              <a class:list={["block leading-6 text-ink-600 transition hover:text-leaf-700 dark:text-ink-200 dark:hover:text-leaf-300", heading.depth === 3 ? "pl-2 text-xs font-medium" : "font-semibold"]} href={`#${heading.slug}`}>{heading.text}</a>
             ))}
           </nav>
         </details>
       )}
 
-      <div class="prose-blog mt-9 max-w-3xl" data-enhance-content>
+      <div class="prose-blog mt-8 max-w-none" data-enhance-content>
         <slot />
       </div>
 
@@ -221,28 +236,17 @@ const articleStructuredData = JSON.stringify({
       )}
     </div>
 
-    {toc.length > 0 && (
-      <aside class="hidden lg:block">
-        <div class="sticky top-28 rounded-2xl border border-white/70 bg-white/70 p-5 text-sm shadow-soft backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
-          <p class="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink-500 dark:text-ink-300">
-            <Icon name="layers" class="h-3.5 w-3.5" />
-            本页目录
-          </p>
-          <nav class="space-y-2.5 border-l border-ink-200 pl-4 dark:border-white/10" data-toc-nav>
-            {toc.map((heading) => (
-              <a class:list={["toc-link block leading-6 text-ink-500 transition hover:text-leaf-700 dark:text-ink-300 dark:hover:text-leaf-300", heading.depth === 3 && "pl-3 text-xs"]} href={`#${heading.slug}`} data-toc-slug={heading.slug}>{heading.text}</a>
-            ))}
-          </nav>
-        </div>
-      </aside>
-    )}
   </article>
+  <button class="article-back-to-top" type="button" data-back-to-top aria-label="返回文章开头" title="返回文章开头">
+    <Icon name="arrow-up" class="h-5 w-5" />
+  </button>
 
   <script is:inline>
     (function enhanceArticle() {
       const progress = document.querySelector("#reading-progress");
       const article = document.querySelector("[data-reading-article]");
       const content = document.querySelector("[data-enhance-content]");
+      const backToTop = document.querySelector("[data-back-to-top]");
       if (!article || !content) return;
 
       const updateProgress = () => {
@@ -252,10 +256,14 @@ const articleStructuredData = JSON.stringify({
         const scrolled = Math.min(Math.max(-rect.top, 0), total);
         const ratio = scrolled / total;
         progress.style.transform = `scaleX(${ratio})`;
+        backToTop?.classList.toggle("is-visible", window.scrollY > 360);
       };
       updateProgress();
       window.addEventListener("site:scroll", updateProgress);
       window.addEventListener("resize", updateProgress);
+      backToTop?.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
 
       content.querySelectorAll("pre").forEach((pre) => {
         if (pre.parentElement?.classList.contains("code-block")) return;
