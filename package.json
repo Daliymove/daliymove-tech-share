@@ -16,6 +16,7 @@
     "links": "node scripts/check-links.mjs",
     "contracts": "node scripts/check-site-contract.mjs",
     "content:seo": "node scripts/check-content-seo.mjs",
+    "image:generate": "node scripts/generate-blog-image.mjs",
     "quality": "pnpm build",
     "audit": "pnpm audit --audit-level=critical",
     "audit:report": "pnpm audit --audit-level=moderate",

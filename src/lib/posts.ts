@@ -3,7 +3,7 @@ import { site } from "./site";
 
 export type BlogPost = CollectionEntry<"blog">;
 
-export const defaultImagePath = "/images/og/gpt-image-2-1785139765053.png";
+export const defaultImagePath = "/images/og/blog-cover-editorial-v2.png";
 
 export function withBase(path = "/") {
   const base = import.meta.env.BASE_URL || "/";
