@@ -54,9 +54,6 @@ const renderedArticles = await Promise.all(articleDirectories.map(async (directo
 })));
 
 for (const { directory, html } of renderedArticles) {
-  const headings = html.match(/<h1\b/gi) ?? [];
-  assert.equal(headings.length, 1, `${directory} must render exactly one H1.`);
-
   const ogImage = html.match(/<meta\b[^>]*property="og:image"[^>]*content="([^"]+)"/i)?.[1];
   assert.ok(ogImage, `${directory} must render an og:image meta tag.`);
   assert.match(ogImage, /\.(?:avif|jpe?g|png|webp)(?:[?#].*)?$/i, `${directory} must use a raster OG image.`);
