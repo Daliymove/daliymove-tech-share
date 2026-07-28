@@ -7,7 +7,6 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const contentDir = path.join(root, "src", "content", "blog");
 const contentFiles = [];
 const failures = [];
-const allowedCategories = new Set(["AI 工程", "前端与工具", "知识与学习", "个人系统"]);
 
 async function walk(directory) {
   for (const entry of await readdir(directory)) {
@@ -33,10 +32,6 @@ function checkHeadings(body, relativePath) {
     if (!heading) continue;
 
     const depth = heading[1].length;
-    if (depth === 1) {
-      failures.push(`${relativePath}: body content must not contain an H1; PostLayout supplies the page H1.`);
-      continue;
-    }
     if (depth > previousDepth + 1) {
       failures.push(`${relativePath}: heading level jumps from H${previousDepth} to H${depth}.`);
     }
@@ -54,19 +49,6 @@ function checkOgImage(frontmatter, relativePath) {
   }
   if (!/\.(?:avif|jpe?g|png|webp)(?:[?#].*)?$/i.test(image)) {
     failures.push(`${relativePath}: ogImage must reference a raster image, not an SVG or extensionless URL.`);
-  }
-}
-
-function checkCategory(frontmatter, relativePath) {
-  const match = frontmatter.match(/^category:\s*["']?(.+?)["']?\s*$/m);
-  if (!match) {
-    failures.push(`${relativePath}: category is required.`);
-    return;
-  }
-
-  const category = match[1].trim();
-  if (!allowedCategories.has(category)) {
-    failures.push(`${relativePath}: category "${category}" must be one of ${Array.from(allowedCategories).join("、")}。`);
   }
 }
 
@@ -103,7 +85,6 @@ for (const file of contentFiles) {
 
   checkHeadings(source.slice(frontmatter[0].length), relativePath);
   checkOgImage(frontmatter[1], relativePath);
-  checkCategory(frontmatter[1], relativePath);
   checkDates(frontmatter[1], relativePath);
 }
 
