@@ -27,16 +27,18 @@ export async function GET() {
   const container = await AstroContainer.create();
   const feedUrl = absoluteUrl("/rss.xml");
   const feedIconUrl = absoluteUrl("/favicon.png");
-  const webfeedsIconUrl = absoluteUrl("/favicon.svg");
   const items = await Promise.all(posts.map(async (post) => {
     const articleUrl = getPostAbsoluteUrl(post);
     const { Content } = await render(post);
     const renderedContent = await container.renderToString(Content);
+    const fullContent = prepareRssContent(renderedContent, articleUrl);
 
     return {
       title: post.data.title,
-      description: post.data.description,
-      content: prepareRssContent(renderedContent, articleUrl),
+      // Some readers ignore content:encoded and render only description.
+      // Keep the full article in both fields so the feed is not summary-only.
+      description: fullContent,
+      content: fullContent,
       pubDate: post.data.pubDate,
       link: articleUrl,
       categories: [post.data.category, ...post.data.tags],
@@ -60,7 +62,7 @@ export async function GET() {
     customData: [
       `<atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />`,
       `<image><url>${feedIconUrl}</url><title>${site.title}</title><link>${site.url}</link><width>144</width><height>144</height></image>`,
-      `<webfeeds:icon>${webfeedsIconUrl}</webfeeds:icon>`,
+      `<webfeeds:icon>${feedIconUrl}</webfeeds:icon>`,
     ].join(""),
     trailingSlash: true,
   });

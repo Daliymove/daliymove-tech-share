@@ -31,15 +31,18 @@ const feedDates = Array.from(feed.matchAll(/<pubDate>([^<]+)<\/pubDate>/g), ([, 
 assert.ok(feedDates.length > 0, "The RSS feed must include published entries.");
 assert.ok(feedDates.every((date, index) => index === 0 || date <= feedDates[index - 1]), "RSS entries must be sorted by publication date descending.");
 const feedContents = Array.from(feed.matchAll(/<content:encoded>([\s\S]*?)<\/content:encoded>/g), ([, value]) => value);
+const feedDescriptions = Array.from(feed.matchAll(/<item>[\s\S]*?<description>([\s\S]*?)<\/description>/g), ([, value]) => value);
 assert.match(feed, /xmlns:content="http:\/\/purl\.org\/rss\/1\.0\/modules\/content\/"/, "The RSS feed must declare the content namespace.");
 assert.equal(feedContents.length, feedDates.length, "Every RSS item must include full content.");
 assert.ok(feedContents.every((content) => content.length >= 500), "RSS item content must contain more than a short summary.");
+assert.equal(feedDescriptions.length, feedDates.length, "Every RSS item must include a description.");
+assert.ok(feedDescriptions.every((description) => description.length >= 500), "RSS descriptions must include the full article for readers that ignore content:encoded.");
 assert.ok(feedContents.every((content) => !/(?:&lt;|<)script\b/i.test(content)), "RSS item content must not include scripts.");
 assert.ok(feedContents.some((content) => /href=(?:&quot;|["'])https:\/\//i.test(content)), "RSS content links must use absolute URLs.");
 assert.match(feed, /xmlns:webfeeds="http:\/\/webfeeds\.org\/rss\/1\.0"/, "The RSS feed must declare the WebFeeds namespace.");
 assert.match(feed, /<atom:link href="https:\/\/[^"<]+\/rss\.xml" rel="self" type="application\/rss\+xml"\/>/, "The RSS feed must expose an absolute self link.");
 assert.match(feed, /<image><url>https:\/\/[^<]+\/favicon\.png<\/url><title>[^<]+<\/title><link>https:\/\/[^<]+<\/link><width>144<\/width><height>144<\/height><\/image>/, "The RSS feed must expose a 144x144 PNG channel image.");
-assert.match(feed, /<webfeeds:icon>https:\/\/[^<]+\/favicon\.svg<\/webfeeds:icon>/, "The RSS feed must expose a WebFeeds icon.");
+assert.match(feed, /<webfeeds:icon>https:\/\/[^<]+\/favicon\.png<\/webfeeds:icon>/, "The RSS feed must expose a PNG WebFeeds icon for reader compatibility.");
 await Promise.all([
   access(path.join(outputDir, "favicon.png")),
   access(path.join(outputDir, "favicon.svg")),
