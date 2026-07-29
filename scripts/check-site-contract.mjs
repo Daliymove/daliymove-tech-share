@@ -38,8 +38,14 @@ assert.ok(feedContents.every((content) => !/(?:&lt;|<)script\b/i.test(content)),
 assert.ok(feedContents.some((content) => /href=(?:&quot;|["'])https:\/\//i.test(content)), "RSS content links must use absolute URLs.");
 assert.match(feed, /xmlns:webfeeds="http:\/\/webfeeds\.org\/rss\/1\.0"/, "The RSS feed must declare the WebFeeds namespace.");
 assert.match(feed, /<atom:link href="https:\/\/[^"<]+\/rss\.xml" rel="self" type="application\/rss\+xml"\/>/, "The RSS feed must expose an absolute self link.");
-assert.match(feed, /<image><url>https:\/\/[^<]+\/favicon\.svg<\/url>/, "The RSS feed must expose the favicon as its channel image.");
+assert.match(feed, /<image><url>https:\/\/[^<]+\/favicon\.png<\/url><title>[^<]+<\/title><link>https:\/\/[^<]+<\/link><width>144<\/width><height>144<\/height><\/image>/, "The RSS feed must expose a 144x144 PNG channel image.");
 assert.match(feed, /<webfeeds:icon>https:\/\/[^<]+\/favicon\.svg<\/webfeeds:icon>/, "The RSS feed must expose a WebFeeds icon.");
+await Promise.all([
+  access(path.join(outputDir, "favicon.png")),
+  access(path.join(outputDir, "favicon.svg")),
+]);
+const feedIconDimensions = readPngDimensions(await readFile(path.join(outputDir, "favicon.png")));
+assert.deepEqual(feedIconDimensions, { width: 144, height: 144 }, "The RSS PNG icon must be exactly 144x144 pixels.");
 
 const indexScript = search.match(/<script\b[^>]*\bid=["']local-search-index["'][^>]*>([\s\S]*?)<\/script>/i);
 assert.ok(indexScript, "The search page must include its fallback index.");

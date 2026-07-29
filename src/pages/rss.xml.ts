@@ -26,7 +26,8 @@ export async function GET() {
   const posts = sortPostsByPublicationDate(await getAllPosts());
   const container = await AstroContainer.create();
   const feedUrl = absoluteUrl("/rss.xml");
-  const feedIconUrl = absoluteUrl("/favicon.svg");
+  const feedIconUrl = absoluteUrl("/favicon.png");
+  const webfeedsIconUrl = absoluteUrl("/favicon.svg");
   const items = await Promise.all(posts.map(async (post) => {
     const articleUrl = getPostAbsoluteUrl(post);
     const { Content } = await render(post);
@@ -58,8 +59,8 @@ export async function GET() {
     },
     customData: [
       `<atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />`,
-      `<image><url>${feedIconUrl}</url><title>${site.title}</title><link>${site.url}</link></image>`,
-      `<webfeeds:icon>${feedIconUrl}</webfeeds:icon>`,
+      `<image><url>${feedIconUrl}</url><title>${site.title}</title><link>${site.url}</link><width>144</width><height>144</height></image>`,
+      `<webfeeds:icon>${webfeedsIconUrl}</webfeeds:icon>`,
     ].join(""),
     trailingSlash: true,
   });
