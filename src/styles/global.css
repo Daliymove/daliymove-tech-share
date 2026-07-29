@@ -4,6 +4,7 @@
 
 :root {
   color-scheme: light;
+  --header-offset: 9rem;
   --surface: #f5f6f3;
   --surface-soft: #e9ece7;
   --surface-card: rgba(255, 255, 255, 0.84);
@@ -34,7 +35,12 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: var(--header-offset);
   background: var(--surface);
+}
+
+#content {
+  scroll-margin-top: var(--header-offset);
 }
 
 body {
@@ -123,7 +129,7 @@ img {
 }
 
 .prose-blog :where(h1, h2, h3, h4) {
-  scroll-margin-top: 6rem;
+  scroll-margin-top: var(--header-offset);
   line-height: 1.25;
   letter-spacing: 0;
   font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", ui-serif, Georgia, serif;
@@ -889,8 +895,14 @@ a:focus-visible .brand-mark img {
     font-size: 0.6rem;
   }
 
-  .post-card-featured .post-card-heading {
+  .post-card-emphasized .post-card-heading {
     font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-offset: 7rem;
   }
 }
 

@@ -3,14 +3,13 @@ title: "在这里写文章标题"
 description: "用一句话概括这篇文章，会出现在首页和文章列表"
 pubDate: 2026-07-20
 updatedDate: 2026-07-20
-category: "前端"
+category: "前端与工具"
 tags:
   - 笔记
   - 实践
-cover: "/images/posts/your-post-slug/cover.webp" # 可选；用于文章正文页
-ogImage: "/images/og/posts/your-post-slug.jpg" # 可选；用于社交分享，建议 1200×630 的栅格图
-series: ""
-featured: false
+# cover: "/images/og/default.png" # 可选；确认文件存在后取消注释
+# ogImage: "/images/og/default.png" # 可选；确认文件存在后取消注释
+# series: "个人博客搭建" # 可选
 pinned: false
 draft: true
 ---

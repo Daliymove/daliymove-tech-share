@@ -8,7 +8,6 @@ tags:
   - Markdown
   - 知识管理
   - 写作系统
-featured: true
 cover: "/images/posts/markdown-knowledge.svg"
 draft: false
 ---

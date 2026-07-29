@@ -28,7 +28,7 @@ const categories = collectCategories(posts);
           </div>
         </div>
         <div class="space-y-4">
-          {pinnedPosts.map((post) => <div data-archive-item data-pinned-item data-post-category={post.data.category}><PostCard post={post} featured /></div>)}
+          {pinnedPosts.map((post) => <div data-archive-item data-pinned-item data-post-category={post.data.category}><PostCard post={post} emphasized /></div>)}
         </div>
       </section>
     )}

@@ -2,7 +2,7 @@ import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
 const DEFAULT_BASE_URL = 'https://api.shuaiapi.com/v1';
-const DEFAULT_OUTPUT = 'public/images/og/blog-cover-editorial-v2.png';
+const DEFAULT_OUTPUT = 'public/images/og/default.png';
 const DEFAULT_PROMPT = [
   'Use case: stylized-concept',
   'Asset type: technical blog cover illustration',

@@ -1,9 +1,12 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import { site } from "./site";
+import { getCategoryDefinition, type CategoryName } from "./categories";
 
 export type BlogPost = CollectionEntry<"blog">;
 
-export const defaultImagePath = "/images/og/blog-cover-editorial-v2.png";
+export const defaultImagePath = "/images/og/default.png";
+export const defaultImageWidth = 1536;
+export const defaultImageHeight = 1024;
 
 export function withBase(path = "/") {
   const base = import.meta.env.BASE_URL || "/";
@@ -33,8 +36,8 @@ export function getPostAbsoluteUrl(post: BlogPost) {
   return absoluteUrl(`/blog/${getSlug(post)}/`);
 }
 
-export function getCategoryUrl(category: string) {
-  return withBase(`/categories/${encodeURIComponent(category)}/`);
+export function getCategoryUrl(category: CategoryName) {
+  return withBase(`/categories/${getCategoryDefinition(category).slug}/`);
 }
 
 export function getTagUrl(tag: string) {
@@ -42,18 +45,8 @@ export function getTagUrl(tag: string) {
 }
 
 export function getCoverUrl(post: BlogPost) {
-  if (post.data.cover) {
-    return post.data.cover.startsWith("http") ? post.data.cover : withBase(post.data.cover);
-  }
-  return withBase(defaultImagePath);
-}
-
-export function getCoverAbsoluteUrl(post?: BlogPost) {
-  if (!post) return absoluteUrl(defaultImagePath);
-  if (post.data.cover) {
-    return post.data.cover.startsWith("http") ? post.data.cover : absoluteUrl(post.data.cover);
-  }
-  return absoluteUrl(defaultImagePath);
+  if (!post.data.cover) return undefined;
+  return post.data.cover.startsWith("http") ? post.data.cover : withBase(post.data.cover);
 }
 
 /**
@@ -73,15 +66,18 @@ export function getOgImageAbsoluteUrl(post?: BlogPost) {
 }
 
 export function sortPostsByPublicationDate(posts: BlogPost[]) {
-  return [...posts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  return [...posts].sort((a, b) =>
+    b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+      || getSlug(a).localeCompare(getSlug(b), "en"),
+  );
 }
 
 export async function getAllPosts() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
   return posts.sort((a, b) => {
     if (a.data.pinned !== b.data.pinned) return a.data.pinned ? -1 : 1;
-    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
-    return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+    return b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+      || getSlug(a).localeCompare(getSlug(b), "en");
   });
 }
 
@@ -90,13 +86,7 @@ export function getPinnedPosts(posts: BlogPost[]) {
 }
 
 export function getRegularPosts(posts: BlogPost[]) {
-  return posts
-    .filter((post) => !post.data.pinned)
-    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-}
-
-export function getFeaturedPosts(posts: BlogPost[]) {
-  return posts.filter((post) => post.data.featured || post.data.pinned);
+  return sortPostsByPublicationDate(posts.filter((post) => !post.data.pinned));
 }
 
 export function getReadingTime(body = "") {
@@ -119,7 +109,7 @@ export function collectCategories(posts: BlogPost[]) {
     posts.reduce((map, post) => {
       map.set(post.data.category, (map.get(post.data.category) ?? 0) + 1);
       return map;
-    }, new Map<string, number>()),
+    }, new Map<CategoryName, number>()),
   ).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "zh-CN"));
 }
 
@@ -133,10 +123,11 @@ export function collectTags(posts: BlogPost[]) {
 }
 
 export function getAdjacentPosts(posts: BlogPost[], current: BlogPost) {
-  const index = posts.findIndex((post) => post.id === current.id);
+  const chronologicalPosts = sortPostsByPublicationDate(posts);
+  const index = chronologicalPosts.findIndex((post) => post.id === current.id);
   return {
-    prev: index >= 0 && index < posts.length - 1 ? posts[index + 1] : undefined,
-    next: index > 0 ? posts[index - 1] : undefined,
+    prev: index >= 0 && index < chronologicalPosts.length - 1 ? chronologicalPosts[index + 1] : undefined,
+    next: index > 0 ? chronologicalPosts[index - 1] : undefined,
   };
 }
 

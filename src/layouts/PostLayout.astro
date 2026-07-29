@@ -32,7 +32,6 @@ const posts = await getAllPosts();
 const { prev, next } = getAdjacentPosts(posts, post);
 const related = getRelatedPosts(posts, post, 3);
 const cover = getCoverUrl(post);
-const hasCover = Boolean(cover);
 const ogImage = getOgImageUrl(post);
 const articleUrl = getPostAbsoluteUrl(post);
 const breadcrumbStructuredData = JSON.stringify({
@@ -132,7 +131,7 @@ const articleStructuredData = JSON.stringify({
             </span>
           )}
         </div>
-        <h1 class="mt-4 font-display text-3xl font-extrabold leading-tight tracking-normal text-ink-950 dark:text-white md:text-5xl" data-pagefind-meta="title">{post.data.title}</h1>
+        <h1 class="mt-4 font-display text-3xl font-extrabold leading-tight tracking-normal text-ink-950 dark:text-white md:text-5xl" data-pagefind-meta="title" data-article-title tabindex="-1">{post.data.title}</h1>
         <p class="mt-4 text-base leading-7 text-ink-600 dark:text-ink-300">{post.data.description}</p>
         {post.data.pinned && (
           <p class="mt-5 inline-flex items-center gap-2 rounded-xl border border-amber-200/80 bg-amber-50/80 px-3.5 py-2 text-sm text-amber-800 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100">
@@ -159,13 +158,13 @@ const articleStructuredData = JSON.stringify({
             <a class="rounded-full bg-ink-100/80 px-3 py-1 text-sm text-ink-600 transition hover:bg-leaf-100 hover:text-leaf-700 dark:bg-white/10 dark:text-ink-200 dark:hover:bg-leaf-300/10" href={getTagUrl(tag)}>#{tag}</a>
           ))}
         </div>
-        <div class:list={["mt-8 grid gap-4", hasCover && "lg:grid-cols-[minmax(0,1fr)_17rem]"]}>
-          {hasCover && (
+        <div class:list={["mt-8 grid gap-4", cover && "lg:grid-cols-[minmax(0,1fr)_17rem]"]}>
+          {cover && (
             <div class="overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/60 shadow-soft dark:border-white/10 dark:bg-white/5">
               <img class="h-48 w-full object-cover md:h-64" src={cover} alt={`文章封面：${post.data.title}`} loading="eager" data-image-preview />
             </div>
           )}
-          <aside class:list={["hidden rounded-[1.35rem] border border-white/70 bg-white/68 p-5 shadow-soft backdrop-blur-xl lg:block dark:border-white/10 dark:bg-white/[0.055]", !hasCover && "lg:justify-self-end lg:w-[17rem]"]}>
+          <aside class:list={["hidden rounded-[1.35rem] border border-white/70 bg-white/68 p-5 shadow-soft backdrop-blur-xl lg:block dark:border-white/10 dark:bg-white/[0.055]", !cover && "lg:justify-self-end lg:w-[17rem]"]}>
             <p class="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-ink-500 dark:text-ink-300">Article Brief</p>
             <dl class="mt-4 space-y-3 text-sm">
               <div class="flex items-center justify-between gap-4 border-b border-ink-200/60 pb-3 dark:border-white/10">
@@ -247,6 +246,7 @@ const articleStructuredData = JSON.stringify({
       const article = document.querySelector("[data-reading-article]");
       const content = document.querySelector("[data-enhance-content]");
       const backToTop = document.querySelector("[data-back-to-top]");
+      const articleTitle = document.querySelector("[data-article-title]");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (!article || !content) return;
 
@@ -280,8 +280,21 @@ const articleStructuredData = JSON.stringify({
         const articleResizeObserver = new ResizeObserver(measureAndUpdate);
         articleResizeObserver.observe(article);
       }
-      backToTop?.addEventListener("click", () => {
+      const returnToArticleStart = (moveFocus) => {
+        if (moveFocus) {
+          articleTitle?.focus({ preventScroll: true });
+        } else {
+          backToTop?.blur();
+        }
         window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+      };
+      backToTop?.addEventListener("click", (event) => {
+        returnToArticleStart(event.detail === 0);
+      });
+      backToTop?.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        returnToArticleStart(true);
       });
 
       content.querySelectorAll("pre").forEach((pre) => {

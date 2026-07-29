@@ -7,7 +7,6 @@ category: "前端与工具"
 tags:
   - 笔记
   - 实践
-featured: false
 cover: "/images/posts/frameworks.svg"
 draft: false
 ---

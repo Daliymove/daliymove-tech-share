@@ -45,23 +45,24 @@ title: "文章标题"
 description: "用一句话说明文章解决的问题"
 pubDate: 2026-07-20
 updatedDate: 2026-07-20       # 可选
-category: "前端"
+category: "前端与工具"
 tags: ["Astro", "实践"]
 cover: "/images/posts/example/cover.webp" # 可选
 ogImage: "/images/og/posts/example.jpg"   # 可选；1200×630 的社交分享图
 series: "个人博客搭建"        # 可选
-featured: false
 pinned: false
 draft: false
 ---
 ```
 
-`draft: true` 不会进入页面、RSS、站点地图和搜索索引；`pinned` 与 `featured` 会优先出现在文章列表。
+`draft: true` 不会进入页面、RSS、站点地图和搜索索引；`pinned` 会进入首页和文章归档的置顶区域。
+
+`category` 只能使用 `src/lib/categories.ts` 中定义的正式分类；分类显示名、URL slug 和颜色均由该文件统一维护。
 
 ## 图片资源规范
 
 - 文章图片：`public/images/posts/<文章-slug>/`，例如 `public/images/posts/astro-first-day/cover.webp`
-- 站点和默认分享图：`public/images/og/`
+- 站点和默认分享图：`public/images/og/`（当前默认图为 `default.png`）
 - 在文章中以 `/images/posts/<文章-slug>/file.webp` 引用；构建会自动处理 GitHub Pages 的项目路径。
 - `cover` 仅用于文章正文页，可使用 SVG/WebP/PNG；未设置时正文不会补一张默认大图。
 - `ogImage` 仅用于社交分享和搜索引擎预览，建议使用 1200×630 的 PNG/JPG/WebP/AVIF；未设置时会回退到站点默认 PNG，不会使用 SVG 封面。

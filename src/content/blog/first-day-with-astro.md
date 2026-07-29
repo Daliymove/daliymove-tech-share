@@ -8,7 +8,6 @@ tags:
   - TypeScript
   - 前端
   - 博客搭建
-featured: true
 cover: "/images/posts/astro-day.svg"
 draft: false
 ---

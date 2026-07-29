@@ -7,7 +7,6 @@ category: "AI 工程"
 tags:
   - 笔记
   - 实践
-featured: false
 pinned: true
 cover: "/images/posts/fde-route.svg"
 draft: false

@@ -3,12 +3,12 @@ title: "从 Transformer 到 Kimi K3：大模型架构演进与 MoE 原理解析"
 description: "让有开发基础的人理解“大模型架构为什么一步步演化到今天”，并能看懂 K3 到底新在哪里。"
 pubDate: 2026-07-28
 updatedDate: 2026-07-28
-category: "AI知识"
+category: "AI 工程"
 tags:
   - 笔记
   - 分享
+cover: "/images/og/default.png"
 series: "AI知识分享系列"
-featured: false
 pinned: false
 ---
 

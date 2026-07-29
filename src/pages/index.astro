@@ -4,6 +4,7 @@ import Icon from "../components/Icon.astro";
 import PostCard from "../components/PostCard.astro";
 import { collectCategories, collectTags, getAllPosts, getCategoryUrl, getPinnedPosts, getRegularPosts, getTagUrl, withBase } from "../lib/posts";
 import { site } from "../lib/site";
+import { getCategoryDefinition } from "../lib/categories";
 
 const posts = await getAllPosts();
 const pinnedPosts = getPinnedPosts(posts);
@@ -11,12 +12,6 @@ const latest = getRegularPosts(posts).slice(0, 6);
 const categories = collectCategories(posts).slice(0, 6);
 const allTags = collectTags(posts);
 const tags = allTags.slice(0, 12);
-const categoryDotColors: Record<string, string> = {
-  "AI 工程": "bg-bark-700",
-  "前端与工具": "bg-leaf-500",
-  "知识与学习": "bg-leaf-400",
-  "个人系统": "bg-leaf-300",
-};
 ---
 
 <BaseLayout>
@@ -62,7 +57,7 @@ const categoryDotColors: Record<string, string> = {
         </div>
         <span class="text-sm text-ink-500 dark:text-ink-300">优先阅读与长期维护</span>
       </div>
-      <div class="space-y-4">{pinnedPosts.map((post) => <PostCard post={post} featured />)}</div>
+      <div class="space-y-4">{pinnedPosts.map((post) => <PostCard post={post} emphasized />)}</div>
     </section>
   )}
 
@@ -91,10 +86,10 @@ const categoryDotColors: Record<string, string> = {
           <a class="text-xs text-leaf-700 hover:underline dark:text-leaf-300" href={withBase("/categories/")}>全部</a>
         </div>
         <div class="grid gap-1.5">
-          {categories.map(([category, count], index) => (
+          {categories.map(([category, count]) => (
             <a class="group flex items-center justify-between rounded-xl border border-transparent px-3 py-2 text-sm transition hover:border-leaf-200 hover:bg-leaf-50 dark:hover:border-leaf-300/30 dark:hover:bg-leaf-300/10" href={getCategoryUrl(category)}>
               <span class="flex items-center gap-3">
-                <span class:list={["h-2.5 w-2.5 rounded-full", categoryDotColors[category] ?? (index % 2 === 0 ? "bg-leaf-400" : "bg-bark-400")]}></span>
+                <span class:list={["h-2.5 w-2.5 rounded-full", getCategoryDefinition(category).colorClass]}></span>
                 {category}
               </span>
               <span class="font-mono text-xs text-ink-500 transition group-hover:text-leaf-700 dark:text-ink-300 dark:group-hover:text-leaf-300">{count}</span>
