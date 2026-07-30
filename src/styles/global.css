@@ -744,18 +744,6 @@ a:focus-visible .brand-mark img {
   transform: translateY(-0.25rem);
 }
 
-.post-card-accent {
-  transform: scaleY(0.35);
-  transform-origin: bottom;
-  transition: opacity 260ms ease, transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.post-card:hover .post-card-accent,
-.post-card:focus-within .post-card-accent,
-.pinned-post-card .post-card-accent {
-  transform: scaleY(1);
-}
-
 .post-card .post-card-title-link,
 .post-card .post-card-title-link + * {
   transition: color 240ms ease, transform 240ms ease;

@@ -21,8 +21,6 @@ const year = post.data.pubDate.getFullYear();
   emphasized && "post-card-emphasized",
   post.data.pinned && "pinned-post-card",
 ]} data-reveal>
-  <div class:list={["post-card-accent pointer-events-none absolute inset-y-4 left-0 w-1 rounded-r-full bg-gradient-to-b from-leaf-600 via-leaf-500 to-bark-500 opacity-0 transition group-hover:opacity-100", post.data.pinned && "opacity-100"]}></div>
-
   <div class:list={["relative flex gap-4", compact ? "items-start" : "items-start md:gap-5"]}>
     {showDate && (
       <time class="post-card-date" datetime={post.data.pubDate.toISOString()} aria-label={`发布时间：${formatDate(post.data.pubDate)}`}>
