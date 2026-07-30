@@ -1,5 +1,8 @@
 import defaultTheme from "tailwindcss/defaultTheme";
 
+const cssColor = (name) => `rgb(var(--color-${name}) / <alpha-value>)`;
+const palette = (name, shades) => Object.fromEntries(shades.map((shade) => [shade, cssColor(`${name}-${shade}`)]));
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
@@ -14,67 +17,20 @@ export default {
         serif: ["ui-serif", "Songti SC", "STSong", "SimSun", ...defaultTheme.fontFamily.serif],
         mono: ["ui-monospace", "SFMono-Regular", "Cascadia Code", "Consolas", ...defaultTheme.fontFamily.mono],
       },
+      // Palette values are CSS variables so the same utility classes can use
+      // the site's warm palette in light mode and neutral grays in dark mode.
       colors: {
-        // 雾灰松绿：长期阅读时保持低对比、低饱和
-        ink: {
-          50: "#F8F9F7",
-          100: "#F0F2EE",
-          200: "#DDE2DB",
-          300: "#C3CCC2",
-          400: "#78847C",
-          500: "#5B675F",
-          600: "#47534B",
-          700: "#39453D",
-          800: "#2C3830",
-          900: "#222B25",
-          950: "#18201B",
-        },
-        // 松绿：唯一主强调色
-        leaf: {
-          50: "#F2F6F1",
-          100: "#E2EBE1",
-          200: "#C6D8C5",
-          300: "#A5C0A3",
-          400: "#7FA17E",
-          500: "#618A65",
-          600: "#4F7A62",
-          700: "#3E624E",
-          800: "#314E3F",
-          900: "#263E32",
-        },
-        // 暖石色：只承担轻量级辅助层级
-        bark: {
-          100: "#F1EEE7",
-          300: "#DED6C7",
-          500: "#A18F70",
-          700: "#7A684D",
-          900: "#5A4B37",
-        },
-        // 雾白背景
-        paper: {
-          50: "#FFFFFF",
-          100: "#F5F6F3",
-          200: "#E9ECE7",
-          300: "#DDE2DB",
-        },
-        amber: {
-          50: "#F8F4E8",
-          100: "#F0E4C9",
-          300: "#D8BF8B",
-          500: "#B38A43",
-          700: "#745623",
-        },
-        coral: {
-          100: "#E7F7FA",
-          300: "#A9DEEA",
-          400: "#6ABFD2",
-          600: "#328DA8",
-        },
+        ink: palette("ink", [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]),
+        leaf: palette("leaf", [50, 100, 200, 300, 400, 500, 600, 700, 800, 900]),
+        bark: palette("bark", [100, 300, 500, 700, 900]),
+        paper: palette("paper", [50, 100, 200, 300]),
+        amber: palette("amber", [50, 100, 200, 300, 500, 700, 800]),
+        coral: palette("coral", [100, 300, 400, 600]),
       },
       boxShadow: {
-        soft: "0 14px 36px rgba(38, 51, 46, 0.07)",
-        lift: "0 20px 52px rgba(38, 51, 46, 0.12)",
-        glow: "0 0 0 1px rgba(79, 122, 98, 0.12), 0 18px 42px rgba(38, 51, 46, 0.08)",
+        soft: "0 14px 36px rgb(0 0 0 / 0.07)",
+        lift: "0 20px 52px rgb(0 0 0 / 0.12)",
+        glow: "0 0 0 1px rgb(0 0 0 / 0.12), 0 18px 42px rgb(0 0 0 / 0.08)",
       },
     },
   },

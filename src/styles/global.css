@@ -5,6 +5,47 @@
 :root {
   color-scheme: light;
   --header-offset: 9rem;
+  --color-ink-50: 248 249 247;
+  --color-ink-100: 240 242 238;
+  --color-ink-200: 221 226 219;
+  --color-ink-300: 195 204 194;
+  --color-ink-400: 120 132 124;
+  --color-ink-500: 91 103 95;
+  --color-ink-600: 71 83 75;
+  --color-ink-700: 57 69 61;
+  --color-ink-800: 44 56 48;
+  --color-ink-900: 34 43 37;
+  --color-ink-950: 24 32 27;
+  --color-leaf-50: 242 246 241;
+  --color-leaf-100: 226 235 225;
+  --color-leaf-200: 198 216 197;
+  --color-leaf-300: 165 192 163;
+  --color-leaf-400: 127 161 126;
+  --color-leaf-500: 97 138 101;
+  --color-leaf-600: 79 122 98;
+  --color-leaf-700: 62 98 78;
+  --color-leaf-800: 49 78 63;
+  --color-leaf-900: 38 62 50;
+  --color-bark-100: 241 238 231;
+  --color-bark-300: 222 214 199;
+  --color-bark-500: 161 143 112;
+  --color-bark-700: 122 104 77;
+  --color-bark-900: 90 75 55;
+  --color-paper-50: 255 255 255;
+  --color-paper-100: 245 246 243;
+  --color-paper-200: 233 236 231;
+  --color-paper-300: 221 226 219;
+  --color-amber-50: 248 244 232;
+  --color-amber-100: 240 228 201;
+  --color-amber-200: 229 211 169;
+  --color-amber-300: 216 191 139;
+  --color-amber-500: 179 138 67;
+  --color-amber-700: 116 86 35;
+  --color-amber-800: 91 65 24;
+  --color-coral-100: 231 247 250;
+  --color-coral-300: 169 222 234;
+  --color-coral-400: 106 191 210;
+  --color-coral-600: 50 141 168;
   --surface: #f5f6f3;
   --surface-soft: #e9ece7;
   --surface-card: rgba(255, 255, 255, 0.84);
@@ -14,19 +55,66 @@
   --accent: #4f7a62;
   --accent-strong: #3e624e;
   --accent-secondary: #a18f70;
+  --accent-rgb: 79 122 98;
+  --shadow-rgb: 38 51 46;
+  --overlay: #151515;
 }
 
 :root.dark {
   color-scheme: dark;
-  --surface: #18221d;
-  --surface-soft: #202c25;
+  --color-ink-50: 250 250 250;
+  --color-ink-100: 240 240 240;
+  --color-ink-200: 214 214 214;
+  --color-ink-300: 184 184 184;
+  --color-ink-400: 148 148 148;
+  --color-ink-500: 115 115 115;
+  --color-ink-600: 82 82 82;
+  --color-ink-700: 61 61 61;
+  --color-ink-800: 42 42 42;
+  --color-ink-900: 30 30 30;
+  --color-ink-950: 15 15 15;
+  --color-leaf-50: 250 250 250;
+  --color-leaf-100: 242 242 242;
+  --color-leaf-200: 224 224 224;
+  --color-leaf-300: 202 202 202;
+  --color-leaf-400: 178 178 178;
+  --color-leaf-500: 154 154 154;
+  --color-leaf-600: 128 128 128;
+  --color-leaf-700: 108 108 108;
+  --color-leaf-800: 82 82 82;
+  --color-leaf-900: 56 56 56;
+  --color-bark-100: 246 246 246;
+  --color-bark-300: 216 216 216;
+  --color-bark-500: 154 154 154;
+  --color-bark-700: 116 116 116;
+  --color-bark-900: 76 76 76;
+  --color-paper-50: 255 255 255;
+  --color-paper-100: 245 245 245;
+  --color-paper-200: 228 228 228;
+  --color-paper-300: 205 205 205;
+  --color-amber-50: 250 250 250;
+  --color-amber-100: 242 242 242;
+  --color-amber-200: 226 226 226;
+  --color-amber-300: 206 206 206;
+  --color-amber-500: 160 160 160;
+  --color-amber-700: 122 122 122;
+  --color-amber-800: 96 96 96;
+  --color-coral-100: 246 246 246;
+  --color-coral-300: 220 220 220;
+  --color-coral-400: 188 188 188;
+  --color-coral-600: 138 138 138;
+  --surface: #101010;
+  --surface-soft: #1a1a1a;
   --surface-card: rgba(255, 255, 255, 0.055);
-  --text: #e8eee8;
-  --muted: #aeb9b0;
-  --line: rgba(198, 216, 197, 0.16);
-  --accent: #a5c0a3;
-  --accent-strong: #c6d8c5;
-  --accent-secondary: #d5c6a9;
+  --text: #f2f2f2;
+  --muted: #b8b8b8;
+  --line: rgba(255, 255, 255, 0.16);
+  --accent: #dedede;
+  --accent-strong: #ffffff;
+  --accent-secondary: #a6a6a6;
+  --accent-rgb: 222 222 222;
+  --shadow-rgb: 0 0 0;
+  --overlay: #f6f6f6;
 }
 
 * {
@@ -51,12 +139,42 @@ body {
   opacity: 1;
   transition: opacity 90ms ease;
   background:
-    radial-gradient(circle at 20% 0%, rgba(79, 122, 98, 0.055), transparent 30rem),
+    radial-gradient(circle at 20% 0%, rgb(var(--accent-rgb) / 0.055), transparent 30rem),
     linear-gradient(180deg, var(--surface), var(--surface-soft));
   color: var(--text);
   font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.7;
   text-rendering: optimizeLegibility;
+}
+
+.theme-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    transparent 36%,
+    color-mix(in srgb, var(--theme-transition-color, var(--overlay)) 12%, transparent) 40%,
+    color-mix(in srgb, var(--theme-transition-color, var(--overlay)) 38%, transparent) 44%,
+    color-mix(in srgb, var(--theme-transition-color, var(--overlay)) 72%, transparent) 47%,
+    var(--theme-transition-color, var(--overlay)) 50%,
+    color-mix(in srgb, var(--theme-transition-color, var(--overlay)) 72%, transparent) 53%,
+    color-mix(in srgb, var(--theme-transition-color, var(--overlay)) 38%, transparent) 56%,
+    color-mix(in srgb, var(--theme-transition-color, var(--overlay)) 12%, transparent) 60%,
+    transparent 64%,
+    transparent 100%
+  );
+  background-position: 135% 135%;
+  background-repeat: no-repeat;
+  background-size: 230% 230%;
+  opacity: 0;
+  will-change: background-position, opacity;
+}
+
+html.is-theme-transitioning .theme-transition-overlay {
+  animation: theme-diagonal-wipe 900ms cubic-bezier(0.45, 0, 0.55, 1) both;
 }
 
 html.motion-ready:not(.is-page-leaving) body {
@@ -93,21 +211,15 @@ body::before {
   pointer-events: none;
   content: "";
   background-image:
-    linear-gradient(rgba(79, 122, 98, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79, 122, 98, 0.045) 1px, transparent 1px);
+    linear-gradient(rgb(var(--accent-rgb) / 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--accent-rgb) / 0.045) 1px, transparent 1px);
   background-size: 42px 42px;
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent 72%);
 }
 
-:root.dark body::before {
-  background-image:
-    linear-gradient(rgba(198, 216, 197, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(198, 216, 197, 0.04) 1px, transparent 1px);
-}
-
 .brand-mark {
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(79, 122, 98, 0.16);
+  box-shadow: 0 8px 20px rgb(var(--accent-rgb) / 0.16);
 }
 
 .brand-mark img {
@@ -127,7 +239,7 @@ img {
 }
 
 ::selection {
-  background: rgba(79, 122, 98, 0.2);
+  background: rgb(var(--accent-rgb) / 0.2);
 }
 
 .prose-blog {
@@ -182,31 +294,31 @@ img {
 
 .prose-blog a {
   color: var(--accent-strong);
-  border-bottom: 1px solid rgba(79, 122, 98, 0.34);
+  border-bottom: 1px solid rgb(var(--accent-rgb) / 0.34);
 }
 
 .prose-blog blockquote {
   position: relative;
-  border: 1px solid rgba(79, 122, 98, 0.18);
+  border: 1px solid rgb(var(--accent-rgb) / 0.18);
   border-left: 4px solid var(--accent);
   border-radius: 1rem;
   padding: 0.85rem 1rem 0.85rem 1.2rem;
-  background: rgba(79, 122, 98, 0.08);
+  background: rgb(var(--accent-rgb) / 0.08);
   color: var(--muted);
-  box-shadow: 0 10px 24px rgba(38, 51, 46, 0.05);
+  box-shadow: 0 10px 24px rgb(var(--shadow-rgb) / 0.05);
 }
 
 .prose-blog code:not(pre code) {
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   padding: 0.12rem 0.34rem;
-  background: rgba(79, 122, 98, 0.1);
+  background: rgb(var(--accent-rgb) / 0.1);
   font-size: 0.9em;
 }
 
 .prose-blog pre {
   overflow-x: auto;
-  border: 1px solid rgba(198, 216, 197, 0.2);
+  border: 1px solid var(--line);
   border-radius: 1rem;
   padding: 0.95rem;
   box-shadow: 0 18px 44px rgba(15, 12, 9, 0.18);
@@ -238,7 +350,7 @@ img {
 }
 
 .prose-blog th {
-  background: rgba(79, 122, 98, 0.1);
+  background: rgb(var(--accent-rgb) / 0.1);
 }
 
 .skip-link {
@@ -279,7 +391,7 @@ mark {
 .site-header.is-compact .header-shell {
   padding-top: 0.65rem;
   padding-bottom: 0.65rem;
-  box-shadow: 0 12px 32px rgba(38, 51, 46, 0.11);
+  box-shadow: 0 12px 32px rgb(var(--shadow-rgb) / 0.11);
 }
 
 .post-card {
@@ -304,7 +416,7 @@ mark {
 }
 
 :root.dark .post-card-date {
-  border-color: rgba(198, 216, 197, 0.18);
+  border-color: var(--line);
   background: rgba(255, 255, 255, 0.045);
 }
 
@@ -316,11 +428,11 @@ mark {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(79, 122, 98, 0.18);
+  border: 1px solid rgb(var(--accent-rgb) / 0.18);
   border-radius: 1rem;
   background: rgba(252, 254, 254, 0.82);
   color: var(--accent);
-  box-shadow: 0 8px 20px rgba(38, 51, 46, 0.06);
+  box-shadow: 0 8px 20px rgb(var(--shadow-rgb) / 0.06);
 }
 
 .post-card-date-day {
@@ -351,9 +463,9 @@ mark {
 }
 
 :root.dark .pinned-post-card {
-  border-color: rgba(213, 198, 169, 0.28);
+  border-color: rgba(255, 255, 255, 0.2);
   background:
-    linear-gradient(135deg, rgba(90, 75, 55, 0.2), rgba(24, 34, 29, 0.82) 52%, rgba(79, 122, 98, 0.14));
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(16, 16, 16, 0.86) 52%, rgba(255, 255, 255, 0.04));
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
 }
 
@@ -371,8 +483,8 @@ mark {
 }
 
 :root.dark .archive-filter.is-active {
-  background: #a5c0a3;
-  color: #18221d;
+  background: #f2f2f2;
+  color: #101010;
 }
 
 /* 签名元素：「林间小径」竖向脉络线 */
@@ -436,11 +548,11 @@ mark {
   top: 0.65rem;
   right: 0.65rem;
   z-index: 1;
-  border: 1px solid rgba(198, 216, 197, 0.28);
+  border: 1px solid var(--line);
   border-radius: 0.5rem;
   padding: 0.3rem 0.55rem;
-  background: rgba(24, 32, 27, 0.78);
-  color: #e2e8f0;
+  background: rgb(var(--shadow-rgb) / 0.78);
+  color: #f2f2f2;
   font: inherit;
   font-size: 0.75rem;
   cursor: pointer;
@@ -503,7 +615,7 @@ mark {
   border-radius: 0.72rem;
   background: var(--surface-card);
   color: var(--muted);
-  box-shadow: 0 6px 16px rgba(38, 51, 46, 0.06);
+  box-shadow: 0 6px 16px rgb(var(--shadow-rgb) / 0.06);
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease;
 }
 
@@ -522,7 +634,7 @@ mark {
   border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
   background: color-mix(in srgb, var(--surface-card) 80%, var(--accent));
   color: var(--accent-strong);
-  box-shadow: 0 10px 20px rgba(38, 51, 46, 0.12);
+  box-shadow: 0 10px 20px rgb(var(--shadow-rgb) / 0.12);
   outline: none;
   transform: translateY(-0.12rem);
 }
@@ -554,7 +666,7 @@ mark {
   border-radius: 0.72rem;
   background: var(--surface-card);
   color: var(--muted);
-  box-shadow: 0 10px 24px rgba(38, 51, 46, 0.12);
+  box-shadow: 0 10px 24px rgb(var(--shadow-rgb) / 0.12);
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
@@ -607,7 +719,7 @@ mark {
 .zoomable-image {
   cursor: zoom-in;
   border-radius: 0.9rem;
-  box-shadow: 0 12px 30px rgba(38, 51, 46, 0.14);
+  box-shadow: 0 12px 30px rgb(var(--shadow-rgb) / 0.14);
 }
 
 .image-lightbox {
@@ -617,7 +729,7 @@ mark {
   display: grid;
   place-items: center;
   padding: 2rem;
-  background: rgba(24, 34, 29, 0.92);
+  background: rgb(var(--shadow-rgb) / 0.92);
   cursor: zoom-out;
   animation: lightbox-backdrop-in 220ms ease both;
   transition: opacity 180ms ease;
@@ -651,7 +763,7 @@ mark {
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.36);
   border-radius: 0.75rem;
-  background: rgba(24, 34, 29, 0.78);
+  background: rgb(var(--shadow-rgb) / 0.78);
   color: white;
   font-size: 1.75rem;
   line-height: 1;
@@ -697,6 +809,17 @@ mark {
   100% {
     opacity: 1;
     transform: rotate(0) scale(1);
+  }
+}
+
+@keyframes theme-diagonal-wipe {
+  0% {
+    opacity: 1;
+    background-position: 135% 135%;
+  }
+  100% {
+    opacity: 1;
+    background-position: -35% -35%;
   }
 }
 
@@ -925,6 +1048,10 @@ a:focus-visible .brand-mark img {
   .trail-item::before {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  .theme-transition-overlay {
+    display: none;
   }
 
 }

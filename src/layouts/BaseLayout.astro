@@ -102,10 +102,11 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
       themeRoot.classList.toggle("dark", isDarkTheme);
       themeRoot.dataset.theme = isDarkTheme ? "dark" : "light";
       themeRoot.style.colorScheme = isDarkTheme ? "dark" : "light";
-      document.querySelector("meta[data-theme-color]")?.setAttribute("content", isDarkTheme ? "#18221D" : "#F5F6F3");
+      document.querySelector("meta[data-theme-color]")?.setAttribute("content", isDarkTheme ? "#101010" : "#F5F6F3");
     </script>
   </head>
   <body>
+    <div class="theme-transition-overlay" aria-hidden="true"></div>
     <div id="reading-progress" class="reading-progress" aria-hidden="true"></div>
     <a class="skip-link" href="#content">跳到正文</a>
     <header class="site-header sticky top-0 z-40 px-3 pt-3 md:px-5">
@@ -179,13 +180,15 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
       const darkIcon = document.querySelector(".theme-icon-dark");
       const header = document.querySelector(".site-header");
       const themeColor = document.querySelector("meta[data-theme-color]");
+      const themeOverlay = document.querySelector(".theme-transition-overlay");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const themeTransitionDuration = 900;
 
       function applyTheme(isDark) {
         root.classList.toggle("dark", isDark);
         root.dataset.theme = isDark ? "dark" : "light";
         root.style.colorScheme = isDark ? "dark" : "light";
-        themeColor?.setAttribute("content", isDark ? "#18221D" : "#F5F6F3");
+        themeColor?.setAttribute("content", isDark ? "#101010" : "#F5F6F3");
       }
 
       function syncIcon() {
@@ -200,14 +203,24 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
 
       button?.addEventListener("click", () => {
         const next = !root.classList.contains("dark");
+        const currentThemeColor = next ? "#101010" : "#f5f6f3";
         button.classList.remove("is-switching");
         void button.offsetWidth;
         button.classList.add("is-switching");
-        applyTheme(next);
+        root.classList.remove("is-theme-transitioning");
+        if (!reduceMotion) {
+          themeOverlay?.style.setProperty("--theme-transition-color", currentThemeColor);
+          void themeOverlay?.getBoundingClientRect();
+          root.classList.add("is-theme-transitioning");
+        }
+        window.setTimeout(() => applyTheme(next), reduceMotion ? 0 : themeTransitionDuration * 0.5);
         try {
           localStorage.setItem("theme", next ? "dark" : "light");
         } catch {}
-        syncIcon();
+        window.setTimeout(() => {
+          syncIcon();
+          root.classList.remove("is-theme-transitioning");
+        }, reduceMotion ? 0 : themeTransitionDuration);
         window.setTimeout(() => button.classList.remove("is-switching"), 420);
       });
       syncIcon();
