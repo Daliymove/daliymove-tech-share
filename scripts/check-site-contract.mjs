@@ -30,19 +30,20 @@ assert.doesNotMatch(sitemap, /\/tags\/[^<]+\//, "The sitemap must exclude thin i
 const feedDates = Array.from(feed.matchAll(/<pubDate>([^<]+)<\/pubDate>/g), ([, value]) => Date.parse(value));
 assert.ok(feedDates.length > 0, "The RSS feed must include published entries.");
 assert.ok(feedDates.every((date, index) => index === 0 || date <= feedDates[index - 1]), "RSS entries must be sorted by publication date descending.");
-const feedContents = Array.from(feed.matchAll(/<content:encoded>([\s\S]*?)<\/content:encoded>/g), ([, value]) => value);
 const feedDescriptions = Array.from(feed.matchAll(/<item>[\s\S]*?<description>([\s\S]*?)<\/description>/g), ([, value]) => value);
-assert.match(feed, /xmlns:content="http:\/\/purl\.org\/rss\/1\.0\/modules\/content\/"/, "The RSS feed must declare the content namespace.");
-assert.equal(feedContents.length, feedDates.length, "Every RSS item must include full content.");
-assert.ok(feedContents.every((content) => content.length >= 500), "RSS item content must contain more than a short summary.");
 assert.equal(feedDescriptions.length, feedDates.length, "Every RSS item must include a description.");
-assert.ok(feedDescriptions.every((description) => description.length >= 500), "RSS descriptions must include the full article for readers that ignore content:encoded.");
-assert.ok(feedContents.every((content) => !/(?:&lt;|<)script\b/i.test(content)), "RSS item content must not include scripts.");
-assert.ok(feedContents.some((content) => /href=(?:&quot;|["'])https:\/\//i.test(content)), "RSS content links must use absolute URLs.");
-assert.match(feed, /xmlns:webfeeds="http:\/\/webfeeds\.org\/rss\/1\.0"/, "The RSS feed must declare the WebFeeds namespace.");
+assert.ok(feedDescriptions.every((description) => description.length >= 500), "RSS descriptions must include the complete article.");
+assert.ok(feedDescriptions.every((description) => !/(?:&lt;|<)script\b/i.test(description)), "RSS descriptions must not include scripts.");
+assert.ok(feedDescriptions.some((description) => /href=(?:&quot;|["'])https:\/\//i.test(description)), "RSS description links must use absolute URLs.");
+assert.doesNotMatch(feed, /<content:encoded>/, "The RSS feed must keep full article content in description for reader compatibility.");
+assert.match(feed, /xmlns:media="http:\/\/search\.yahoo\.com\/mrss\/"/, "The RSS feed must declare the Media RSS namespace.");
 assert.match(feed, /<atom:link href="https:\/\/[^"<]+\/rss\.xml" rel="self" type="application\/rss\+xml"\/>/, "The RSS feed must expose an absolute self link.");
+assert.match(feed, /<atom:icon>https:\/\/[^<]+\/favicon\.png<\/atom:icon>/, "The RSS feed must expose an Atom icon.");
+assert.match(feed, /<atom:logo>https:\/\/[^<]+\/favicon\.png<\/atom:logo>/, "The RSS feed must expose an Atom logo.");
 assert.match(feed, /<image><url>https:\/\/[^<]+\/favicon\.png<\/url><title>[^<]+<\/title><link>https:\/\/[^<]+<\/link><width>144<\/width><height>144<\/height><\/image>/, "The RSS feed must expose a 144x144 PNG channel image.");
-assert.match(feed, /<webfeeds:icon>https:\/\/[^<]+\/favicon\.png<\/webfeeds:icon>/, "The RSS feed must expose a PNG WebFeeds icon for reader compatibility.");
+assert.equal((feed.match(/<media:content url="https:\/\/[^"<]+" medium="image" type="image\/(?:avif|jpeg|png|webp)"\/>/g) ?? []).length, feedDates.length, "Every RSS item must expose a Media RSS image.");
+assert.equal((feed.match(/<media:thumbnail url="https:\/\/[^"<]+"\/>/g) ?? []).length, feedDates.length, "Every RSS item must expose a Media RSS thumbnail.");
+assert.equal((feed.match(/<enclosure url="https:\/\/[^"<]+" type="image\/(?:avif|jpeg|png|webp)"\/>/g) ?? []).length, feedDates.length, "Every RSS item must expose an image enclosure.");
 await Promise.all([
   access(path.join(outputDir, "favicon.png")),
   access(path.join(outputDir, "favicon.svg")),
