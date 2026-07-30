@@ -63,7 +63,7 @@
 - 主导航有命名、当前页状态和 skip link；全局动效尊重 `prefers-reduced-motion`：`src/layouts/BaseLayout.astro:100-149,165-222`。
 - 搜索状态使用 live region，Pagefind 失败时有可理解的本地回退提示：`src/pages/search.astro:289-295,338-376`。
 - 灯箱已有 dialog 语义、背景 inert、Esc 关闭、焦点陷阱和关闭后焦点恢复：`src/layouts/PostLayout.astro:354-425`。
-- 现有设计 QA 记录了对比度、focus ring、深浅色和动效降级检查：`design/QAReport.md:29-38,54-72`。该文档是历史设计快照，不应替代当前源码或浏览器验证。
+- 现行设计决策与内容分类契约统一维护在 `design/DesignSpecification.md`；可访问性和视觉结果仍以当前源码与浏览器验证为准。
 
 ### 3.4 工程、CI 与部署
 
@@ -261,7 +261,6 @@
 | 标签 sitemap 与页面 noindex 策略不完全一致 | `astro.config.mjs:8-12`、`src/pages/tags/[tag].astro:18` | 所有单标签页都不进 sitemap，但超过 1 篇的页面可 index。不是故障，但策略难解释。 | 明确选择“标签页仅供站内导航”或“成熟标签可收录”，让 sitemap 与 robots 策略一致。 |
 | TOC 与主题按钮语义可增强 | `src/layouts/PostLayout.astro:99-107,195-203,436-451`、`src/layouts/BaseLayout.astro:129,181-188` | 两个 TOC nav 未命名、当前项只靠视觉样式；主题按钮同时使用动态动作名和 pressed 状态。 | 为 nav 命名并同步 `aria-current`；主题按钮只保留一种清晰状态模型。 |
 | 灯箱无条件增强所有正文图片 | `src/layouts/PostLayout.astro:343-352,428-433` | 链接图片可能出现嵌套交互，空 alt 装饰图会被错误暴露成按钮。 | 跳过 `img.closest("a")` 与空 alt 图片，或显式接管链接行为。 |
-| 设计资料和当前实现漂移 | `design/HandoffBundle.md:4,19,27-28,42,46-48` 对照 `tailwind.config.mjs:10-15`、`scripts/check-site-contract.mjs:23-24`、`src/pages/index.astro:32` | 文档声称 Google Fonts/Fraunces/Manrope 和 `.kw` 已落地；当前实现使用系统字体且禁止 Google Fonts，源码搜索未发现 `.kw` 样式定义。 | 把旧文档标为“2026-07-20 设计快照”，另维护短小的当前实现说明；补回 `.kw` 或移除相关承诺。 |
 | 公开资产与核心逻辑测试需要轻量收口 | `public/images/og/` 中 4 个并存文件；源码生产路径只指向 `blog-cover-editorial-v2.png`，旧 `default.png` 仍被设计预览/契约引用；未发现 `*.test.*` / `*.spec.*` | `public/` 中的历史资产会被原样发布；排序/URL helper 缺回归保护。 | 先确认外部引用再清理或移出设计资产；只为 URL/base、纯日期排序、邻接和推荐打分补少量单元测试，并加一个非正文审阅型浏览器 smoke（导航、主题、搜索回退、TOC、回顶焦点）。 |
 
 补充：`scripts/check-links.mjs:7` 也硬编码了项目 base。当前仓库部署目标固定，因此不是故障；若未来迁移域名或复用模板，应从 Astro 配置或环境变量读取。
@@ -316,7 +315,7 @@ corepack pnpm audit --audit-level=critical
 - 当前源码的回顶按钮包含 `tabindex="-1"`、`aria-hidden="true"` 和 reduced-motion 逻辑：`src/layouts/PostLayout.astro:240-250`；现有文章产物的对应 HTML/脚本缺少这些内容。
 - 现有产物还残留多组当前内容集合中不存在的旧分类页面。
 
-因此，现有产物能帮助发现邻接排序等症状，但不能替代当前提交的干净构建。`design/HandoffBundle.md:4,58` 记录了 2026-07-20 的一次 `pnpm build` 通过，也只能视为历史记录。
+因此，现有产物能帮助发现邻接排序等症状，但不能替代当前提交的干净构建。设计与构建结论均应以当前源码和本轮验证为准。
 
 ## 8. 建议实施顺序
 
