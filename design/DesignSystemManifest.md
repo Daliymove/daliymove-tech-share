@@ -116,7 +116,7 @@
 
 ### 5.8 签名元素 —「林间小径」脉络线
 - 一条 2px `moss-pale` 竖向线，文章列表每项左侧一个 `moss` 实心圆点（节点），hover 时圆点放大并出现 `mark` 光晕。
-- 首屏关键词下方：手写感波浪下划线（内联 SVG，`moss` 描边，`stroke-linecap:round`）。
+- 首屏关键词下方：**动态手绘波浪下划线**（内联 SVG，`moss` 描边，`stroke-linecap:round`）——入场时以 `stroke-dashoffset` 描绘动画画出主线与一条 32% 透明度的回声线（错峰 170ms），随后两条波以 7s / 11s 周期无缝水平流动；`pathLength=100` 归一化描绘长度，`vector-effect:non-scaling-stroke` 保证拉伸后笔宽一致；`prefers-reduced-motion` 下降级为静态完整波浪。
 
 ---
 

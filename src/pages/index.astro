@@ -3,7 +3,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/Icon.astro";
 import PostCard from "../components/PostCard.astro";
 import { collectCategories, collectTags, getAllPosts, getCategoryUrl, getPinnedPosts, getRegularPosts, getTagUrl, withBase } from "../lib/posts";
-import { site } from "../lib/site";
 import { getCategoryDefinition } from "../lib/categories";
 
 const posts = await getAllPosts();
@@ -12,22 +11,17 @@ const latest = getRegularPosts(posts).slice(0, 6);
 const categories = collectCategories(posts).slice(0, 6);
 const allTags = collectTags(posts);
 const tags = allTags.slice(0, 12);
+const heroDescription = "记录技术实践，分享可复用的方法。";
 ---
 
 <BaseLayout>
   <!-- HERO：纯文字叙事 -->
-  <section class="relative mx-auto max-w-4xl pb-2 pt-4 text-center md:pt-7">
-    <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-leaf-200 bg-white/70 px-3 py-1.5 text-xs font-semibold text-leaf-700 shadow-soft dark:border-leaf-300/20 dark:bg-white/5 dark:text-leaf-200" data-reveal="soft" style="--reveal-delay: 0ms">
-      <span class="grid h-5 w-5 place-items-center rounded-full bg-leaf-500/10 text-leaf-700 dark:text-leaf-200">
-        <Icon name="pulse" class="h-3.5 w-3.5" />
-      </span>
-      daliyMove Tech Notes
-    </div>
-    <h1 class="font-display text-4xl font-semibold leading-[1.12] tracking-tight text-ink-900 dark:text-ink-50 md:text-5xl lg:text-[3.5rem]" data-reveal style="--reveal-delay: 80ms">
-      把每天的技术推进，<br />沉淀成<span class="kw">可复用的分享</span>。
+  <section class="relative mx-auto max-w-5xl pb-4 pt-12 text-center sm:pt-16 md:pt-20">
+    <h1 class="hero-title font-display text-4xl text-ink-900 dark:text-ink-50 md:text-6xl lg:text-[4rem]" data-reveal style="--reveal-delay: 80ms">
+      把知识沉淀成分享
     </h1>
-    <p class="mx-auto mt-5 max-w-2xl text-base leading-7 text-ink-600 dark:text-ink-300 md:text-lg md:leading-8" data-reveal style="--reveal-delay: 150ms">{site.description}</p>
-    <div class="mt-7 flex flex-wrap items-center justify-center gap-3" data-reveal style="--reveal-delay: 220ms">
+    <p class="mx-auto mt-7 max-w-lg text-base leading-8 text-ink-600 dark:text-ink-300 md:text-lg" data-reveal style="--reveal-delay: 150ms">{heroDescription}</p>
+    <div class="mt-9 flex flex-wrap items-center justify-center gap-3" data-reveal style="--reveal-delay: 220ms">
       <a class="inline-flex items-center gap-2 rounded-xl bg-leaf-600 px-5 py-3 text-sm font-semibold text-white shadow-lift transition hover:-translate-y-0.5 hover:bg-leaf-700 dark:bg-leaf-500 dark:text-ink-950 dark:hover:bg-leaf-400" href={withBase("/blog/")}>
         开始阅读
         <Icon name="arrow" class="h-4 w-4" />
@@ -37,7 +31,7 @@ const tags = allTags.slice(0, 12);
         关于 daliyMove
       </a>
     </div>
-    <div class="mt-7 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ink-500 dark:text-ink-300" data-reveal="soft" style="--reveal-delay: 240ms">
+    <div class="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ink-500 dark:text-ink-300" data-reveal="soft" style="--reveal-delay: 240ms">
       <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{posts.length}</strong>篇文章</span>
       <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{categories.length}</strong>个分类</span>
       <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{allTags.length}</strong>个标签</span>

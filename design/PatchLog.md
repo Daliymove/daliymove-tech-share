@@ -62,6 +62,14 @@
 - **关联产物**：DesignSystemManifest.md（令牌映射见下）、HandoffBundle.md
 - **AI 味复检**：构建校验通过，无新增 AI slop（紫/蓝/橙红渐变已清零）。
 
+## Patch #7
+- **时间**：2026-07-30
+- **位置**：`src/pages/index.astro` Hero `.kw` span + `src/styles/global.css`（新增 `.kw`/`.kw-wave` 规则、`kw-draw`/`kw-flow` 关键帧、reduced-motion 降级）
+- **修改内容**：静态波浪背景图（此前已在代码迁移中丢失）→ 动态手绘波浪：内联 SVG 双路径（主线 + 32% 回声线），入场 `stroke-dashoffset` 描绘（1.05s，错峰 170ms），随后 7s/11s 双速无缝流动（path 按 48px 周期延展，`translateX(-48px)` 无缝循环）；`pathLength="100"` 归一化、`vector-effect="non-scaling-stroke"` 锁定笔宽、`currentColor` 自动适配深浅色
+- **原因**：用户反馈静态波浪不够好看，要求动态特效；同时修复审查发现的 `.kw` 样式丢失问题（UI-Effects-Review P0#1）
+- **关联产物**：DesignSystemManifest.md §5.8、design/UI-Effects-Review.md
+- **AI 味复检**：通过（沿用 moss 主色 + 既有 cubic-bezier(0.22,1,0.36,1) 缓动，reduced-motion 已降级为静态）
+
 ### 令牌名映射（文档 ↔ 代码）
 | 文档角色 | Tailwind 令牌 | 备注 |
 |---|---|---|

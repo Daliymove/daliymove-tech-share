@@ -36,6 +36,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--header-offset);
+  scrollbar-gutter: stable;
   background: var(--surface);
 }
 
@@ -48,7 +49,7 @@ body {
   min-height: 100vh;
   margin: 0;
   opacity: 1;
-  transition: opacity 170ms ease, background-color 320ms ease, color 320ms ease;
+  transition: opacity 90ms ease;
   background:
     radial-gradient(circle at 20% 0%, rgba(79, 122, 98, 0.055), transparent 30rem),
     linear-gradient(180deg, var(--surface), var(--surface-soft));
@@ -71,6 +72,13 @@ h1, h2, h3, .font-display {
   font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", ui-serif, Georgia, serif;
   overflow-wrap: anywhere;
   text-wrap: balance;
+}
+
+.hero-title {
+  font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", ui-serif, Georgia, serif;
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: 0;
 }
 
 :focus-visible {
@@ -269,6 +277,8 @@ mark {
 }
 
 .site-header.is-compact .header-shell {
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
   box-shadow: 0 12px 32px rgba(38, 51, 46, 0.11);
 }
 
@@ -284,6 +294,13 @@ mark {
   content: "";
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), transparent 42%);
   opacity: 0.7;
+  transform: translateX(-8%);
+  transition: opacity 180ms ease, transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root.dark .post-card::after {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 24%, transparent), transparent 45%);
+  opacity: 0.62;
 }
 
 :root.dark .post-card-date {
@@ -463,6 +480,12 @@ mark {
 .heading-anchor.is-copied {
   display: inline-block;
   transform: scale(1.12);
+}
+
+@media (hover: none) {
+  .heading-anchor {
+    opacity: 0.55;
+  }
 }
 
 .toc-link.is-active {
@@ -677,12 +700,6 @@ mark {
   }
 }
 
-@keyframes progress-glow {
-  50% {
-    box-shadow: 0 0 12px color-mix(in srgb, var(--accent-secondary) 75%, transparent);
-  }
-}
-
 @keyframes lightbox-backdrop-in {
   from {
     opacity: 0;
@@ -728,11 +745,6 @@ a:focus-visible .brand-mark img {
   animation: theme-icon-switch 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.post-card::after {
-  transform: translateX(-8%);
-  transition: opacity 300ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
 .post-card:hover::after,
 .post-card:focus-within::after {
   opacity: 1;
@@ -749,12 +761,12 @@ a:focus-visible .brand-mark img {
   transition: color 240ms ease, transform 240ms ease;
 }
 
-.post-card a[aria-label^="阅读文章"] svg {
+.post-card [data-post-read-link] svg {
   transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.post-card:hover a[aria-label^="阅读文章"] svg,
-.post-card:focus-within a[aria-label^="阅读文章"] svg {
+.post-card:hover [data-post-read-link] svg,
+.post-card:focus-within [data-post-read-link] svg {
   transform: translateX(0.2rem);
 }
 
@@ -823,9 +835,9 @@ a:focus-visible .brand-mark img {
   height: 0.42rem;
   border-radius: 999px;
   background: var(--accent-secondary);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-secondary) 68%, transparent);
   content: "";
   transform: translate(50%, -50%);
-  animation: progress-glow 2.4s ease-in-out infinite;
 }
 
 @media (max-width: 640px) {
@@ -915,7 +927,4 @@ a:focus-visible .brand-mark img {
     transform: none !important;
   }
 
-  .reading-progress::after {
-    animation: none !important;
-  }
 }
