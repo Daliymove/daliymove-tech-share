@@ -10,10 +10,11 @@ async function readOutput(relativePath) {
   return readFile(path.join(outputDir, relativePath), "utf8");
 }
 
-const [home, search, feed, sitemap] = await Promise.all([
+const [home, search, feed, feedV2, sitemap] = await Promise.all([
   readOutput("index.html"),
   readOutput(path.join("search", "index.html")),
   readOutput("rss.xml"),
+  readOutput("rss-v2.xml"),
   readOutput("sitemap-0.xml"),
 ]);
 
@@ -50,6 +51,14 @@ await Promise.all([
 ]);
 const feedIconDimensions = readPngDimensions(await readFile(path.join(outputDir, "favicon.png")));
 assert.deepEqual(feedIconDimensions, { width: 144, height: 144 }, "The RSS PNG icon must be exactly 144x144 pixels.");
+
+const feedV2Dates = Array.from(feedV2.matchAll(/<pubDate>([^<]+)<\/pubDate>/g), ([, value]) => Date.parse(value));
+const v2Guids = Array.from(feedV2.matchAll(/<guid isPermaLink="false">([^<]+)<\/guid>/g), ([, value]) => value);
+assert.equal(feedV2Dates.length, feedDates.length, "The RSS v2 feed must include every published entry.");
+assert.equal(v2Guids.length, feedV2Dates.length, "Every RSS v2 item must have a migration GUID.");
+assert.equal(new Set(v2Guids).size, v2Guids.length, "RSS v2 migration GUIDs must be unique.");
+assert.ok(v2Guids.every((guid) => guid.startsWith("rss-v2:https://")), "RSS v2 migration GUIDs must use the v2 namespace.");
+assert.match(feedV2, /<atom:link href="https:\/\/[^"<]+\/rss-v2\.xml" rel="self" type="application\/rss\+xml"\/>/, "The RSS v2 feed must expose its own self link.");
 
 const indexScript = search.match(/<script\b[^>]*\bid=["']local-search-index["'][^>]*>([\s\S]*?)<\/script>/i);
 assert.ok(indexScript, "The search page must include its fallback index.");
