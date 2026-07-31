@@ -240,7 +240,13 @@ const articleStructuredData = JSON.stringify({
     <Icon name="arrow-up" class="h-5 w-5" />
   </button>
 
-  <script is:inline>
+  <script is:inline data-astro-rerun>
+    if (!window.__articleBeforeSwapHandler) {
+      window.__articleBeforeSwapHandler = () => window.__cleanupArticleEnhancements?.();
+      document.addEventListener("astro:before-swap", window.__articleBeforeSwapHandler);
+    }
+    window.__cleanupArticleEnhancements?.();
+
     (function enhanceArticle() {
       const progress = document.querySelector("#reading-progress");
       const article = document.querySelector("[data-reading-article]");
@@ -248,7 +254,13 @@ const articleStructuredData = JSON.stringify({
       const backToTop = document.querySelector("[data-back-to-top]");
       const articleTitle = document.querySelector("[data-article-title]");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (!article || !content) return;
+      if (!article || !content) {
+        if (progress) progress.style.transform = "scaleX(0)";
+        return;
+      }
+
+      let articleResizeObserver;
+      let tocObserver;
 
       let articleTop = 0;
       let articleScrollable = 1;
@@ -277,7 +289,7 @@ const articleStructuredData = JSON.stringify({
       window.addEventListener("resize", measureAndUpdate);
       window.addEventListener("load", measureAndUpdate, { once: true });
       if ("ResizeObserver" in window) {
-        const articleResizeObserver = new ResizeObserver(measureAndUpdate);
+        articleResizeObserver = new ResizeObserver(measureAndUpdate);
         articleResizeObserver.observe(article);
       }
       const returnToArticleStart = (moveFocus) => {
@@ -451,7 +463,7 @@ const articleStructuredData = JSON.stringify({
         const headings = tocLinks
           .map((link) => document.getElementById(link.getAttribute("data-toc-slug") || ""))
           .filter(Boolean);
-        const observer = new IntersectionObserver(
+        tocObserver = new IntersectionObserver(
           (entries) => {
             const visible = entries
               .filter((entry) => entry.isIntersecting)
@@ -463,8 +475,16 @@ const articleStructuredData = JSON.stringify({
           },
           { rootMargin: "-20% 0px -65% 0px", threshold: [0.1, 0.5, 1] },
         );
-        headings.forEach((heading) => observer.observe(heading));
+        headings.forEach((heading) => tocObserver.observe(heading));
       }
+
+      window.__cleanupArticleEnhancements = () => {
+        window.removeEventListener("site:scroll", updateProgress);
+        window.removeEventListener("resize", measureAndUpdate);
+        articleResizeObserver?.disconnect();
+        tocObserver?.disconnect();
+        if (progress) progress.style.transform = "scaleX(0)";
+      };
     })();
   </script>
 </BaseLayout>
