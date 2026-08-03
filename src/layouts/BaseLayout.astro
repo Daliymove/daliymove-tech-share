@@ -100,7 +100,9 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
         savedTheme = localStorage.getItem("theme");
       } catch {}
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const isDarkTheme = savedTheme ? savedTheme === "dark" : prefersDark;
+      const runtimeTheme = window.__siteTheme;
+      const isDarkTheme = runtimeTheme ? runtimeTheme === "dark" : savedTheme ? savedTheme === "dark" : prefersDark;
+      window.__siteTheme = isDarkTheme ? "dark" : "light";
       themeRoot.classList.toggle("dark", isDarkTheme);
       themeRoot.dataset.theme = isDarkTheme ? "dark" : "light";
       themeRoot.style.colorScheme = isDarkTheme ? "dark" : "light";
@@ -177,16 +179,13 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
     </footer>
     <script is:inline define:vars={{ searchHref }}>
       const root = document.documentElement;
-      const button = document.querySelector(".theme-toggle");
-      const lightIcon = document.querySelector(".theme-icon-light");
-      const darkIcon = document.querySelector(".theme-icon-dark");
       const header = document.querySelector(".site-header");
-      const themeColor = document.querySelector("meta[data-theme-color]");
-      const themeOverlay = document.querySelector(".theme-transition-overlay");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const themeTransitionDuration = 900;
 
       function applyTheme(isDark) {
+        const themeColor = document.querySelector("meta[data-theme-color]");
+        window.__siteTheme = isDark ? "dark" : "light";
         root.classList.toggle("dark", isDark);
         root.dataset.theme = isDark ? "dark" : "light";
         root.style.colorScheme = isDark ? "dark" : "light";
@@ -194,6 +193,9 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
       }
 
       function syncIcon() {
+        const button = document.querySelector(".theme-toggle");
+        const lightIcon = document.querySelector(".theme-icon-light");
+        const darkIcon = document.querySelector(".theme-icon-dark");
         const isDark = root.classList.contains("dark");
         lightIcon?.classList.toggle("hidden", isDark);
         darkIcon?.classList.toggle("hidden", !isDark);
@@ -203,27 +205,40 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
         button?.setAttribute("title", label);
       }
 
-      button?.addEventListener("click", () => {
-        const next = !root.classList.contains("dark");
-        const currentThemeColor = next ? "#101010" : "#f5f6f3";
-        button.classList.remove("is-switching");
-        void button.offsetWidth;
-        button.classList.add("is-switching");
-        root.classList.remove("is-theme-transitioning");
-        if (!reduceMotion) {
-          themeOverlay?.style.setProperty("--theme-transition-color", currentThemeColor);
-          void themeOverlay?.getBoundingClientRect();
-          root.classList.add("is-theme-transitioning");
-        }
-        window.setTimeout(() => applyTheme(next), reduceMotion ? 0 : themeTransitionDuration * 0.5);
-        try {
-          localStorage.setItem("theme", next ? "dark" : "light");
-        } catch {}
-        window.setTimeout(() => {
-          syncIcon();
+      // Delegate the click so the control keeps working after Astro swaps the page body.
+      if (!window.__siteThemeControllerInstalled) {
+        window.__siteThemeControllerInstalled = true;
+        document.addEventListener("click", (event) => {
+          const button = event.target instanceof Element ? event.target.closest(".theme-toggle") : null;
+          if (!(button instanceof HTMLButtonElement)) return;
+
+          const themeOverlay = document.querySelector(".theme-transition-overlay");
+          const next = !root.classList.contains("dark");
+          const currentThemeColor = next ? "#101010" : "#f5f6f3";
+          window.__siteTheme = next ? "dark" : "light";
+          button.classList.remove("is-switching");
+          void button.offsetWidth;
+          button.classList.add("is-switching");
           root.classList.remove("is-theme-transitioning");
-        }, reduceMotion ? 0 : themeTransitionDuration);
-        window.setTimeout(() => button.classList.remove("is-switching"), 420);
+          if (!reduceMotion) {
+            themeOverlay?.style.setProperty("--theme-transition-color", currentThemeColor);
+            void themeOverlay?.getBoundingClientRect();
+            root.classList.add("is-theme-transitioning");
+          }
+          window.setTimeout(() => applyTheme(next), reduceMotion ? 0 : themeTransitionDuration * 0.5);
+          try {
+            localStorage.setItem("theme", next ? "dark" : "light");
+          } catch {}
+          window.setTimeout(() => {
+            syncIcon();
+            root.classList.remove("is-theme-transitioning");
+          }, reduceMotion ? 0 : themeTransitionDuration);
+          window.setTimeout(() => button.classList.remove("is-switching"), 420);
+        });
+      }
+      document.addEventListener("astro:page-load", () => {
+        applyTheme(window.__siteTheme === "dark");
+        syncIcon();
       });
       syncIcon();
 
