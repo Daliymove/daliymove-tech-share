@@ -96,7 +96,7 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
     const status = document.querySelector("#search-status");
     const count = document.querySelector("#search-count");
     const chips = document.querySelectorAll<HTMLButtonElement>(".search-chip");
-    const pagefindPath = `${import.meta.env.BASE_URL}pagefind/pagefind.js`.replace(/\/{2,}/g, "/");
+    const pagefindPath = `${import.meta.env.BASE_URL}/pagefind/pagefind.js`.replace(/\/{2,}/g, "/");
     const localIndexNode = document.querySelector("#local-search-index");
     if (!input || !results || !localIndexNode) return;
 

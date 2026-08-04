@@ -17,6 +17,10 @@ const [home, search, feed, feedV2, sitemap] = await Promise.all([
   readOutput("rss-v2.xml"),
   readOutput("sitemap-0.xml"),
 ]);
+const homeCanonical = home.match(/<link\b[^>]*rel="canonical"[^>]*href="([^"]+)"/i)?.[1];
+assert.ok(homeCanonical, "The home page must expose a canonical URL.");
+const siteBaseUrl = new URL(homeCanonical);
+const siteBasePath = siteBaseUrl.pathname.endsWith("/") ? siteBaseUrl.pathname : `${siteBaseUrl.pathname}/`;
 
 assert.match(home, /images\/logo-marks\/folded-path\.svg/, "The folded-path logo must be used on the home page.");
 assert.doesNotMatch(home, /post-card-cover/, "Home post cards must remain text-first.");
@@ -25,6 +29,13 @@ assert.doesNotMatch(home, /fonts\.googleapis\.com/, "The home page must not depe
 await access(path.join(outputDir, "pagefind", "pagefind.js"));
 
 assert.match(search, /name="robots" content="noindex,follow"/, "The search page must remain out of search indexes.");
+const searchScriptSrc = search.match(/<script\b[^>]*src="([^"]*search\.astro[^"]*\.js)"/i)?.[1];
+assert.ok(searchScriptSrc, "The search page must load its search script.");
+const searchBundle = await readOutput(path.join("_astro", path.basename(searchScriptSrc)));
+assert.ok(
+  searchBundle.includes(`${siteBasePath}pagefind/pagefind.js`),
+  "The search script must load Pagefind from the configured base path.",
+);
 assert.doesNotMatch(sitemap, /\/search\//, "The sitemap must exclude the search page.");
 assert.doesNotMatch(sitemap, /\/tags\/[^<]+\//, "The sitemap must exclude thin individual tag archives.");
 
@@ -76,10 +87,6 @@ const renderedArticles = await Promise.all(articleDirectories.map(async (directo
   html: await readOutput(path.join("blog", directory, "index.html")),
 })));
 
-const homeCanonical = home.match(/<link\b[^>]*rel="canonical"[^>]*href="([^"]+)"/i)?.[1];
-assert.ok(homeCanonical, "The home page must expose a canonical URL.");
-const siteBaseUrl = new URL(homeCanonical);
-const siteBasePath = siteBaseUrl.pathname.endsWith("/") ? siteBaseUrl.pathname : `${siteBaseUrl.pathname}/`;
 const recommendedOgImageBytes = 1024 * 1024;
 const maxOgImageBytes = 5 * 1024 * 1024;
 const validatedOgAssets = new Map();
