@@ -398,10 +398,116 @@ mark {
   will-change: transform;
 }
 
+.site-header,
+.site-header .brand-mark,
+.site-header .header-brand,
+.site-header .header-brand-tagline,
+.site-header .header-nav-desktop,
+.site-header .header-nav-desktop a,
+.site-header .header-nav-mobile,
+.site-header .header-nav-mobile a,
+.site-header .header-actions,
+.site-header .utility-icon-button {
+  transition-duration: 460ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-header {
+  overflow-anchor: none;
+  transition-property: padding-top;
+  transition-duration: 520ms;
+}
+
+.site-header .header-shell {
+  transition-property: max-width, border-radius, padding, background-color, box-shadow, transform;
+  transition-duration: 520ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-header .header-brand {
+  transition-delay: 35ms;
+}
+
+.site-header .header-nav-desktop {
+  transition-delay: 75ms;
+}
+
+.site-header .header-actions {
+  transition-delay: 115ms;
+}
+
+.site-header .header-nav-mobile {
+  transition-delay: 75ms;
+}
+
+.site-header.is-compact {
+  padding-top: 0.25rem;
+}
+
 .site-header.is-compact .header-shell {
-  padding-top: 0.65rem;
-  padding-bottom: 0.65rem;
-  box-shadow: 0 12px 32px rgb(var(--shadow-rgb) / 0.11);
+  max-width: 68rem;
+  border-radius: 0.85rem;
+  padding: 0.45rem 0.75rem;
+  background: color-mix(in srgb, var(--surface-card) 94%, transparent);
+  box-shadow: 0 14px 30px rgb(var(--shadow-rgb) / 0.14);
+  transform: translateY(-0.1rem);
+}
+
+.site-header.is-compact .header-row {
+  gap: 0.75rem;
+}
+
+.site-header.is-compact .brand-mark {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.6rem;
+  box-shadow: 0 5px 14px rgb(var(--accent-rgb) / 0.14);
+}
+
+.site-header .header-brand-tagline {
+  max-height: 1.5rem;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  transition-property: max-height, opacity, transform;
+  transition-duration: 430ms;
+}
+
+.site-header.is-compact .header-brand-tagline {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-0.25rem);
+}
+
+.site-header.is-compact .header-nav-desktop {
+  gap: 0.15rem;
+  padding: 0.2rem;
+}
+
+.site-header.is-compact .header-nav-desktop a {
+  padding: 0.3rem 0.65rem;
+  font-size: 0.8125rem;
+}
+
+.site-header.is-compact .header-actions {
+  gap: 0.4rem;
+}
+
+.site-header.is-compact .utility-icon-button {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.6rem;
+}
+
+.site-header.is-compact .header-nav-mobile {
+  margin-top: 0.25rem;
+  padding-top: 0.25rem;
+}
+
+.site-header.is-compact .header-nav-mobile a {
+  padding: 0.15rem 0.55rem;
+  font-size: 0.6875rem;
+  line-height: 1.35;
 }
 
 .post-card {
