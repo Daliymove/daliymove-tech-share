@@ -90,20 +90,22 @@ const articleStructuredData = JSON.stringify({
   canonicalPath={`/blog/${post.id.replace(/\.(md|mdx)$/i, "").replace(/\/index$/, "")}/`}
 >
   <script is:inline type="application/ld+json" set:html={articleStructuredData}></script>
-  <script is:inline type="application/ld+json" set:html={breadcrumbStructuredData}></script>
+    <script is:inline type="application/ld+json" set:html={breadcrumbStructuredData}></script>
   <article class:list={["grid gap-8 lg:gap-16", toc.length > 0 && "lg:grid-cols-[14rem_minmax(0,1fr)] xl:gap-20"]} data-pagefind-body data-reading-article>
     {toc.length > 0 && (
       <aside class="hidden lg:block">
-        <div class="sticky top-28 text-sm" data-reveal="soft">
-          <p class="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-ink-600 dark:text-ink-200">
-            <Icon name="layers" class="h-3.5 w-3.5" />
-            本页目录
-          </p>
-          <nav class="space-y-2.5" data-toc-nav>
-            {toc.map((heading) => (
-              <a class:list={["toc-link block leading-5 text-ink-600 transition hover:text-leaf-700 dark:text-ink-200 dark:hover:text-leaf-300", heading.depth === 3 ? "pl-2 text-xs font-medium" : "font-semibold"]} href={`#${heading.slug}`} data-toc-slug={heading.slug}>{heading.text}</a>
-            ))}
-          </nav>
+        <div class="sticky top-28 text-sm">
+          <div data-reveal="soft">
+            <p class="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-ink-600 dark:text-ink-200">
+              <Icon name="layers" class="h-3.5 w-3.5" />
+              本页目录
+            </p>
+            <nav class="max-h-[calc(100vh-11rem)] space-y-2.5 overflow-y-auto pr-2" data-toc-nav>
+              {toc.map((heading) => (
+                <a class:list={["toc-link block leading-5 text-ink-600 transition hover:text-leaf-700 dark:text-ink-200 dark:hover:text-leaf-300", heading.depth === 3 ? "pl-2 text-xs font-medium" : "font-semibold"]} href={`#${heading.slug}`} data-toc-slug={heading.slug}>{heading.text}</a>
+              ))}
+            </nav>
+          </div>
         </div>
       </aside>
     )}
@@ -245,9 +247,9 @@ const articleStructuredData = JSON.stringify({
       window.__articleBeforeSwapHandler = () => window.__cleanupArticleEnhancements?.();
       document.addEventListener("astro:before-swap", window.__articleBeforeSwapHandler);
     }
-    window.__cleanupArticleEnhancements?.();
 
-    (function enhanceArticle() {
+    function enhanceArticle() {
+      window.__cleanupArticleEnhancements?.();
       const progress = document.querySelector("#reading-progress");
       const article = document.querySelector("[data-reading-article]");
       const content = document.querySelector("[data-enhance-content]");
@@ -261,6 +263,9 @@ const articleStructuredData = JSON.stringify({
 
       let articleResizeObserver;
       let tocObserver;
+      let tocNav;
+      let tocScrollTimer;
+      let showTocScrollbar = () => {};
 
       let articleTop = 0;
       let articleScrollable = 1;
@@ -460,18 +465,33 @@ const articleStructuredData = JSON.stringify({
 
       const tocLinks = Array.from(document.querySelectorAll("[data-toc-slug]"));
       if (tocLinks.length) {
+        tocNav = document.querySelector("[data-toc-nav]");
+        let activeTocSlug = "";
+        showTocScrollbar = () => {
+          tocNav?.classList.add("is-scrolling");
+          window.clearTimeout(tocScrollTimer);
+          tocScrollTimer = window.setTimeout(() => tocNav?.classList.remove("is-scrolling"), 700);
+        };
+        tocNav?.addEventListener("scroll", showTocScrollbar, { passive: true });
         const headings = tocLinks
           .map((link) => document.getElementById(link.getAttribute("data-toc-slug") || ""))
           .filter(Boolean);
+        const setActiveToc = (slug) => {
+          if (!slug || activeTocSlug === slug) return;
+          activeTocSlug = slug;
+          tocLinks.forEach((link) => {
+            link.classList.toggle("is-active", link.getAttribute("data-toc-slug") === slug);
+          });
+          const activeLink = tocLinks.find((link) => link.getAttribute("data-toc-slug") === slug);
+          activeLink?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduceMotion ? "auto" : "smooth" });
+        };
         tocObserver = new IntersectionObserver(
           (entries) => {
             const visible = entries
               .filter((entry) => entry.isIntersecting)
               .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
             if (!visible?.target?.id) return;
-            tocLinks.forEach((link) => {
-              link.classList.toggle("is-active", link.getAttribute("data-toc-slug") === visible.target.id);
-            });
+            setActiveToc(visible.target.id);
           },
           { rootMargin: "-20% 0px -65% 0px", threshold: [0.1, 0.5, 1] },
         );
@@ -483,8 +503,17 @@ const articleStructuredData = JSON.stringify({
         window.removeEventListener("resize", measureAndUpdate);
         articleResizeObserver?.disconnect();
         tocObserver?.disconnect();
+        tocNav?.removeEventListener("scroll", showTocScrollbar);
+        window.clearTimeout(tocScrollTimer);
+        tocNav?.classList.remove("is-scrolling");
         if (progress) progress.style.transform = "scaleX(0)";
       };
-    })();
+    }
+
+    if (!window.__articlePageLoadHandler) {
+      window.__articlePageLoadHandler = () => enhanceArticle();
+      document.addEventListener("astro:page-load", window.__articlePageLoadHandler);
+    }
+    enhanceArticle();
   </script>
 </BaseLayout>
