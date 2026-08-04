@@ -398,46 +398,84 @@ mark {
   will-change: transform;
 }
 
-.site-header,
-.site-header .brand-mark,
-.site-header .header-brand,
-.site-header .header-brand-tagline,
-.site-header .header-nav-desktop,
-.site-header .header-nav-desktop a,
-.site-header .header-nav-mobile,
-.site-header .header-nav-mobile a,
-.site-header .header-actions,
-.site-header .utility-icon-button {
-  transition-duration: 460ms;
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
 .site-header {
   overflow-anchor: none;
-  transition-property: padding-top;
-  transition-duration: 520ms;
+  transition: padding-top 480ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .site-header .header-shell {
-  transition-property: max-width, border-radius, padding, background-color, box-shadow, transform;
-  transition-duration: 520ms;
-  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  contain: layout;
+  backface-visibility: hidden;
+  will-change: transform;
+  transition:
+    max-width 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding 460ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 420ms ease,
+    background-color 360ms ease,
+    box-shadow 420ms ease,
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .site-header .header-brand {
-  transition-delay: 35ms;
+  transition: gap 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-header .header-row {
+  transition: gap 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-header .brand-mark {
+  transition:
+    width 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 360ms ease,
+    box-shadow 360ms ease;
 }
 
 .site-header .header-nav-desktop {
-  transition-delay: 75ms;
+  transition:
+    gap 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-header .header-nav-desktop a {
+  transition:
+    padding 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
 .site-header .header-actions {
-  transition-delay: 115ms;
+  transition: gap 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-header .utility-icon-button {
+  transition:
+    width 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 360ms ease,
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .site-header .header-nav-mobile {
-  transition-delay: 75ms;
+  transition:
+    margin-top 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding-top 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 240ms ease;
+}
+
+.site-header .header-nav-mobile a {
+  transition:
+    padding 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms ease;
 }
 
 .site-header.is-compact {
@@ -448,7 +486,7 @@ mark {
   max-width: 68rem;
   border-radius: 0.85rem;
   padding: 0.45rem 0.75rem;
-  background: color-mix(in srgb, var(--surface-card) 94%, transparent);
+  background-color: color-mix(in srgb, var(--surface-card) 94%, transparent);
   box-shadow: 0 14px 30px rgb(var(--shadow-rgb) / 0.14);
   transform: translateY(-0.1rem);
 }
@@ -469,8 +507,10 @@ mark {
   overflow: hidden;
   opacity: 1;
   transform: translateY(0);
-  transition-property: max-height, opacity, transform;
-  transition-duration: 430ms;
+  transition:
+    max-height 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 240ms ease,
+    transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .site-header.is-compact .header-brand-tagline {
@@ -486,7 +526,6 @@ mark {
 
 .site-header.is-compact .header-nav-desktop a {
   padding: 0.3rem 0.65rem;
-  font-size: 0.8125rem;
 }
 
 .site-header.is-compact .header-actions {
@@ -506,8 +545,6 @@ mark {
 
 .site-header.is-compact .header-nav-mobile a {
   padding: 0.15rem 0.55rem;
-  font-size: 0.6875rem;
-  line-height: 1.35;
 }
 
 .post-card {
