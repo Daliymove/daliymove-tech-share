@@ -190,7 +190,7 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
 
       setStatus(`找到 ${total} 条结果，用时 ${elapsed}ms（${engineLabel}）。`);
       results.innerHTML = items.map((item, index) => `
-        <a class="group block rounded-2xl border border-white/70 bg-white/72 p-4 shadow-soft transition duration-300 hover:-translate-y-0.5 hover:border-leaf-200 hover:shadow-lift dark:border-white/10 dark:bg-white/[0.055] dark:hover:border-leaf-300/40 md:p-5" href="${escapeAttribute(item.url)}">
+        <a class="post-card group relative block overflow-hidden rounded-2xl border border-white/70 bg-white/72 p-4 shadow-soft dark:border-white/10 dark:bg-white/[0.055] md:p-5" href="${escapeAttribute(item.url)}">
           <div class="flex items-start gap-4">
             <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-leaf-200 bg-leaf-50 font-mono text-sm font-semibold text-leaf-700 dark:border-leaf-300/20 dark:bg-leaf-300/10 dark:text-leaf-200">${String(index + 1).padStart(2, "0")}</span>
             <div class="min-w-0 flex-1">

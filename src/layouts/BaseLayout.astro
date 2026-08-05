@@ -241,6 +241,80 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
       });
       syncIcon();
 
+      if (!reduceMotion && window.matchMedia("(hover: hover) and (pointer: fine)").matches && !window.__pointerEffectsInstalled) {
+        window.__pointerEffectsInstalled = true;
+        const cardSelector = ".post-card, [data-pointer-card]";
+        const magneticSelector = ".header-nav-desktop a, .header-actions .utility-icon-button";
+        let activeCard = null;
+        let activeMagnetic = null;
+        let pointerFrame = 0;
+        let pointerX = 0;
+        let pointerY = 0;
+        let magneticOffsetX = 0;
+        let magneticOffsetY = 0;
+
+        const resetCard = () => {
+          activeCard?.classList.remove("is-pointer-active");
+          activeCard = null;
+        };
+        const resetMagnetic = () => {
+          if (activeMagnetic instanceof HTMLElement) {
+            activeMagnetic.style.removeProperty("--magnetic-x");
+            activeMagnetic.style.removeProperty("--magnetic-y");
+          }
+          activeMagnetic = null;
+          magneticOffsetX = 0;
+          magneticOffsetY = 0;
+        };
+        const resetPointerEffects = () => {
+          resetCard();
+          resetMagnetic();
+        };
+        const updatePointerEffects = () => {
+          pointerFrame = 0;
+          if (activeCard instanceof HTMLElement) {
+            const rect = activeCard.getBoundingClientRect();
+            activeCard.style.setProperty("--pointer-x", `${pointerX - rect.left}px`);
+            activeCard.style.setProperty("--pointer-y", `${pointerY - rect.top}px`);
+          }
+          if (activeMagnetic instanceof HTMLElement) {
+            const rect = activeMagnetic.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2 - magneticOffsetX;
+            const centerY = rect.top + rect.height / 2 - magneticOffsetY;
+            magneticOffsetX = Math.max(-3, Math.min(3, (pointerX - centerX) * 0.12));
+            magneticOffsetY = Math.max(-3, Math.min(3, (pointerY - centerY) * 0.12));
+            activeMagnetic.style.setProperty("--magnetic-x", `${magneticOffsetX}px`);
+            activeMagnetic.style.setProperty("--magnetic-y", `${magneticOffsetY}px`);
+          }
+        };
+        const queuePointerUpdate = () => {
+          if (!pointerFrame) pointerFrame = window.requestAnimationFrame(updatePointerEffects);
+        };
+
+        document.addEventListener("pointermove", (event) => {
+          if (event.pointerType && event.pointerType !== "mouse") return;
+          pointerX = event.clientX;
+          pointerY = event.clientY;
+          const target = event.target instanceof Element ? event.target : null;
+          const nextCard = target?.closest(cardSelector) ?? null;
+          const nextMagnetic = target?.closest(magneticSelector) ?? null;
+
+          if (nextCard !== activeCard) {
+            resetCard();
+            activeCard = nextCard;
+            activeCard?.classList.add("is-pointer-active");
+          }
+          if (nextMagnetic !== activeMagnetic) {
+            resetMagnetic();
+            activeMagnetic = nextMagnetic;
+          }
+          queuePointerUpdate();
+        }, { passive: true });
+        document.documentElement.addEventListener("mouseleave", resetPointerEffects);
+        window.addEventListener("blur", resetPointerEffects);
+        document.addEventListener("astro:before-swap", resetPointerEffects);
+      }
+
       window.addEventListener("pageshow", () => root.classList.remove("is-page-leaving"));
 
       const revealElements = Array.from(document.querySelectorAll("[data-reveal]"));
