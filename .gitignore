@@ -13,3 +13,4 @@ pnpm-store/
 .playwright-cli/
 playwright-report/
 test-results/
+.reasonix/
