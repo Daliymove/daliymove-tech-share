@@ -8,7 +8,7 @@ tags:
   - 笔记
   - 分享
 cover: "/images/og/default.png"
-series: "AI 反欺诈"
+series: "农险 AI反欺诈"
 pinned: false
 ---
 
