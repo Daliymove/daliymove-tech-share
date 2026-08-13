@@ -8,7 +8,8 @@ import { getCategoryDefinition } from "../lib/categories";
 const posts = await getAllPosts();
 const pinnedPosts = getPinnedPosts(posts);
 const latest = getRegularPosts(posts).slice(0, 6);
-const categories = collectCategories(posts).slice(0, 6);
+const allCategories = collectCategories(posts);
+const categories = allCategories.slice(0, 6);
 const allTags = collectTags(posts);
 const tags = allTags.slice(0, 12);
 const heroDescription = "记录技术实践，分享可复用的方法。";
@@ -33,7 +34,7 @@ const heroDescription = "记录技术实践，分享可复用的方法。";
     </div>
     <div class="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ink-500 dark:text-ink-300" data-reveal="soft" style="--reveal-delay: 240ms">
       <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{posts.length}</strong>篇文章</span>
-      <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{categories.length}</strong>个分类</span>
+      <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{allCategories.length}</strong>个分类</span>
       <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{allTags.length}</strong>个标签</span>
     </div>
   </section>

@@ -7,7 +7,7 @@ category: "前端与工具"
 tags:
   - 笔记
   - 实践
-cover: "/images/posts/frameworks.svg"
+cover: "/images/posts/peitu4.png"
 draft: false
 ---
 

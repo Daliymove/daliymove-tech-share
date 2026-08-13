@@ -160,13 +160,13 @@ const articleStructuredData = JSON.stringify({
             <a class="rounded-full bg-ink-100/80 px-3 py-1 text-sm text-ink-600 transition hover:bg-leaf-100 hover:text-leaf-700 dark:bg-white/10 dark:text-ink-200 dark:hover:bg-leaf-300/10" href={getTagUrl(tag)}>#{tag}</a>
           ))}
         </div>
-        <div class:list={["mt-8 grid gap-4", cover && "lg:grid-cols-[minmax(0,1fr)_17rem]"]}>
+        <div class:list={["mt-8 grid items-start gap-4", cover && "lg:grid-cols-[minmax(0,1fr)_17rem]"]}>
           {cover && (
-            <div class="overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/60 shadow-soft dark:border-white/10 dark:bg-white/5">
-              <img class="h-48 w-full object-cover md:h-64" src={cover} alt={`文章封面：${post.data.title}`} loading="eager" data-image-preview />
+            <div class="article-cover-frame w-full overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/60 shadow-soft dark:border-white/10 dark:bg-white/5">
+              <img class="block h-auto w-full object-contain" src={cover} alt={`文章封面：${post.data.title}`} loading="eager" data-image-preview />
             </div>
           )}
-          <aside class:list={["hidden rounded-[1.35rem] border border-white/70 bg-white/68 p-5 shadow-soft backdrop-blur-xl lg:block dark:border-white/10 dark:bg-white/[0.055]", !cover && "lg:justify-self-end lg:w-[17rem]"]}>
+          <aside class:list={["hidden self-start rounded-[1.35rem] border border-white/70 bg-white/68 p-5 shadow-soft backdrop-blur-xl lg:block dark:border-white/10 dark:bg-white/[0.055]", !cover && "lg:justify-self-end lg:w-[17rem]"]}>
             <p class="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-ink-500 dark:text-ink-300">Article Brief</p>
             <dl class="mt-4 space-y-3 text-sm">
               <div class="flex items-center justify-between gap-4 border-b border-ink-200/60 pb-3 dark:border-white/10">
@@ -249,7 +249,6 @@ const articleStructuredData = JSON.stringify({
     }
 
     function enhanceArticle() {
-      window.__cleanupArticleEnhancements?.();
       const progress = document.querySelector("#reading-progress");
       const article = document.querySelector("[data-reading-article]");
       const content = document.querySelector("[data-enhance-content]");
@@ -260,6 +259,12 @@ const articleStructuredData = JSON.stringify({
         if (progress) progress.style.transform = "scaleX(0)";
         return;
       }
+      // Astro can run inline scripts and the page-load hook for the same DOM.
+      // Keep enhancement idempotent so anchors, copy buttons, and lightboxes
+      // are attached exactly once per article.
+      if (content.getAttribute("data-article-enhanced") === "true") return;
+      window.__cleanupArticleEnhancements?.();
+      content.setAttribute("data-article-enhanced", "true");
 
       let articleResizeObserver;
       let tocObserver;
@@ -318,6 +323,7 @@ const articleStructuredData = JSON.stringify({
         if (pre.parentElement?.classList.contains("code-block")) return;
         const wrapper = document.createElement("div");
         wrapper.className = "code-block";
+        wrapper.setAttribute("data-article-generated", "true");
         pre.parentNode?.insertBefore(wrapper, pre);
         wrapper.appendChild(pre);
 
@@ -349,6 +355,7 @@ const articleStructuredData = JSON.stringify({
         const link = document.createElement("a");
         link.href = `#${heading.id}`;
         link.className = "heading-anchor";
+        link.setAttribute("data-article-generated-anchor", "true");
         link.setAttribute("aria-label", "复制标题链接");
         link.textContent = "#";
         link.addEventListener("click", async (event) => {
@@ -370,6 +377,7 @@ const articleStructuredData = JSON.stringify({
         heading.appendChild(link);
       });
 
+      let disposeLightbox = () => {};
       const previewImages = new Set([
         ...content.querySelectorAll("img"),
         ...document.querySelectorAll("img[data-image-preview]"),
@@ -382,10 +390,12 @@ const articleStructuredData = JSON.stringify({
         img.setAttribute("aria-label", `放大查看图片：${img.alt || "图片"}`);
 
         const openLightbox = () => {
+          disposeLightbox();
           const returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : img;
           const previousBodyOverflow = document.body.style.overflow;
           const overlay = document.createElement("div");
           overlay.className = "image-lightbox";
+          overlay.setAttribute("data-article-lightbox", "true");
           overlay.setAttribute("role", "dialog");
           overlay.setAttribute("aria-modal", "true");
           overlay.setAttribute("aria-label", "图片预览");
@@ -411,18 +421,23 @@ const articleStructuredData = JSON.stringify({
           const backgroundRegions = Array.from(document.body.children).filter((element) => element !== overlay);
           const previousInertStates = backgroundRegions.map((element) => element.inert);
           let isClosing = false;
+          const restoreLightbox = () => {
+            document.body.style.overflow = previousBodyOverflow;
+            overlay.remove();
+            backgroundRegions.forEach((element, index) => {
+              element.inert = previousInertStates[index];
+            });
+            if (disposeLightbox === restoreLightbox) disposeLightbox = () => {};
+          };
+          disposeLightbox = restoreLightbox;
           const closeLightbox = () => {
             if (isClosing) return;
             isClosing = true;
-            document.body.style.overflow = previousBodyOverflow;
             overlay.classList.add("is-closing");
             const delay = reduceMotion ? 0 : 180;
             window.setTimeout(() => {
-              overlay.remove();
-              backgroundRegions.forEach((element, index) => {
-                element.inert = previousInertStates[index];
-              });
-              returnFocus.focus();
+              restoreLightbox();
+              if (returnFocus.isConnected) returnFocus.focus();
             }, delay);
           };
 
@@ -506,6 +521,15 @@ const articleStructuredData = JSON.stringify({
         tocNav?.removeEventListener("scroll", showTocScrollbar);
         window.clearTimeout(tocScrollTimer);
         tocNav?.classList.remove("is-scrolling");
+        disposeLightbox();
+        content.querySelectorAll("[data-article-generated-anchor]").forEach((link) => link.remove());
+        content.querySelectorAll(".code-block[data-article-generated]").forEach((wrapper) => {
+          const pre = wrapper.querySelector("pre");
+          if (pre) wrapper.parentNode?.insertBefore(pre, wrapper);
+          wrapper.remove();
+        });
+        document.querySelectorAll("[data-article-lightbox]").forEach((overlay) => overlay.remove());
+        content.removeAttribute("data-article-enhanced");
         if (progress) progress.style.transform = "scaleX(0)";
       };
     }

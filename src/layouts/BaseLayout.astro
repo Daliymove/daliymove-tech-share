@@ -106,7 +106,7 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
       themeRoot.classList.toggle("dark", isDarkTheme);
       themeRoot.dataset.theme = isDarkTheme ? "dark" : "light";
       themeRoot.style.colorScheme = isDarkTheme ? "dark" : "light";
-      document.querySelector("meta[data-theme-color]")?.setAttribute("content", isDarkTheme ? "#101010" : "#F5F6F3");
+      document.querySelector("meta[data-theme-color]")?.setAttribute("content", isDarkTheme ? "#18221D" : "#F5F6F3");
     </script>
   </head>
   <body>
@@ -188,7 +188,7 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
         root.classList.toggle("dark", isDark);
         root.dataset.theme = isDark ? "dark" : "light";
         root.style.colorScheme = isDark ? "dark" : "light";
-        themeColor?.setAttribute("content", isDark ? "#101010" : "#F5F6F3");
+        themeColor?.setAttribute("content", isDark ? "#18221D" : "#F5F6F3");
       }
 
       function syncIcon() {
@@ -213,7 +213,7 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
 
           const themeOverlay = document.querySelector(".theme-transition-overlay");
           const next = !root.classList.contains("dark");
-          const currentThemeColor = next ? "#101010" : "#f5f6f3";
+          const currentThemeColor = next ? "#18221D" : "#f5f6f3";
           window.__siteTheme = next ? "dark" : "light";
           button.classList.remove("is-switching");
           void button.offsetWidth;
@@ -235,11 +235,28 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
           window.setTimeout(() => button.classList.remove("is-switching"), 420);
         });
       }
+      function ensureMobileNavVisible() {
+        const nav = document.querySelector(".header-nav-mobile");
+        const active = nav?.querySelector('[aria-current="page"]');
+        if (!(nav instanceof HTMLElement) || !(active instanceof HTMLElement)) return;
+        const navLeft = nav.scrollLeft;
+        const navRight = navLeft + nav.clientWidth;
+        const activeLeft = active.offsetLeft;
+        const activeRight = activeLeft + active.offsetWidth;
+        if (activeLeft < navLeft) {
+          nav.scrollLeft = Math.max(0, activeLeft - Math.round(nav.clientWidth * 0.2));
+        } else if (activeRight > navRight) {
+          nav.scrollLeft = Math.min(nav.scrollWidth - nav.clientWidth, activeRight - Math.round(nav.clientWidth * 0.8));
+        }
+      }
+
       document.addEventListener("astro:page-load", () => {
         applyTheme(window.__siteTheme === "dark");
         syncIcon();
+        window.requestAnimationFrame(ensureMobileNavVisible);
       });
       syncIcon();
+      window.requestAnimationFrame(ensureMobileNavVisible);
 
       if (!reduceMotion && window.matchMedia("(hover: hover) and (pointer: fine)").matches && !window.__pointerEffectsInstalled) {
         window.__pointerEffectsInstalled = true;
@@ -334,24 +351,36 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
         revealElements.forEach((element) => revealObserver.observe(element));
       }
 
-      let scrollFrame = 0;
-      let headerCompact = false;
-      const updateHeader = () => {
-        scrollFrame = 0;
-        const currentHeader = document.querySelector(".site-header");
-        // Hysteresis prevents the header resize from bouncing at the top edge.
-        if (!headerCompact && window.scrollY > 32) headerCompact = true;
-        if (headerCompact && window.scrollY < 6) headerCompact = false;
-        currentHeader?.classList.toggle("is-compact", headerCompact);
-        window.dispatchEvent(new Event("site:scroll"));
-      };
-      const onScroll = () => {
-        if (scrollFrame) return;
-        scrollFrame = window.requestAnimationFrame(updateHeader);
-      };
-      updateHeader();
-      window.addEventListener("scroll", onScroll, { passive: true });
-      document.addEventListener("astro:page-load", updateHeader);
+      if (!window.__siteHeaderControllerInstalled) {
+        window.__siteHeaderControllerInstalled = true;
+        let scrollFrame = 0;
+        let headerCompact = false;
+        const updateHeader = () => {
+          scrollFrame = 0;
+          const currentHeader = document.querySelector(".site-header");
+          const canCompact = window.matchMedia("(min-width: 1024px)").matches;
+          if (!canCompact) {
+            headerCompact = false;
+            currentHeader?.classList.remove("is-compact");
+            window.dispatchEvent(new Event("site:scroll"));
+            return;
+          }
+          // Keep one scroll controller across Astro swaps so competing states
+          // cannot repeatedly expand and collapse the mobile header.
+          if (!headerCompact && window.scrollY > 32) headerCompact = true;
+          if (headerCompact && window.scrollY < 6) headerCompact = false;
+          currentHeader?.classList.toggle("is-compact", headerCompact);
+          window.dispatchEvent(new Event("site:scroll"));
+        };
+        const onScroll = () => {
+          if (scrollFrame) return;
+          scrollFrame = window.requestAnimationFrame(updateHeader);
+        };
+        updateHeader();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll, { passive: true });
+        document.addEventListener("astro:page-load", updateHeader);
+      }
 
       window.addEventListener("keydown", (event) => {
         const key = event.key.toLowerCase();

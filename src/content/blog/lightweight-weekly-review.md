@@ -7,7 +7,7 @@ tags:
   - 复盘
   - 个人系统
   - 清单
-cover: "/images/posts/weekly-review.svg"
+cover: "/images/posts/peitu2.png"
 draft: false
 ---
 

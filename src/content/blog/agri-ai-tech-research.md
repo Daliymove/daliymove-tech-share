@@ -7,9 +7,11 @@ category: "AI 工程"
 tags:
   - 笔记
   - 分享
-cover: "/images/og/default.png"
+
+pinned: true
+cover: "/images/posts/agri-tech.png"
 series: "农险 AI反欺诈"
-pinned: false
+draft: false
 ---
 
 # 农险反欺诈AI应用落地经验与国内主要机构优劣势对比研究报告

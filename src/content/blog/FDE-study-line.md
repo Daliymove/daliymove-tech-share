@@ -7,8 +7,8 @@ category: "AI 工程"
 tags:
   - 笔记
   - 实践
-pinned: true
-cover: "/images/posts/fde-route.svg"
+pinned: false
+cover: "/images/posts/FDE-engineer.png"
 draft: false
 ---
 

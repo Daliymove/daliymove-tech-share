@@ -7,7 +7,7 @@ category: "AI 工程"
 tags:
   - vllm
   - 大模型训练
-cover: "/images/og/default.png"
+cover: "/images/posts/vllm-study.png"
 series: "vLLM 学习笔记"
 draft: false
 ---
