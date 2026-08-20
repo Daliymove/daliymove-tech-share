@@ -9,7 +9,7 @@ tags:
   - 分享
 
 pinned: true
-cover: "/images/posts/agri-tech.png"
+cover: "/images/og/default.png"
 series: "农险 AI反欺诈"
 draft: false
 ---

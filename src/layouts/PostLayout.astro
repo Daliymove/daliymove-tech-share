@@ -91,156 +91,208 @@ const articleStructuredData = JSON.stringify({
 >
   <script is:inline type="application/ld+json" set:html={articleStructuredData}></script>
     <script is:inline type="application/ld+json" set:html={breadcrumbStructuredData}></script>
-  <article class:list={["grid gap-8 lg:gap-16", toc.length > 0 && "lg:grid-cols-[14rem_minmax(0,1fr)] xl:gap-20"]} data-pagefind-body data-reading-article>
-    {toc.length > 0 && (
-      <aside class="hidden lg:block">
-        <div class="sticky top-28 text-sm">
-          <div data-reveal="soft">
-            <p class="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-ink-600 dark:text-ink-200">
-              <Icon name="layers" class="h-3.5 w-3.5" />
-              本页目录
-            </p>
-            <nav class="max-h-[calc(100vh-11rem)] space-y-2.5 overflow-y-auto pr-2" data-toc-nav>
-              {toc.map((heading) => (
-                <a class:list={["toc-link block leading-5 text-ink-600 transition hover:text-leaf-700 dark:text-ink-200 dark:hover:text-leaf-300", heading.depth === 3 ? "pl-2 text-xs font-medium" : "font-semibold"]} href={`#${heading.slug}`} data-toc-slug={heading.slug}>{heading.text}</a>
-              ))}
-            </nav>
-          </div>
-        </div>
-      </aside>
-    )}
-    <div class="min-w-0">
-      <a class="inline-flex items-center gap-2 text-sm font-medium text-ink-500 transition hover:text-leaf-700 dark:text-ink-300 dark:hover:text-leaf-300" href={withBase("/blog/")}>
+  <article class="mx-auto max-w-3xl min-w-0" data-pagefind-body data-reading-article>
+    <!-- 返回导航与类别 -->
+    <div class="flex items-center justify-between gap-4 text-xs">
+      <a class="inline-flex items-center gap-1.5 font-medium text-ink-500 transition hover:text-leaf-700 dark:text-ink-400 dark:hover:text-leaf-300" href={withBase("/blog/")}>
         <span aria-hidden="true">←</span>
         返回文章列表
       </a>
-      <header class="mt-6 border-b border-ink-200/70 pb-9 dark:border-white/10" data-reveal>
-        <div class="flex flex-wrap items-center gap-2">
-          <a class="inline-flex items-center gap-1 rounded-full border border-leaf-200 bg-leaf-50 px-3 py-1 text-xs font-semibold text-leaf-700 dark:border-leaf-300/20 dark:bg-leaf-300/10 dark:text-leaf-100" href={getCategoryUrl(post.data.category)}>
-            <Icon name="grid" class="h-3 w-3" />
-            {post.data.category}
-          </a>
-          {post.data.series && (
-            <span class="inline-flex items-center gap-1 rounded-full border border-bark-300/40 bg-bark-100 px-3 py-1 text-xs font-semibold text-bark-700 dark:border-bark-300/25 dark:bg-bark-500/15 dark:text-bark-300">
-              <Icon name="layers" class="h-3 w-3" />
-              系列 · {post.data.series}
-            </span>
-          )}
-          {post.data.pinned && (
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-300/70 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 shadow-sm dark:border-amber-300/25 dark:bg-amber-300/10 dark:text-amber-100">
-              <Icon name="pin" class="h-3 w-3" />
-              置顶文章
-            </span>
-          )}
-        </div>
-        <h1 class="mt-4 font-display text-3xl font-extrabold leading-tight tracking-normal text-ink-950 dark:text-white md:text-5xl" data-pagefind-meta="title" data-article-title tabindex="-1">{post.data.title}</h1>
-        <p class="mt-4 text-base leading-7 text-ink-600 dark:text-ink-300">{post.data.description}</p>
-        {post.data.pinned && (
-          <p class="mt-5 inline-flex items-center gap-2 rounded-xl border border-amber-200/80 bg-amber-50/80 px-3.5 py-2 text-sm text-amber-800 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100">
-            <Icon name="pin" class="h-4 w-4 shrink-0" />
-            这是一篇置顶文章，作为当前阶段的优先阅读内容。
-          </p>
-        )}
-        <div class="mt-7 flex flex-wrap items-center gap-3 text-sm text-ink-500 dark:text-ink-300">
-          <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
-          <span class="text-ink-300 dark:text-ink-600">/</span>
-          <span class="inline-flex items-center gap-1">
-            <Icon name="book" class="h-3.5 w-3.5" />
-            {getReadingTime(post.body)}
+      <div class="flex items-center gap-2">
+        <a class="inline-flex items-center gap-1 rounded-full border border-leaf-200/80 bg-leaf-50/80 px-2.5 py-0.5 font-semibold text-leaf-700 dark:border-leaf-300/20 dark:bg-leaf-300/10 dark:text-leaf-100" href={getCategoryUrl(post.data.category)}>
+          <Icon name="grid" class="h-3 w-3" />
+          {post.data.category}
+        </a>
+        {post.data.series && (
+          <span class="inline-flex items-center gap-1 rounded-full border border-bark-300/40 bg-bark-100/80 px-2.5 py-0.5 font-semibold text-bark-700 dark:border-bark-300/25 dark:bg-bark-500/15 dark:text-bark-300">
+            <Icon name="layers" class="h-3 w-3" />
+            系列 · {post.data.series}
           </span>
-          {post.data.updatedDate && (
-            <>
-              <span class="text-ink-300 dark:text-ink-600">/</span>
-              <span>更新于 {formatDate(post.data.updatedDate)}</span>
-            </>
-          )}
-        </div>
-        <div class="mt-5 flex flex-wrap gap-2">
-          {post.data.tags.map((tag) => (
-            <a class="rounded-full bg-ink-100/80 px-3 py-1 text-sm text-ink-600 transition hover:bg-leaf-100 hover:text-leaf-700 dark:bg-white/10 dark:text-ink-200 dark:hover:bg-leaf-300/10" href={getTagUrl(tag)}>#{tag}</a>
-          ))}
-        </div>
-        <div class:list={["mt-8 grid items-start gap-4", cover && "lg:grid-cols-[minmax(0,1fr)_17rem]"]}>
-          {cover && (
-            <div class="article-cover-frame w-full overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/60 shadow-soft dark:border-white/10 dark:bg-white/5">
-              <img class="block h-auto w-full object-contain" src={cover} alt={`文章封面：${post.data.title}`} loading="eager" data-image-preview />
-            </div>
-          )}
-          <aside class:list={["hidden self-start rounded-[1.35rem] border border-white/70 bg-white/68 p-5 shadow-soft backdrop-blur-xl lg:block dark:border-white/10 dark:bg-white/[0.055]", !cover && "lg:justify-self-end lg:w-[17rem]"]}>
-            <p class="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-ink-500 dark:text-ink-300">Article Brief</p>
-            <dl class="mt-4 space-y-3 text-sm">
-              <div class="flex items-center justify-between gap-4 border-b border-ink-200/60 pb-3 dark:border-white/10">
-                <dt class="inline-flex items-center gap-2 text-ink-500 dark:text-ink-300"><Icon name="calendar" class="h-3.5 w-3.5" />发布</dt>
-                <dd class="font-medium text-ink-800 dark:text-ink-100">{formatDate(post.data.pubDate)}</dd>
-              </div>
-              <div class="flex items-center justify-between gap-4 border-b border-ink-200/60 pb-3 dark:border-white/10">
-                <dt class="inline-flex items-center gap-2 text-ink-500 dark:text-ink-300"><Icon name="clock" class="h-3.5 w-3.5" />阅读</dt>
-                <dd class="font-medium text-ink-800 dark:text-ink-100">{getReadingTime(post.body)}</dd>
-              </div>
-              <div class="flex items-center justify-between gap-4 border-b border-ink-200/60 pb-3 dark:border-white/10">
-                <dt class="inline-flex items-center gap-2 text-ink-500 dark:text-ink-300"><Icon name="grid" class="h-3.5 w-3.5" />分类</dt>
-                <dd class="font-medium text-ink-800 dark:text-ink-100">{post.data.category}</dd>
-              </div>
-              {post.data.updatedDate && (
-                <div class="flex items-center justify-between gap-4">
-                  <dt class="text-ink-500 dark:text-ink-300">更新</dt>
-                  <dd class="font-medium text-ink-800 dark:text-ink-100">{formatDate(post.data.updatedDate)}</dd>
-                </div>
-              )}
-            </dl>
-          </aside>
-        </div>
-      </header>
+        )}
+        {post.data.pinned && (
+          <span class="inline-flex items-center gap-1 rounded-full border border-amber-300/70 bg-amber-50/80 px-2.5 py-0.5 font-semibold text-amber-700 dark:border-amber-300/25 dark:bg-amber-300/10 dark:text-amber-100">
+            <Icon name="pin" class="h-3 w-3" />
+            置顶
+          </span>
+        )}
+      </div>
+    </div>
 
+    <!-- 文章主标题区 -->
+    <header class="mt-8 border-b border-ink-200/60 pb-7 dark:border-white/10" data-reveal>
+      <h1 class="font-display text-2xl font-extrabold leading-snug tracking-normal text-ink-950 sm:text-3xl md:text-4xl dark:text-white" data-pagefind-meta="title" data-article-title tabindex="-1">
+        {post.data.title}
+      </h1>
+
+      {post.data.description && (
+        <p class="mt-4 text-base leading-7 text-ink-600 dark:text-ink-300">
+          {post.data.description}
+        </p>
+      )}
+
+      <!-- 极简整合元信息 -->
+      <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink-500 dark:text-ink-400">
+        <span class="inline-flex items-center gap-1.5">
+          <Icon name="calendar" class="h-3.5 w-3.5 opacity-75" />
+          <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+        </span>
+        <span class="text-ink-300 dark:text-ink-600">·</span>
+        <span class="inline-flex items-center gap-1.5">
+          <Icon name="clock" class="h-3.5 w-3.5 opacity-75" />
+          <span>{getReadingTime(post.body)}</span>
+        </span>
+        {post.data.updatedDate && (
+          <>
+            <span class="text-ink-300 dark:text-ink-600">·</span>
+            <span>更新于 {formatDate(post.data.updatedDate)}</span>
+          </>
+        )}
+        {post.data.tags.length > 0 && (
+          <div class="flex flex-wrap items-center gap-1.5 sm:ml-auto">
+            {post.data.tags.map((tag) => (
+              <a class="rounded-full bg-ink-100/70 px-2 py-0.5 text-[11px] font-medium text-ink-600 transition hover:bg-leaf-100 hover:text-leaf-700 dark:bg-white/10 dark:text-ink-300 dark:hover:bg-leaf-300/10 dark:hover:text-leaf-200" href={getTagUrl(tag)}>
+                #{tag}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- 封面图（若存在，极简圆角展示） -->
+      {cover && (
+        <div class="mt-6 overflow-hidden rounded-2xl border border-ink-200/50 bg-ink-50/30 shadow-soft dark:border-white/10 dark:bg-white/5">
+          <img class="block max-h-[380px] w-full object-cover" src={cover} alt={`文章封面：${post.data.title}`} loading="eager" data-image-preview />
+        </div>
+      )}
+
+      <!-- 首屏轻量折叠式目录 -->
       {toc.length > 0 && (
-        <details class="mt-6 lg:hidden">
-          <summary class="cursor-pointer list-none text-sm font-bold text-ink-800 dark:text-ink-100">
-            本页目录
+        <details class="group mt-6 rounded-xl border border-ink-200/60 bg-ink-50/40 p-4 transition open:pb-4 dark:border-white/10 dark:bg-white/[0.03]">
+          <summary class="flex cursor-pointer list-none items-center justify-between text-xs font-bold uppercase tracking-wider text-ink-700 dark:text-ink-200">
+            <span class="inline-flex items-center gap-2">
+              <Icon name="layers" class="h-3.5 w-3.5 text-leaf-600 dark:text-leaf-300" />
+              文章目录 ({toc.length})
+            </span>
+            <span class="text-xs text-ink-400 transition-transform duration-200 group-open:rotate-180 dark:text-ink-500">▼</span>
           </summary>
-          <nav class="mt-3 space-y-2.5">
+          <nav class="mt-3.5 space-y-2 border-t border-ink-200/50 pt-3 text-sm" data-toc-nav>
             {toc.map((heading) => (
-              <a class:list={["block leading-6 text-ink-600 transition hover:text-leaf-700 dark:text-ink-200 dark:hover:text-leaf-300", heading.depth === 3 ? "pl-2 text-xs font-medium" : "font-semibold"]} href={`#${heading.slug}`}>{heading.text}</a>
+              <a
+                class:list={[
+                  "toc-link block leading-relaxed text-ink-600 transition hover:text-leaf-700 dark:text-ink-300 dark:hover:text-leaf-300",
+                  heading.depth === 3 ? "pl-3 text-xs opacity-90" : "font-medium"
+                ]}
+                href={`#${heading.slug}`}
+                data-toc-slug={heading.slug}
+              >
+                {heading.text}
+              </a>
             ))}
           </nav>
         </details>
       )}
+    </header>
 
-      <div class="prose-blog mt-8 max-w-none" data-enhance-content>
-        <slot />
-      </div>
-
-      <section class="mt-12 grid gap-4 border-t border-ink-200/70 pt-8 md:grid-cols-2 dark:border-white/10" data-reveal>
-        {prev ? (
-          <a class="post-card group relative overflow-hidden rounded-2xl border border-white/70 bg-white/70 p-5 shadow-soft dark:border-white/10 dark:bg-white/5" href={getPostUrl(prev)}>
-            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-500 dark:text-ink-300">上一篇</p>
-            <p class="mt-2 text-base font-semibold text-ink-950 transition group-hover:text-leaf-700 dark:text-white dark:group-hover:text-leaf-300">{prev.data.title}</p>
-          </a>
-        ) : <div></div>}
-        {next ? (
-          <a class="post-card group relative overflow-hidden rounded-2xl border border-white/70 bg-white/70 p-5 text-right shadow-soft dark:border-white/10 dark:bg-white/5" href={getPostUrl(next)}>
-            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-500 dark:text-ink-300">下一篇</p>
-            <p class="mt-2 text-base font-semibold text-ink-950 transition group-hover:text-leaf-700 dark:text-white dark:group-hover:text-leaf-300">{next.data.title}</p>
-          </a>
-        ) : <div></div>}
-      </section>
-
-      {related.length > 0 && (
-        <section class="mt-12" data-reveal>
-          <div class="mb-5 flex items-center gap-2">
-            <Icon name="spark" class="h-4 w-4 text-leaf-600 dark:text-leaf-300" />
-            <h2 class="text-xl font-semibold text-ink-950 dark:text-white">相关推荐</h2>
-          </div>
-          <div class="grid gap-4 md:grid-cols-3">
-            {related.map((item) => <PostCard post={item} compact showDate={false} />)}
-          </div>
-        </section>
-      )}
+    <!-- 文章主体正文 -->
+    <div class="prose-blog mt-9 max-w-none" data-enhance-content>
+      <slot />
     </div>
 
+    <!-- 上下篇翻页 -->
+    <nav class="mt-14 flex flex-col items-stretch justify-between gap-4 border-t border-ink-200/60 pt-8 sm:flex-row dark:border-white/10" aria-label="文章翻页" data-reveal>
+      {prev ? (
+        <a class="group flex flex-1 flex-col items-start rounded-xl border border-ink-200/60 bg-white/40 p-4 transition hover:border-leaf-500/40 hover:bg-white/80 dark:border-white/10 dark:bg-white/5 dark:hover:border-leaf-300/40" href={getPostUrl(prev)}>
+          <span class="inline-flex items-center gap-1 text-xs font-medium text-ink-400 transition group-hover:text-leaf-600 dark:text-ink-400 dark:group-hover:text-leaf-300">
+            ← 上一篇
+          </span>
+          <span class="mt-1 text-sm font-semibold text-ink-900 transition group-hover:text-leaf-700 dark:text-ink-100 dark:group-hover:text-leaf-200 line-clamp-2">
+            {prev.data.title}
+          </span>
+        </a>
+      ) : <div class="flex-1"></div>}
+      {next ? (
+        <a class="group flex flex-1 flex-col items-end rounded-xl border border-ink-200/60 bg-white/40 p-4 text-right transition hover:border-leaf-500/40 hover:bg-white/80 dark:border-white/10 dark:bg-white/5 dark:hover:border-leaf-300/40" href={getPostUrl(next)}>
+          <span class="inline-flex items-center gap-1 text-xs font-medium text-ink-400 transition group-hover:text-leaf-600 dark:text-ink-400 dark:group-hover:text-leaf-300">
+            下一篇 →
+          </span>
+          <span class="mt-1 text-sm font-semibold text-ink-900 transition group-hover:text-leaf-700 dark:text-ink-100 dark:group-hover:text-leaf-200 line-clamp-2">
+            {next.data.title}
+          </span>
+        </a>
+      ) : <div class="flex-1"></div>}
+    </nav>
+
+    <!-- 相关推荐 -->
+    {related.length > 0 && (
+      <section class="mt-12 border-t border-ink-200/60 pt-8 dark:border-white/10" data-reveal>
+        <div class="mb-5 flex items-center gap-2">
+          <Icon name="spark" class="h-4 w-4 text-leaf-600 dark:text-leaf-300" />
+          <h2 class="text-lg font-semibold text-ink-950 dark:text-white">相关推荐</h2>
+        </div>
+        <div class="grid gap-4 md:grid-cols-3">
+          {related.map((item) => <PostCard post={item} compact showDate={false} />)}
+        </div>
+      </section>
+    )}
   </article>
-  <button class="article-back-to-top" type="button" data-back-to-top aria-label="返回文章开头" title="返回文章开头" tabindex="-1" aria-hidden="true">
-    <Icon name="arrow-up" class="h-5 w-5" />
-  </button>
+
+  <!-- 浮动操作组（右下角） -->
+  <aside class="article-floating-actions" aria-label="文章快速操作">
+    {toc.length > 0 && (
+      <button
+        class="article-action-btn article-toc-toggle"
+        type="button"
+        data-toc-toggle
+        aria-label="打开文章目录"
+        title="文章目录"
+        aria-expanded="false"
+      >
+        <Icon name="layers" class="h-4 w-4" />
+      </button>
+    )}
+    <button
+      class="article-action-btn article-back-to-top"
+      type="button"
+      data-back-to-top
+      aria-label="返回文章开头"
+      title="返回文章开头"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <Icon name="arrow-up" class="h-4 w-4" />
+    </button>
+  </aside>
+
+  <!-- 悬浮目录抽屉/面板 -->
+  {toc.length > 0 && (
+    <div class="floating-toc-backdrop" data-toc-backdrop aria-hidden="true">
+      <div class="floating-toc-panel" role="dialog" aria-modal="true" aria-label="文章目录导航" data-toc-panel>
+        <div class="flex items-center justify-between border-b border-ink-200/60 pb-3 dark:border-white/10">
+          <p class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-ink-800 dark:text-ink-100">
+            <Icon name="layers" class="h-3.5 w-3.5 text-leaf-600 dark:text-leaf-300" />
+            目录导航
+          </p>
+          <button class="floating-toc-close text-ink-400 hover:text-ink-900 dark:text-ink-400 dark:hover:text-white text-base leading-none px-1" type="button" data-toc-close aria-label="关闭目录">
+            ✕
+          </button>
+        </div>
+        <nav class="mt-3 max-h-[60vh] space-y-2 overflow-y-auto pr-1 text-sm" data-floating-toc-nav>
+          {toc.map((heading) => (
+            <a
+              class:list={[
+                "toc-link block leading-relaxed text-ink-600 transition hover:text-leaf-700 dark:text-ink-300 dark:hover:text-leaf-300",
+                heading.depth === 3 ? "pl-3 text-xs opacity-90" : "font-medium"
+              ]}
+              href={`#${heading.slug}`}
+              data-toc-slug={heading.slug}
+            >
+              {heading.text}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </div>
+  )}
 
   <script is:inline data-astro-rerun>
     if (!window.__articleBeforeSwapHandler) {
@@ -254,31 +306,31 @@ const articleStructuredData = JSON.stringify({
       const content = document.querySelector("[data-enhance-content]");
       const backToTop = document.querySelector("[data-back-to-top]");
       const articleTitle = document.querySelector("[data-article-title]");
+      const tocToggle = document.querySelector("[data-toc-toggle]");
+      const tocBackdrop = document.querySelector("[data-toc-backdrop]");
+      const tocClose = document.querySelector("[data-toc-close]");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
       if (!article || !content) {
         if (progress) progress.style.transform = "scaleX(0)";
         return;
       }
-      // Astro can run inline scripts and the page-load hook for the same DOM.
-      // Keep enhancement idempotent so anchors, copy buttons, and lightboxes
-      // are attached exactly once per article.
+
       if (content.getAttribute("data-article-enhanced") === "true") return;
       window.__cleanupArticleEnhancements?.();
       content.setAttribute("data-article-enhanced", "true");
 
       let articleResizeObserver;
       let tocObserver;
-      let tocNav;
-      let tocScrollTimer;
-      let showTocScrollbar = () => {};
-
       let articleTop = 0;
       let articleScrollable = 1;
+
       const measureArticle = () => {
         const rect = article.getBoundingClientRect();
         articleTop = rect.top + window.scrollY;
         articleScrollable = Math.max(article.offsetHeight - window.innerHeight, 1);
       };
+
       const updateProgress = () => {
         const scrolled = Math.min(Math.max(window.scrollY - articleTop, 0), articleScrollable);
         const ratio = scrolled / articleScrollable;
@@ -290,18 +342,22 @@ const articleStructuredData = JSON.stringify({
           backToTop.setAttribute("aria-hidden", String(!visible));
         }
       };
+
       const measureAndUpdate = () => {
         measureArticle();
         updateProgress();
       };
+
       measureAndUpdate();
       window.addEventListener("site:scroll", updateProgress);
       window.addEventListener("resize", measureAndUpdate);
       window.addEventListener("load", measureAndUpdate, { once: true });
+
       if ("ResizeObserver" in window) {
         articleResizeObserver = new ResizeObserver(measureAndUpdate);
         articleResizeObserver.observe(article);
       }
+
       const returnToArticleStart = (moveFocus) => {
         if (moveFocus) {
           articleTitle?.focus({ preventScroll: true });
@@ -310,6 +366,7 @@ const articleStructuredData = JSON.stringify({
         }
         window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
       };
+
       backToTop?.addEventListener("click", (event) => {
         returnToArticleStart(event.detail === 0);
       });
@@ -319,6 +376,41 @@ const articleStructuredData = JSON.stringify({
         returnToArticleStart(true);
       });
 
+      // 悬浮目录面板逻辑
+      const openTocPanel = () => {
+        if (!tocBackdrop) return;
+        tocBackdrop.classList.add("is-open");
+        tocBackdrop.setAttribute("aria-hidden", "false");
+        tocToggle?.setAttribute("aria-expanded", "true");
+      };
+
+      const closeTocPanel = () => {
+        if (!tocBackdrop) return;
+        tocBackdrop.classList.remove("is-open");
+        tocBackdrop.setAttribute("aria-hidden", "true");
+        tocToggle?.setAttribute("aria-expanded", "false");
+      };
+
+      tocToggle?.addEventListener("click", () => {
+        if (tocBackdrop?.classList.contains("is-open")) {
+          closeTocPanel();
+        } else {
+          openTocPanel();
+        }
+      });
+
+      tocClose?.addEventListener("click", closeTocPanel);
+      tocBackdrop?.addEventListener("click", (e) => {
+        if (e.target === tocBackdrop) closeTocPanel();
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && tocBackdrop?.classList.contains("is-open")) {
+          closeTocPanel();
+        }
+      });
+
+      // 代码块增强（复制按钮）
       content.querySelectorAll("pre").forEach((pre) => {
         if (pre.parentElement?.classList.contains("code-block")) return;
         const wrapper = document.createElement("div");
@@ -351,6 +443,7 @@ const articleStructuredData = JSON.stringify({
         wrapper.appendChild(button);
       });
 
+      // 标题链接锚点
       content.querySelectorAll("h2[id], h3[id]").forEach((heading) => {
         const link = document.createElement("a");
         link.href = `#${heading.id}`;
@@ -377,6 +470,7 @@ const articleStructuredData = JSON.stringify({
         heading.appendChild(link);
       });
 
+      // 图片灯箱
       let disposeLightbox = () => {};
       const previewImages = new Set([
         ...content.querySelectorAll("img"),
@@ -478,28 +572,22 @@ const articleStructuredData = JSON.stringify({
         });
       });
 
+      // 目录高亮同步
       const tocLinks = Array.from(document.querySelectorAll("[data-toc-slug]"));
       if (tocLinks.length) {
-        tocNav = document.querySelector("[data-toc-nav]");
         let activeTocSlug = "";
-        showTocScrollbar = () => {
-          tocNav?.classList.add("is-scrolling");
-          window.clearTimeout(tocScrollTimer);
-          tocScrollTimer = window.setTimeout(() => tocNav?.classList.remove("is-scrolling"), 700);
-        };
-        tocNav?.addEventListener("scroll", showTocScrollbar, { passive: true });
         const headings = tocLinks
           .map((link) => document.getElementById(link.getAttribute("data-toc-slug") || ""))
           .filter(Boolean);
+
         const setActiveToc = (slug) => {
           if (!slug || activeTocSlug === slug) return;
           activeTocSlug = slug;
           tocLinks.forEach((link) => {
             link.classList.toggle("is-active", link.getAttribute("data-toc-slug") === slug);
           });
-          const activeLink = tocLinks.find((link) => link.getAttribute("data-toc-slug") === slug);
-          activeLink?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduceMotion ? "auto" : "smooth" });
         };
+
         tocObserver = new IntersectionObserver(
           (entries) => {
             const visible = entries
@@ -511,6 +599,13 @@ const articleStructuredData = JSON.stringify({
           { rootMargin: "-20% 0px -65% 0px", threshold: [0.1, 0.5, 1] },
         );
         headings.forEach((heading) => tocObserver.observe(heading));
+
+        // 点击悬浮目录链接时自动关闭面板
+        document.querySelectorAll("[data-floating-toc-nav] a").forEach((a) => {
+          a.addEventListener("click", () => {
+            closeTocPanel();
+          });
+        });
       }
 
       window.__cleanupArticleEnhancements = () => {
@@ -518,9 +613,6 @@ const articleStructuredData = JSON.stringify({
         window.removeEventListener("resize", measureAndUpdate);
         articleResizeObserver?.disconnect();
         tocObserver?.disconnect();
-        tocNav?.removeEventListener("scroll", showTocScrollbar);
-        window.clearTimeout(tocScrollTimer);
-        tocNav?.classList.remove("is-scrolling");
         disposeLightbox();
         content.querySelectorAll("[data-article-generated-anchor]").forEach((link) => link.remove());
         content.querySelectorAll(".code-block[data-article-generated]").forEach((wrapper) => {

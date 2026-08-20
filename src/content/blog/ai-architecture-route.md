@@ -7,7 +7,7 @@ category: "AI 工程"
 tags:
   - 笔记
   - 分享
-cover: "/images/posts/model-peek.png"
+cover: "/images/og/ai-tech-promot.png"
 series: "AI知识分享系列"
 pinned: false
 ---
