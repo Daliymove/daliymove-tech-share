@@ -28,7 +28,7 @@ const categories = collectCategories(posts);
           </div>
         </div>
         <div class="space-y-4">
-          {pinnedPosts.map((post) => <div data-archive-item data-pinned-item data-post-category={post.data.category}><PostCard post={post} emphasized /></div>)}
+          {pinnedPosts.map((post, idx) => <div data-archive-item data-pinned-item data-post-category={post.data.category} style={`--reveal-delay: ${Math.min(idx * 70, 200)}ms`}><PostCard post={post} emphasized /></div>)}
         </div>
       </section>
     )}
@@ -41,7 +41,7 @@ const categories = collectCategories(posts);
         <p id="archive-status" class="text-sm text-ink-500 dark:text-ink-300" role="status" aria-live="polite" aria-atomic="true">普通文章 {regularPosts.length} 篇 · 置顶 {pinnedPosts.length} 篇</p>
       </div>
       <div id="archive-list" class="space-y-4" aria-busy="false">
-        {regularPosts.map((post) => <div data-archive-item data-regular-item data-post-category={post.data.category}><PostCard post={post} /></div>)}
+        {regularPosts.map((post, idx) => <div data-archive-item data-regular-item data-post-category={post.data.category} style={`--reveal-delay: ${Math.min(idx * 50, 250)}ms`}><PostCard post={post} /></div>)}
       </div>
     </section>
     <div id="archive-empty" class="hidden rounded-2xl border border-dashed border-ink-200 bg-white/50 p-8 text-center text-sm text-ink-500 dark:border-white/10 dark:bg-white/5 dark:text-ink-300">这个分类暂时没有公开文章。</div>

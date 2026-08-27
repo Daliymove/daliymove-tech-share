@@ -349,7 +349,7 @@ const articleStructuredData = JSON.stringify({
       };
 
       measureAndUpdate();
-      window.addEventListener("site:scroll", updateProgress);
+      window.addEventListener("scroll", updateProgress, { passive: true });
       window.addEventListener("resize", measureAndUpdate);
       window.addEventListener("load", measureAndUpdate, { once: true });
 
@@ -609,7 +609,7 @@ const articleStructuredData = JSON.stringify({
       }
 
       window.__cleanupArticleEnhancements = () => {
-        window.removeEventListener("site:scroll", updateProgress);
+        window.removeEventListener("scroll", updateProgress);
         window.removeEventListener("resize", measureAndUpdate);
         articleResizeObserver?.disconnect();
         tocObserver?.disconnect();

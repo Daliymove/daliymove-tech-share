@@ -106,11 +106,11 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
       themeRoot.classList.toggle("dark", isDarkTheme);
       themeRoot.dataset.theme = isDarkTheme ? "dark" : "light";
       themeRoot.style.colorScheme = isDarkTheme ? "dark" : "light";
-      document.querySelector("meta[data-theme-color]")?.setAttribute("content", isDarkTheme ? "#18221D" : "#F5F6F3");
+      document.querySelector("meta[data-theme-color]")?.setAttribute("content", isDarkTheme ? "#08150C" : "#F5F6F3");
     </script>
   </head>
   <body>
-    <div class="theme-transition-overlay" aria-hidden="true"></div>
+      <div id="page-loading-bar" class="page-loading-bar" aria-hidden="true"></div>
     <div id="reading-progress" class="reading-progress" aria-hidden="true"></div>
     <a class="skip-link" href="#content">跳到正文</a>
     <header class="site-header sticky top-0 z-40 px-3 pt-3 md:px-5">
@@ -126,13 +126,20 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
             </span>
           </a>
           <nav class="header-nav-desktop hidden items-center gap-1 rounded-full border border-ink-200/70 bg-white/65 p-1 lg:flex dark:border-white/10 dark:bg-white/5" aria-label="主导航">
+            <span class="nav-magic-pill" aria-hidden="true"></span>
             {site.nav.map((item) => {
               const href = withBase(item.href);
               const active = currentPath === href || (item.href !== "/" && currentPath.startsWith(href));
+              const isSearch = item.href.includes("search");
               return (
-                <a class:list={["inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm transition", active ? "bg-ink-950 text-white shadow-soft dark:bg-leaf-300 dark:text-ink-950" : "text-ink-600 hover:bg-ink-100 hover:text-ink-950 dark:text-ink-200 dark:hover:bg-white/10 dark:hover:text-white"]} href={href} aria-current={active ? "page" : undefined}>
+                <a
+                  class="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-200"
+                  href={href}
+                  aria-current={active ? "page" : undefined}
+                >
                   <Icon name={item.icon} class="h-3.5 w-3.5 opacity-80" />
                   <span>{item.label}</span>
+                  {isSearch && <kbd class="header-search-kbd" aria-hidden="true">⌘K</kbd>}
                 </a>
               );
             })}
@@ -141,9 +148,15 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
             <a class="utility-icon-button" href={rssHref} aria-label="RSS 订阅" title="RSS 订阅">
               <Icon name="rss" class="h-4 w-4" />
             </a>
-            <button class="utility-icon-button theme-toggle" type="button" aria-label="切换至深色模式" aria-pressed="false" title="切换至深色模式">
-              <span class="theme-icon-light" aria-hidden="true"><Icon name="sun" class="h-4 w-4" /></span>
-              <span class="theme-icon-dark hidden" aria-hidden="true"><Icon name="moon" class="h-4 w-4" /></span>
+            <button class="theme-toggle-switch" type="button" aria-label="切换至深色模式" aria-pressed="false" title="切换至深色模式">
+              <span class="theme-switch-track" aria-hidden="true">
+                <span class="track-sun"><Icon name="sun" class="h-3 w-3" /></span>
+                <span class="track-moon"><Icon name="moon" class="h-3 w-3" /></span>
+              </span>
+              <span class="theme-switch-thumb" aria-hidden="true">
+                <span class="thumb-icon-light"><Icon name="sun" class="h-3 w-3" /></span>
+                <span class="thumb-icon-dark"><Icon name="moon" class="h-3 w-3" /></span>
+              </span>
             </button>
           </div>
         </div>
@@ -180,60 +193,159 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
     <script is:inline define:vars={{ searchHref }}>
       const root = document.documentElement;
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const themeTransitionDuration = 900;
-
+      
       function applyTheme(isDark) {
         const themeColor = document.querySelector("meta[data-theme-color]");
         window.__siteTheme = isDark ? "dark" : "light";
         root.classList.toggle("dark", isDark);
         root.dataset.theme = isDark ? "dark" : "light";
         root.style.colorScheme = isDark ? "dark" : "light";
-        themeColor?.setAttribute("content", isDark ? "#18221D" : "#F5F6F3");
+        themeColor?.setAttribute("content", isDark ? "#08150C" : "#F5F6F3");
       }
 
       function syncIcon() {
-        const button = document.querySelector(".theme-toggle");
-        const lightIcon = document.querySelector(".theme-icon-light");
-        const darkIcon = document.querySelector(".theme-icon-dark");
+        const button = document.querySelector(".theme-toggle-switch");
         const isDark = root.classList.contains("dark");
-        lightIcon?.classList.toggle("hidden", isDark);
-        darkIcon?.classList.toggle("hidden", !isDark);
         button?.setAttribute("aria-pressed", String(isDark));
         const label = isDark ? "切换至浅色模式" : "切换至深色模式";
         button?.setAttribute("aria-label", label);
         button?.setAttribute("title", label);
       }
 
-      // Delegate the click so the control keeps working after Astro swaps the page body.
+      // Delegate the click with View Transitions circular ripple reveal
       if (!window.__siteThemeControllerInstalled) {
         window.__siteThemeControllerInstalled = true;
-        document.addEventListener("click", (event) => {
-          const button = event.target instanceof Element ? event.target.closest(".theme-toggle") : null;
+        document.addEventListener("click", async (event) => {
+          const button = event.target instanceof Element ? event.target.closest(".theme-toggle-switch") : null;
           if (!(button instanceof HTMLButtonElement)) return;
 
-          const themeOverlay = document.querySelector(".theme-transition-overlay");
-          const next = !root.classList.contains("dark");
-          const currentThemeColor = next ? "#18221D" : "#f5f6f3";
-          window.__siteTheme = next ? "dark" : "light";
-          button.classList.remove("is-switching");
-          void button.offsetWidth;
-          button.classList.add("is-switching");
-          root.classList.remove("is-theme-transitioning");
-          if (!reduceMotion) {
-            themeOverlay?.style.setProperty("--theme-transition-color", currentThemeColor);
-            void themeOverlay?.getBoundingClientRect();
-            root.classList.add("is-theme-transitioning");
-          }
-          window.setTimeout(() => applyTheme(next), reduceMotion ? 0 : themeTransitionDuration * 0.5);
-          try {
-            localStorage.setItem("theme", next ? "dark" : "light");
-          } catch {}
-          window.setTimeout(() => {
+          const isDark = root.classList.contains("dark");
+          const next = !isDark;
+          const rect = button.getBoundingClientRect();
+          const x = rect.left + rect.width / 2;
+          const y = rect.top + rect.height / 2;
+          const endRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+          );
+
+          const updateThemeState = () => {
+            applyTheme(next);
+            try {
+              localStorage.setItem("theme", next ? "dark" : "light");
+            } catch {}
             syncIcon();
-            root.classList.remove("is-theme-transitioning");
-          }, reduceMotion ? 0 : themeTransitionDuration);
-          window.setTimeout(() => button.classList.remove("is-switching"), 420);
+          };
+
+          // If reduced motion is requested, switch instantly
+          if (reduceMotion) {
+            updateThemeState();
+            return;
+          }
+
+          let vtAnimated = false;
+          if (typeof document.startViewTransition === "function") {
+            try {
+              const transition = document.startViewTransition(() => {
+                updateThemeState();
+              });
+              await transition.ready;
+              const clipPath = [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`
+              ];
+              const anim = document.documentElement.animate(
+                { clipPath: clipPath },
+                {
+                  duration: 460,
+                  easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+                  pseudoElement: "::view-transition-new(root)"
+                }
+              );
+              if (anim) {
+                vtAnimated = true;
+                return;
+              }
+            } catch (err) {
+              console.warn("ViewTransition animate fallback:", err);
+            }
+          }
+
+          if (!vtAnimated) {
+            // Fallback circular expanding overlay for other environments
+            const circle = document.createElement("div");
+            circle.className = "theme-ripple-circle";
+            circle.style.left = `${x}px`;
+            circle.style.top = `${y}px`;
+            circle.style.width = `${endRadius * 2.2}px`;
+            circle.style.height = `${endRadius * 2.2}px`;
+            circle.style.backgroundColor = next ? "#08150C" : "#F5F6F3";
+            document.body.appendChild(circle);
+
+            // Force reflow
+            void circle.offsetWidth;
+            circle.style.transform = "translate(-50%, -50%) scale(1)";
+
+            setTimeout(() => {
+              updateThemeState();
+              circle.style.opacity = "0";
+              setTimeout(() => circle.remove(), 360);
+            }, 220);
+          }
         });
+      }
+
+      // Magic Pill Sliding Indicator for Desktop Nav
+      function initMagicPill() {
+        const nav = document.querySelector(".header-nav-desktop");
+        const pill = nav?.querySelector(".nav-magic-pill");
+        if (!(nav instanceof HTMLElement) || !(pill instanceof HTMLElement)) return;
+
+        const links = Array.from(nav.querySelectorAll("a"));
+        const activeLink = nav.querySelector('a[aria-current="page"]');
+
+        const positionPillTo = (target) => {
+          if (!(target instanceof HTMLElement)) {
+            pill.style.opacity = "0";
+            links.forEach((l) => l.classList.remove("is-pill-active"));
+            return;
+          }
+          const navRect = nav.getBoundingClientRect();
+          const targetRect = target.getBoundingClientRect();
+          const left = targetRect.left - navRect.left;
+          const width = targetRect.width;
+
+          pill.style.width = `${width}px`;
+          pill.style.transform = `translate3d(${left}px, 0, 0)`;
+          pill.style.opacity = "1";
+
+          links.forEach((l) => l.classList.toggle("is-pill-active", l === target));
+        };
+
+        if (activeLink instanceof HTMLElement) {
+          positionPillTo(activeLink);
+        } else {
+          pill.style.opacity = "0";
+        }
+
+        links.forEach((link) => {
+          link.addEventListener("mouseenter", () => positionPillTo(link));
+        });
+
+        nav.addEventListener("mouseleave", () => {
+          if (activeLink instanceof HTMLElement) {
+            positionPillTo(activeLink);
+          } else {
+            positionPillTo(null);
+          }
+        });
+
+        window.addEventListener("resize", () => {
+          const currentTarget = nav.querySelector(".is-pill-active") || activeLink;
+          if (currentTarget instanceof HTMLElement) {
+            positionPillTo(currentTarget);
+          }
+        }, { passive: true });
       }
       function ensureMobileNavVisible() {
         const nav = document.querySelector(".header-nav-mobile");
@@ -254,59 +366,56 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
         applyTheme(window.__siteTheme === "dark");
         syncIcon();
         window.requestAnimationFrame(ensureMobileNavVisible);
+        window.requestAnimationFrame(initMagicPill);
       });
       syncIcon();
       window.requestAnimationFrame(ensureMobileNavVisible);
+      window.requestAnimationFrame(initMagicPill);
 
       window.addEventListener("pageshow", () => root.classList.remove("is-page-leaving"));
 
-      const revealElements = Array.from(document.querySelectorAll("[data-reveal]"));
-      if (reduceMotion || !("IntersectionObserver" in window)) {
-        revealElements.forEach((element) => element.classList.add("is-revealed"));
-      } else {
-        const revealObserver = new IntersectionObserver(
-          (entries, observer) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting) return;
-              entry.target.classList.add("is-revealed");
-              observer.unobserve(entry.target);
-            });
-          },
-          { rootMargin: "0px 0px -6% 0px", threshold: 0.01 },
-        );
-        revealElements.forEach((element) => revealObserver.observe(element));
+      // Top Page Transition Loading Bar (Kova Smooth Navigation)
+      const loadingBar = document.getElementById("page-loading-bar");
+      let finishTimeout = null;
+
+      document.addEventListener("astro:before-preparation", () => {
+        if (finishTimeout) clearTimeout(finishTimeout);
+        loadingBar?.classList.remove("is-finishing");
+        loadingBar?.classList.add("is-active");
+      });
+
+      document.addEventListener("astro:after-preparation", () => {
+        loadingBar?.classList.remove("is-active");
+        loadingBar?.classList.add("is-finishing");
+        finishTimeout = setTimeout(() => {
+          loadingBar?.classList.remove("is-finishing");
+        }, 360);
+      });
+
+      // Smooth Blur & FadeUp Intersection Observer
+      function initReveals() {
+        const revealElements = Array.from(document.querySelectorAll("[data-reveal]:not(.is-revealed)"));
+        if (reduceMotion || !("IntersectionObserver" in window)) {
+          revealElements.forEach((element) => element.classList.add("is-revealed"));
+        } else {
+          const revealObserver = new IntersectionObserver(
+            (entries, observer) => {
+              entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add("is-revealed");
+                observer.unobserve(entry.target);
+              });
+            },
+            { rootMargin: "0px 0px -4% 0px", threshold: 0.02 },
+          );
+          revealElements.forEach((element) => revealObserver.observe(element));
+        }
       }
 
-      if (!window.__siteHeaderControllerInstalled) {
-        window.__siteHeaderControllerInstalled = true;
-        let scrollFrame = 0;
-        let headerCompact = false;
-        const updateHeader = () => {
-          scrollFrame = 0;
-          const currentHeader = document.querySelector(".site-header");
-          const canCompact = window.matchMedia("(min-width: 1024px)").matches;
-          if (!canCompact) {
-            headerCompact = false;
-            currentHeader?.classList.remove("is-compact");
-            window.dispatchEvent(new Event("site:scroll"));
-            return;
-          }
-          // Keep one scroll controller across Astro swaps so competing states
-          // cannot repeatedly expand and collapse the mobile header.
-          if (!headerCompact && window.scrollY > 32) headerCompact = true;
-          if (headerCompact && window.scrollY < 6) headerCompact = false;
-          currentHeader?.classList.toggle("is-compact", headerCompact);
-          window.dispatchEvent(new Event("site:scroll"));
-        };
-        const onScroll = () => {
-          if (scrollFrame) return;
-          scrollFrame = window.requestAnimationFrame(updateHeader);
-        };
-        updateHeader();
-        window.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("resize", onScroll, { passive: true });
-        document.addEventListener("astro:page-load", updateHeader);
-      }
+      initReveals();
+      document.addEventListener("astro:page-load", initReveals);
+
+
 
       window.addEventListener("keydown", (event) => {
         const key = event.key.toLowerCase();

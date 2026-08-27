@@ -165,7 +165,34 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
         .replace(/&lt;\/mark&gt;/gi, "</mark>");
     }
 
-    function renderEmpty(title: string, description: string) {
+          function renderLoadingSkeleton() {
+        if (!results) return;
+        setResultsBusy(true);
+        results.innerHTML = Array.from({ length: 3 })
+          .map(
+            (_, idx) => `
+          <div class="relative overflow-hidden rounded-2xl border border-white/70 bg-white/72 p-4 shadow-soft dark:border-white/10 dark:bg-white/[0.055] md:p-5" style="animation: search-card-in 400ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: ${idx * 80}ms;">
+            <div class="flex items-start gap-4">
+              <div class="h-12 w-12 shrink-0 rounded-2xl skeleton-shimmer"></div>
+              <div class="min-w-0 flex-1 space-y-3">
+                <div class="flex items-center gap-2">
+                  <div class="h-5 w-20 rounded-full skeleton-shimmer"></div>
+                  <div class="h-5 w-16 rounded-full skeleton-shimmer"></div>
+                </div>
+                <div class="h-6 w-3/4 rounded-lg skeleton-shimmer"></div>
+                <div class="space-y-1.5 pt-1">
+                  <div class="h-4 w-full rounded skeleton-shimmer"></div>
+                  <div class="h-4 w-4/5 rounded skeleton-shimmer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      function renderEmpty(title: string, description: string) {
       if (!results) return;
       setResultsBusy(false);
       results.innerHTML = `
@@ -190,7 +217,7 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
 
       setStatus(`找到 ${total} 条结果，用时 ${elapsed}ms（${engineLabel}）。`);
       results.innerHTML = items.map((item, index) => `
-        <a class="post-card group relative block overflow-hidden rounded-2xl border border-white/70 bg-white/72 p-4 shadow-soft dark:border-white/10 dark:bg-white/[0.055] md:p-5" href="${escapeAttribute(item.url)}">
+        <a class="post-card group relative block overflow-hidden rounded-2xl border border-white/70 bg-white/72 p-4 shadow-soft dark:border-white/10 dark:bg-white/[0.055] md:p-5 transition hover:shadow-lift hover:-translate-y-0.5" href="${escapeAttribute(item.url)}" style="animation: search-card-in 450ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: ${Math.min(index * 60, 300)}ms;">
           <div class="flex items-start gap-4">
             <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-leaf-200 bg-leaf-50 font-mono text-sm font-semibold text-leaf-700 dark:border-leaf-300/20 dark:bg-leaf-300/10 dark:text-leaf-200">${String(index + 1).padStart(2, "0")}</span>
             <div class="min-w-0 flex-1">
@@ -372,6 +399,7 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
       }
 
       setStatus(`正在搜索“${trimmed}”...`);
+      renderLoadingSkeleton();
       const startedAt = performance.now();
 
       let items = await searchPagefind(trimmed);
