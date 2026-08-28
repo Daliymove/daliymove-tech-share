@@ -13,7 +13,6 @@ export const site = {
     { href: "/blog/", label: "文章", icon: "article" },
     { href: "/categories/", label: "分类", icon: "grid" },
     { href: "/tags/", label: "标签", icon: "tag" },
-    { href: "/search/", label: "搜索", icon: "search" },
     { href: "/about/", label: "关于", icon: "user" },
   ],
 } as const;
