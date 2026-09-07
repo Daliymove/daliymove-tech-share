@@ -149,14 +149,20 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
             })}
           </nav>
           <div class="header-actions flex items-center gap-1.5 sm:gap-2">
-            <a class="utility-icon-button group/search relative" href={searchHref} aria-label="搜索文章" title="搜索 (Ctrl+K / ⌘K)">
-              <Icon name="search" class="h-4 w-4" />
-              <span class="header-search-badge hidden xl:inline-flex items-center justify-center font-mono text-[10px] font-semibold px-1 py-0.5 rounded border border-ink-200/80 bg-ink-50/80 text-ink-500 opacity-70 group-hover/search:opacity-100 group-hover/search:border-leaf-600/30 group-hover/search:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-300 dark:group-hover/search:text-leaf-300 ml-1 transition-all" aria-hidden="true">⌘K</span>
+            <a class="utility-icon-button group/search" href={searchHref} aria-label="搜索文章">
+              <Icon name="search" class="h-4 w-4 shrink-0" />
+              <span class="utility-tooltip" role="tooltip" aria-hidden="true">
+                <span>搜索</span>
+                <kbd class="utility-kbd">Ctrl K</kbd>
+              </span>
             </a>
-            <a class="utility-icon-button hidden sm:inline-grid" href={rssHref} aria-label="RSS 订阅" title="RSS 订阅">
-              <Icon name="rss" class="h-4 w-4" />
+            <a class="utility-icon-button hidden sm:inline-flex group/rss" href={rssHref} aria-label="RSS 订阅">
+              <Icon name="rss" class="h-4 w-4 shrink-0" />
+              <span class="utility-tooltip" role="tooltip" aria-hidden="true">
+                <span>RSS 订阅</span>
+              </span>
             </a>
-            <button class="theme-toggle-switch" type="button" aria-label="切换至深色模式" aria-pressed="false" title="切换至深色模式">
+            <button class="theme-toggle-switch" type="button" aria-label="切换至深色模式" aria-pressed="false">
               <span class="theme-switch-track" aria-hidden="true">
                 <span class="track-sun"><Icon name="sun" class="h-3 w-3" /></span>
                 <span class="track-moon"><Icon name="moon" class="h-3 w-3" /></span>
@@ -164,6 +170,9 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
               <span class="theme-switch-thumb" aria-hidden="true">
                 <span class="thumb-icon-light"><Icon name="sun" class="h-3 w-3" /></span>
                 <span class="thumb-icon-dark"><Icon name="moon" class="h-3 w-3" /></span>
+              </span>
+              <span class="utility-tooltip" role="tooltip" aria-hidden="true">
+                <span class="theme-tooltip-text">切换至深色模式</span>
               </span>
             </button>
             <button class="mobile-menu-toggle utility-icon-button lg:hidden" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="mobile-menu-drawer">
@@ -238,11 +247,12 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
 
       function syncIcon() {
         const button = document.querySelector(".theme-toggle-switch");
+        const tooltipText = button?.querySelector(".theme-tooltip-text");
         const isDark = root.classList.contains("dark");
         button?.setAttribute("aria-pressed", String(isDark));
         const label = isDark ? "切换至浅色模式" : "切换至深色模式";
         button?.setAttribute("aria-label", label);
-        button?.setAttribute("title", label);
+        if (tooltipText) tooltipText.textContent = label;
       }
 
       // Delegate the click with View Transitions circular ripple reveal
