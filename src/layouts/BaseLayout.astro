@@ -114,37 +114,44 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
     <div id="reading-progress" class="reading-progress" aria-hidden="true"></div>
     <a class="skip-link" href="#content">跳到正文</a>
     <header class="site-header sticky top-0 z-40 px-3 pt-3 md:px-5">
-      <div class="header-shell mx-auto max-w-7xl rounded-2xl border border-white/70 bg-white/75 px-3 py-2.5 sm:px-4 sm:py-3 shadow-soft backdrop-blur-2xl dark:border-white/10 dark:bg-ink-950/70">
+      <div class="header-shell mx-auto max-w-7xl rounded-2xl border border-white/80 bg-white/75 px-3 py-2.5 sm:px-4 sm:py-3 shadow-soft backdrop-blur-2xl transition-all duration-300 dark:border-white/10 dark:bg-ink-950/75">
         <div class="header-row flex items-center justify-between gap-2 sm:gap-4">
-          <a class="header-brand flex min-w-0 items-center gap-2.5 sm:gap-3" href={homeHref} aria-label={`${site.title} 首页`}>
-            <span class="brand-mark h-9 w-9 sm:h-11 sm:w-11 shrink-0 rounded-xl" aria-hidden="true">
-              <img src={logoHref} alt="" />
+          <a class="header-brand group flex min-w-0 items-center gap-2.5 sm:gap-3" href={homeHref} aria-label={`${site.title} 首页`}>
+            <span class="brand-mark h-9 w-9 sm:h-11 sm:w-11 shrink-0 rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_4px_16px_-2px_rgba(79,122,98,0.28)]" aria-hidden="true">
+              <img src={logoHref} alt="" class="transition-transform duration-300 group-hover:rotate-3" />
             </span>
             <span class="header-brand-copy min-w-0">
-              <span class="header-brand-title block truncate text-sm font-semibold tracking-wide text-ink-950 dark:text-ink-50">{site.title}</span>
+              <span class="header-brand-title block truncate text-sm font-semibold tracking-wide text-ink-950 transition-colors duration-200 group-hover:text-leaf-700 dark:text-ink-50 dark:group-hover:text-leaf-300">{site.title}</span>
               <span class="header-brand-tagline hidden text-xs text-ink-500 sm:block dark:text-ink-300">{site.tagline}</span>
             </span>
           </a>
           <nav class="header-nav-desktop hidden items-center gap-1 rounded-full border border-ink-200/70 bg-white/65 p-1 lg:flex dark:border-white/10 dark:bg-white/5" aria-label="主导航">
-            <span class="nav-magic-pill" aria-hidden="true"></span>
+            <span class="nav-spotlight" aria-hidden="true"></span>
+            <span class="nav-hover-pill" aria-hidden="true"></span>
+            <span class="nav-active-pill" aria-hidden="true"></span>
             {site.nav.map((item) => {
               const href = withBase(item.href);
               const active = currentPath === href || (item.href !== "/" && currentPath.startsWith(href));
               return (
                 <a
-                  class="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-200"
+                  class:list={[
+                    "nav-item inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium",
+                    active && "is-active"
+                  ]}
                   href={href}
                   aria-current={active ? "page" : undefined}
                 >
-                  <Icon name={item.icon} class="h-3.5 w-3.5 opacity-80" />
-                  <span>{item.label}</span>
+                  <Icon name={item.icon} class="nav-icon h-3.5 w-3.5 opacity-80" />
+                  <span class="nav-label">{item.label}</span>
+                  {active && <span class="nav-active-pip" aria-hidden="true" />}
                 </a>
               );
             })}
           </nav>
           <div class="header-actions flex items-center gap-1.5 sm:gap-2">
-            <a class="utility-icon-button" href={searchHref} aria-label="搜索文章" title="搜索 (Ctrl+K / ⌘K)">
+            <a class="utility-icon-button group/search relative" href={searchHref} aria-label="搜索文章" title="搜索 (Ctrl+K / ⌘K)">
               <Icon name="search" class="h-4 w-4" />
+              <span class="header-search-badge hidden xl:inline-flex items-center justify-center font-mono text-[10px] font-semibold px-1 py-0.5 rounded border border-ink-200/80 bg-ink-50/80 text-ink-500 opacity-70 group-hover/search:opacity-100 group-hover/search:border-leaf-600/30 group-hover/search:text-leaf-700 dark:border-white/10 dark:bg-white/5 dark:text-ink-300 dark:group-hover/search:text-leaf-300 ml-1 transition-all" aria-hidden="true">⌘K</span>
             </a>
             <a class="utility-icon-button hidden sm:inline-grid" href={rssHref} aria-label="RSS 订阅" title="RSS 订阅">
               <Icon name="rss" class="h-4 w-4" />
@@ -169,7 +176,7 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
         {/* 移动端下拉/折叠菜单 */}
         <div id="mobile-menu-drawer" class="mobile-menu-drawer hidden lg:hidden border-t border-ink-200/70 pt-3 mt-3 dark:border-white/10">
           <nav class="grid grid-cols-2 min-[380px]:grid-cols-3 gap-2" aria-label="移动端导航">
-            {site.nav.map((item) => {
+            {site.nav.map((item, idx) => {
               const href = withBase(item.href);
               const active = currentPath === href || (item.href !== "/" && currentPath.startsWith(href));
               return (
@@ -177,9 +184,10 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
                   class:list={[
                     "mobile-nav-link flex flex-col items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-medium transition-all duration-200",
                     active
-                      ? "bg-ink-950 text-white shadow-sm dark:bg-leaf-300 dark:text-ink-950"
+                      ? "bg-leaf-600/12 text-leaf-800 border border-leaf-600/25 shadow-sm font-semibold dark:bg-leaf-400/15 dark:text-leaf-200 dark:border-leaf-400/25"
                       : "bg-ink-100/70 text-ink-700 hover:bg-ink-200/70 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-white/10"
                   ]}
+                  style={`--mobile-idx: ${idx};`}
                   href={href}
                   aria-current={active ? "page" : undefined}
                 >
@@ -320,19 +328,42 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
         });
       }
 
-      // Magic Pill Sliding Indicator for Desktop Nav
+      // Header Dynamic Glass Elevation on Scroll
+      function initHeaderScroll() {
+        const headerShell = document.querySelector(".site-header .header-shell");
+        if (!(headerShell instanceof HTMLElement)) return;
+
+        let ticking = false;
+        const updateScroll = () => {
+          const isScrolled = window.scrollY > 16;
+          headerShell.classList.toggle("is-scrolled", isScrolled);
+          ticking = false;
+        };
+
+        window.addEventListener("scroll", () => {
+          if (!ticking) {
+            window.requestAnimationFrame(updateScroll);
+            ticking = true;
+          }
+        }, { passive: true });
+        updateScroll();
+      }
+
+      // Organic Dual-Pill & Spotlight Controller for Desktop Nav
       function initMagicPill() {
         const nav = document.querySelector(".header-nav-desktop");
-        const pill = nav?.querySelector(".nav-magic-pill");
-        if (!(nav instanceof HTMLElement) || !(pill instanceof HTMLElement)) return;
+        if (!(nav instanceof HTMLElement)) return;
 
-        const links = Array.from(nav.querySelectorAll("a"));
-        const activeLink = nav.querySelector('a[aria-current="page"]');
+        const activePill = nav.querySelector(".nav-active-pill");
+        const hoverPill = nav.querySelector(".nav-hover-pill");
+        const spotlight = nav.querySelector(".nav-spotlight");
+        const links = Array.from(nav.querySelectorAll(".nav-item"));
+        const activeLink = nav.querySelector('.nav-item[aria-current="page"]');
 
-        const positionPillTo = (target) => {
-          if (!(target instanceof HTMLElement)) {
+        const setPillLayout = (pill, target, visible = true) => {
+          if (!(pill instanceof HTMLElement)) return;
+          if (!visible || !(target instanceof HTMLElement)) {
             pill.style.opacity = "0";
-            links.forEach((l) => l.classList.remove("is-pill-active"));
             return;
           }
           const navRect = nav.getBoundingClientRect();
@@ -343,32 +374,63 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
           pill.style.width = `${width}px`;
           pill.style.transform = `translate3d(${left}px, 0, 0)`;
           pill.style.opacity = "1";
-
-          links.forEach((l) => l.classList.toggle("is-pill-active", l === target));
         };
 
+        // Initialize active pill on current page
         if (activeLink instanceof HTMLElement) {
-          positionPillTo(activeLink);
+          setPillLayout(activePill, activeLink, true);
         } else {
-          pill.style.opacity = "0";
+          setPillLayout(activePill, null, false);
         }
 
+        // Initially hide hover pill
+        setPillLayout(hoverPill, null, false);
+
+        // Hover interactions
         links.forEach((link) => {
-          link.addEventListener("mouseenter", () => positionPillTo(link));
+          link.addEventListener("mouseenter", () => {
+            if (link === activeLink) {
+              setPillLayout(hoverPill, null, false);
+              if (activePill instanceof HTMLElement) {
+                activePill.style.opacity = "1";
+              }
+            } else {
+              setPillLayout(hoverPill, link, true);
+              if (activePill instanceof HTMLElement) {
+                activePill.style.opacity = "0.4";
+              }
+            }
+          });
         });
 
         nav.addEventListener("mouseleave", () => {
-          if (activeLink instanceof HTMLElement) {
-            positionPillTo(activeLink);
-          } else {
-            positionPillTo(null);
+          setPillLayout(hoverPill, null, false);
+          if (activePill instanceof HTMLElement && activeLink instanceof HTMLElement) {
+            activePill.style.opacity = "1";
           }
         });
 
+        // Ambient Cursor Spotlight inside nav track
+        nav.addEventListener("mousemove", (e) => {
+          if (!(spotlight instanceof HTMLElement)) return;
+          const rect = nav.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          nav.style.setProperty("--nav-mouse-x", `${x}px`);
+          nav.style.setProperty("--nav-mouse-y", `${y}px`);
+          spotlight.style.opacity = "1";
+        });
+
+        nav.addEventListener("mouseleave", () => {
+          if (spotlight instanceof HTMLElement) {
+            spotlight.style.opacity = "0";
+          }
+        });
+
+        // Responsive reposition
         window.addEventListener("resize", () => {
-          const currentTarget = nav.querySelector(".is-pill-active") || activeLink;
-          if (currentTarget instanceof HTMLElement) {
-            positionPillTo(currentTarget);
+          if (activeLink instanceof HTMLElement) {
+            setPillLayout(activePill, activeLink, true);
           }
         }, { passive: true });
       }
@@ -416,12 +478,13 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
         applyTheme(window.__siteTheme === "dark");
         syncIcon();
         setupMobileMenu();
+        initHeaderScroll();
         window.requestAnimationFrame(initMagicPill);
       });
       syncIcon();
       setupMobileMenu();
+      initHeaderScroll();
       window.requestAnimationFrame(initMagicPill);
-
       window.addEventListener("pageshow", () => root.classList.remove("is-page-leaving"));
 
       // Top Page Transition Loading Bar (Kova Smooth Navigation)
