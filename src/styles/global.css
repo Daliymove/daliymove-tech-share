@@ -181,12 +181,20 @@ html.is-theme-transitioning .theme-transition-overlay {
   animation: theme-diagonal-wipe 900ms cubic-bezier(0.45, 0, 0.55, 1) both;
 }
 
-html.motion-ready:not(.is-page-leaving) body {
-  animation: page-enter 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+/* ===== A. 进站首屏编排：Header 玻璃壳沉降（仅整页加载，SPA 切换由 View Transition 负责） ===== */
+html.is-entering.motion-ready .site-header .header-shell {
+  animation: header-settle 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-html.is-page-leaving body {
-  opacity: 0;
+@keyframes header-settle {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 标题统一使用思源宋体 */
@@ -946,12 +954,27 @@ mark {
 }
 
 /* Forest Motion：内容像沿林间小径逐段显现。 */
-@keyframes page-enter {
+/* ===== B. 页面切换过渡（View Transitions）=====
+   旧页快速淡出 → 新页轻微缩放沉降 + 柔焦消散淡入，克制的编辑感 */
+@keyframes vt-page-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-page-in {
   from {
     opacity: 0;
+    transform: scale(1.015);
+    filter: blur(6px);
   }
   to {
     opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
   }
 }
 
@@ -977,6 +1000,17 @@ mark {
   100% {
     opacity: 1;
     background-position: -35% -35%;
+  }
+}
+
+/* 主题圆形揭示：由 CSS 直接编排在 ::view-transition-new(root) 上，
+   自快照出现的第一帧即生效（无 JS animate 的启动间隙，杜绝闪屏） */
+@keyframes theme-circular-reveal {
+  from {
+    clip-path: circle(0px at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
+  }
+  to {
+    clip-path: circle(var(--theme-reveal-r, 120vmax) at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
   }
 }
 
@@ -1053,7 +1087,7 @@ mark {
   .page-loading-bar.is-finishing {
     opacity: 1;
     transform: scaleX(1);
-    transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), opacity 240ms ease 120ms;
+    transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1), opacity 240ms ease 180ms;
   }
 
   /* Skeleton loading utilities */
@@ -1107,7 +1141,7 @@ mark {
       opacity 650ms cubic-bezier(0.16, 1, 0.3, 1),
       transform 650ms cubic-bezier(0.16, 1, 0.3, 1),
       filter 650ms cubic-bezier(0.16, 1, 0.3, 1);
-    transition-delay: min(var(--reveal-delay, 0ms), 280ms);
+    transition-delay: min(var(--reveal-delay, 0ms), 600ms);
     will-change: opacity, transform, filter;
   }
 
@@ -1116,10 +1150,31 @@ mark {
     filter: blur(3px);
   }
 
+  /* 首屏主标题：帘幕上升 + 柔焦消散（进站编排的视觉锚点） */
+  .motion-ready [data-reveal="title"] {
+    --reveal-distance: 24px;
+    filter: blur(10px);
+    clip-path: inset(0 0 12% 0);
+    transition:
+      opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 800ms cubic-bezier(0.16, 1, 0.3, 1),
+      filter 800ms cubic-bezier(0.16, 1, 0.3, 1),
+      clip-path 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
   .motion-ready [data-reveal].is-revealed {
     opacity: 1;
     transform: translateY(0);
     filter: blur(0px);
+  }
+
+  .motion-ready [data-reveal="title"].is-revealed {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* View Transition 快照捕获窗口：首屏内容立即定格显现，避免过渡帧出现空白页 */
+  html.is-swap-capture [data-reveal] {
+    transition: none !important;
   }
 
 .brand-mark img {
@@ -1327,35 +1382,58 @@ a:focus-visible .brand-mark img {
   .theme-transition-overlay {
     display: none;
   }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
+  html.is-entering.motion-ready .site-header .header-shell {
+    animation: none !important;
+  }
 }
 
 
-  /* View Transitions Circular Reveal for Dark Mode */
-    /* View Transitions Circular Reveal for Dark Mode */
+  /* ===== B. 页面切换过渡：View Transition 伪元素编排 ===== */
   ::view-transition-group(root) {
-    animation-duration: 0.48s;
+    animation-duration: 650ms;
     animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
-  ::view-transition-old(root),
+
+  ::view-transition-old(root) {
+    animation: vt-page-out 300ms cubic-bezier(0.4, 0, 1, 1) both;
+    mix-blend-mode: normal;
+  }
+
   ::view-transition-new(root) {
+    animation: vt-page-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    mix-blend-mode: normal;
+  }
+
+  /* 主题切换（圆形揭示）：动画由 CSS 直接编排，见 theme-circular-reveal */
+  html.is-theme-transitioning::view-transition-group(root) {
+    animation: none !important;
+  }
+
+  html.is-theme-transitioning::view-transition-old(root) {
     animation: none !important;
     mix-blend-mode: normal !important;
     display: block !important;
+    z-index: 1 !important;
   }
-  ::view-transition-image-pair(root) {
+
+  html.is-theme-transitioning::view-transition-new(root) {
+    /* 兜底：即使动画尚未挂上，首帧也被裁切为 0，杜绝整页新主题闪现 */
+    clip-path: circle(0px at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
+    animation: theme-circular-reveal 520ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+    mix-blend-mode: normal !important;
+    display: block !important;
+    z-index: 99999 !important;
+  }
+
+  html.is-theme-transitioning::view-transition-image-pair(root) {
     isolation: auto !important;
-  }
-  ::view-transition-old(root) {
-    z-index: 1 !important;
-  }
-  ::view-transition-new(root) {
-    z-index: 99999 !important;
-  }
-  .dark::view-transition-old(root) {
-    z-index: 1 !important;
-  }
-  .dark::view-transition-new(root) {
-    z-index: 99999 !important;
   }
 
   /* Circular Ripple Fallback for Browsers without View Transitions */
@@ -1528,7 +1606,9 @@ a:focus-visible .brand-mark img {
     color: #78a992;
   }
 
-  /* Active Luminous Emerald Pip */
+  /* Active Luminous Emerald Pip
+     常驻占位（所有标题等宽预留绿点空间），仅切换可见性，
+     避免激活项增删绿点导致标题布局左右跳动 */
   .nav-active-pip {
     display: inline-block;
     width: 0.32rem;
@@ -1537,6 +1617,14 @@ a:focus-visible .brand-mark img {
     background-color: #3e7357;
     box-shadow: 0 0 6px rgba(62, 115, 87, 0.6);
     margin-left: 0.15rem;
+    opacity: 0;
+    transform: scale(0.4);
+    transition: opacity 220ms ease, transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .header-nav-desktop .nav-item[aria-current="page"] .nav-active-pip {
+    opacity: 1;
+    transform: scale(1);
     animation: activePipGlow 2.4s ease-in-out infinite alternate;
   }
 
@@ -1545,14 +1633,25 @@ a:focus-visible .brand-mark img {
     box-shadow: 0 0 8px rgba(120, 169, 146, 0.75);
   }
 
+  .dark .header-nav-desktop .nav-item[aria-current="page"] .nav-active-pip {
+    animation-name: activePipGlowDark;
+  }
+
   @keyframes activePipGlow {
     0% {
-      opacity: 0.7;
-      transform: scale(0.9);
+      box-shadow: 0 0 5px rgba(62, 115, 87, 0.45);
     }
     100% {
-      opacity: 1;
-      transform: scale(1.15);
+      box-shadow: 0 0 10px rgba(62, 115, 87, 0.8);
+    }
+  }
+
+  @keyframes activePipGlowDark {
+    0% {
+      box-shadow: 0 0 6px rgba(120, 169, 146, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 12px rgba(120, 169, 146, 0.9);
     }
   }
 

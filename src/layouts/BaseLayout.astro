@@ -107,6 +107,11 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
       themeRoot.dataset.theme = isDarkTheme ? "dark" : "light";
       themeRoot.style.colorScheme = isDarkTheme ? "dark" : "light";
       document.querySelector("meta[data-theme-color]")?.setAttribute("content", isDarkTheme ? "#08150C" : "#F5F6F3");
+      // 进站首屏编排：仅整页加载时启用；SPA 切换由 View Transition 负责（after-swap 移除）
+      if (!window.__entranceQueued) {
+        window.__entranceQueued = true;
+        themeRoot.classList.add("is-entering");
+      }
     </script>
   </head>
   <body>
@@ -143,7 +148,7 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
                 >
                   <Icon name={item.icon} class="nav-icon h-3.5 w-3.5 opacity-80" />
                   <span class="nav-label">{item.label}</span>
-                  {active && <span class="nav-active-pip" aria-hidden="true" />}
+                  <span class="nav-active-pip" aria-hidden="true" />
                 </a>
               );
             })}
@@ -288,29 +293,33 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
 
           let vtAnimated = false;
           if (typeof document.startViewTransition === "function") {
+            // 主题圆形揭示期间挂起导航过渡动画（见 global.css 的 is-theme-transitioning 规则）。
+            // 圆心/半径必须在 startViewTransition 之前写入，快照出现的第一帧即可用。
+            root.classList.add("is-theme-transitioning");
+            root.style.setProperty("--theme-reveal-x", `${x}px`);
+            root.style.setProperty("--theme-reveal-y", `${y}px`);
+            root.style.setProperty("--theme-reveal-r", `${endRadius}px`);
             try {
               const transition = document.startViewTransition(() => {
                 updateThemeState();
               });
-              await transition.ready;
-              const clipPath = [
-                `circle(0px at ${x}px ${y}px)`,
-                `circle(${endRadius}px at ${x}px ${y}px)`
-              ];
-              const anim = document.documentElement.animate(
-                { clipPath: clipPath },
-                {
-                  duration: 460,
-                  easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-                  pseudoElement: "::view-transition-new(root)"
-                }
-              );
-              if (anim) {
-                vtAnimated = true;
-                return;
-              }
+              // 圆形揭示由 CSS 动画 theme-circular-reveal 直接驱动（无 JS 启动间隙，不闪屏），
+              // 这里只等待整场过渡结束后清理标记。
+              vtAnimated = true;
+              transition.finished
+                .catch(() => {})
+                .finally(() => {
+                  root.classList.remove("is-theme-transitioning");
+                  root.style.removeProperty("--theme-reveal-x");
+                  root.style.removeProperty("--theme-reveal-y");
+                  root.style.removeProperty("--theme-reveal-r");
+                });
             } catch (err) {
-              console.warn("ViewTransition animate fallback:", err);
+              root.classList.remove("is-theme-transitioning");
+              root.style.removeProperty("--theme-reveal-x");
+              root.style.removeProperty("--theme-reveal-y");
+              root.style.removeProperty("--theme-reveal-r");
+              console.warn("ViewTransition fallback:", err);
             }
           }
 
@@ -343,23 +352,79 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
         const headerShell = document.querySelector(".site-header .header-shell");
         if (!(headerShell instanceof HTMLElement)) return;
 
-        let ticking = false;
-        const updateScroll = () => {
-          const isScrolled = window.scrollY > 16;
-          headerShell.classList.toggle("is-scrolled", isScrolled);
-          ticking = false;
+        const syncScrollState = () => {
+          const shell = document.querySelector(".site-header .header-shell");
+          if (shell instanceof HTMLElement) {
+            shell.classList.toggle("is-scrolled", window.scrollY > 16);
+          }
         };
 
-        window.addEventListener("scroll", () => {
-          if (!ticking) {
-            window.requestAnimationFrame(updateScroll);
-            ticking = true;
-          }
-        }, { passive: true });
-        updateScroll();
+        // 滚动监听只绑定一次，避免每次页面切换累积监听器
+        if (!window.__headerScrollBound) {
+          window.__headerScrollBound = true;
+          let ticking = false;
+          window.addEventListener("scroll", () => {
+            if (!ticking) {
+              window.requestAnimationFrame(() => {
+                syncScrollState();
+                ticking = false;
+              });
+              ticking = true;
+            }
+          }, { passive: true });
+        }
+        syncScrollState();
       }
 
       // Organic Dual-Pill & Spotlight Controller for Desktop Nav
+      function measureNavTarget(nav, target) {
+        const navRect = nav.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        return {
+          left: targetRect.left - navRect.left,
+          width: targetRect.width,
+        };
+      }
+
+      // 将激活胶囊对齐到当前激活项：
+      // glide=true 且存在上一次位置时，从旧位置平滑滑入；否则直接落位（避免从左边缘飞入）
+      function syncMagicPill(nav, glide = false) {
+        const activePill = nav.querySelector(".nav-active-pill");
+        if (!(activePill instanceof HTMLElement)) return;
+
+        const activeLink = nav.querySelector('.nav-item[aria-current="page"]');
+        if (!(activeLink instanceof HTMLElement)) {
+          activePill.style.opacity = "0";
+          window.__navPillPos = null;
+          return;
+        }
+
+        const target = measureNavTarget(nav, activeLink);
+        const last = window.__navPillPos;
+        const canGlide = glide && !reduceMotion && !!last && Math.abs(last.left - target.left) > 0.5;
+
+        activePill.style.transition = "none";
+        if (canGlide) {
+          activePill.style.width = `${last.width}px`;
+          activePill.style.transform = `translate3d(${last.left}px, 0, 0)`;
+        } else {
+          activePill.style.width = `${target.width}px`;
+          activePill.style.transform = `translate3d(${target.left}px, 0, 0)`;
+        }
+        activePill.style.opacity = "1";
+        // 强制回流后再恢复过渡，保证“无动画落位”生效
+        void activePill.offsetWidth;
+        activePill.style.transition = "";
+
+        if (canGlide) {
+          window.requestAnimationFrame(() => {
+            activePill.style.width = `${target.width}px`;
+            activePill.style.transform = `translate3d(${target.left}px, 0, 0)`;
+          });
+        }
+        window.__navPillPos = target;
+      }
+
       function initMagicPill() {
         const nav = document.querySelector(".header-nav-desktop");
         if (!(nav instanceof HTMLElement)) return;
@@ -368,7 +433,7 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
         const hoverPill = nav.querySelector(".nav-hover-pill");
         const spotlight = nav.querySelector(".nav-spotlight");
         const links = Array.from(nav.querySelectorAll(".nav-item"));
-        const activeLink = nav.querySelector('.nav-item[aria-current="page"]');
+        const getActiveLink = () => nav.querySelector('.nav-item[aria-current="page"]');
 
         const setPillLayout = (pill, target, visible = true) => {
           if (!(pill instanceof HTMLElement)) return;
@@ -376,143 +441,166 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
             pill.style.opacity = "0";
             return;
           }
-          const navRect = nav.getBoundingClientRect();
-          const targetRect = target.getBoundingClientRect();
-          const left = targetRect.left - navRect.left;
-          const width = targetRect.width;
-
+          const { left, width } = measureNavTarget(nav, target);
           pill.style.width = `${width}px`;
           pill.style.transform = `translate3d(${left}px, 0, 0)`;
           pill.style.opacity = "1";
         };
 
-        // Initialize active pill on current page
-        if (activeLink instanceof HTMLElement) {
-          setPillLayout(activePill, activeLink, true);
-        } else {
-          setPillLayout(activePill, null, false);
-        }
+        // 事件只绑定一次（同一 DOM 元素），避免初始脚本与 astro:page-load 双重注册
+        if (!nav.dataset.pillBound) {
+          nav.dataset.pillBound = "true";
 
-        // Initially hide hover pill
-        setPillLayout(hoverPill, null, false);
+          links.forEach((link) => {
+            link.addEventListener("mouseenter", () => {
+              const activeLink = getActiveLink();
+              if (link === activeLink) {
+                setPillLayout(hoverPill, null, false);
+                if (activePill instanceof HTMLElement && activeLink) {
+                  activePill.style.opacity = "1";
+                }
+              } else {
+                setPillLayout(hoverPill, link, true);
+                if (activePill instanceof HTMLElement) {
+                  activePill.style.opacity = "0.4";
+                }
+              }
+            });
+          });
 
-        // Hover interactions
-        links.forEach((link) => {
-          link.addEventListener("mouseenter", () => {
-            if (link === activeLink) {
-              setPillLayout(hoverPill, null, false);
-              if (activePill instanceof HTMLElement) {
-                activePill.style.opacity = "1";
-              }
-            } else {
-              setPillLayout(hoverPill, link, true);
-              if (activePill instanceof HTMLElement) {
-                activePill.style.opacity = "0.4";
-              }
+          nav.addEventListener("mouseleave", () => {
+            setPillLayout(hoverPill, null, false);
+            if (spotlight instanceof HTMLElement) {
+              spotlight.style.opacity = "0";
+            }
+            if (activePill instanceof HTMLElement && getActiveLink()) {
+              activePill.style.opacity = "1";
             }
           });
-        });
 
-        nav.addEventListener("mouseleave", () => {
-          setPillLayout(hoverPill, null, false);
-          if (activePill instanceof HTMLElement && activeLink instanceof HTMLElement) {
-            activePill.style.opacity = "1";
+          nav.addEventListener("mousemove", (e) => {
+            if (!(spotlight instanceof HTMLElement)) return;
+            const rect = nav.getBoundingClientRect();
+            nav.style.setProperty("--nav-mouse-x", `${e.clientX - rect.left}px`);
+            nav.style.setProperty("--nav-mouse-y", `${e.clientY - rect.top}px`);
+            spotlight.style.opacity = "1";
+          });
+        }
+
+        // hover pill 初始隐藏
+        setPillLayout(hoverPill, null, false);
+
+        // 跨页切换：从上一页激活位平滑滑到新激活位
+        syncMagicPill(nav, true);
+
+        // 布局刷新（resize / 字体加载完成）只绑定一次
+        if (!window.__navPillLayoutBound) {
+          window.__navPillLayoutBound = true;
+          window.addEventListener("resize", () => {
+            const currentNav = document.querySelector(".header-nav-desktop");
+            if (currentNav instanceof HTMLElement) {
+              syncMagicPill(currentNav);
+            }
+          }, { passive: true });
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => {
+              const currentNav = document.querySelector(".header-nav-desktop");
+              if (currentNav instanceof HTMLElement) {
+                syncMagicPill(currentNav);
+              }
+            });
           }
-        });
-
-        // Ambient Cursor Spotlight inside nav track
-        nav.addEventListener("mousemove", (e) => {
-          if (!(spotlight instanceof HTMLElement)) return;
-          const rect = nav.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          nav.style.setProperty("--nav-mouse-x", `${x}px`);
-          nav.style.setProperty("--nav-mouse-y", `${y}px`);
-          spotlight.style.opacity = "1";
-        });
-
-        nav.addEventListener("mouseleave", () => {
-          if (spotlight instanceof HTMLElement) {
-            spotlight.style.opacity = "0";
-          }
-        });
-
-        // Responsive reposition
-        window.addEventListener("resize", () => {
-          if (activeLink instanceof HTMLElement) {
-            setPillLayout(activePill, activeLink, true);
-          }
-        }, { passive: true });
+        }
       }
+
+      function setMobileMenuState(open) {
+        const toggle = document.querySelector(".mobile-menu-toggle");
+        const drawer = document.getElementById("mobile-menu-drawer");
+        if (!toggle || !drawer) return;
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单");
+        drawer.classList.toggle("hidden", !open);
+        toggle.querySelector(".menu-icon-open")?.classList.toggle("hidden", open);
+        toggle.querySelector(".menu-icon-close")?.classList.toggle("hidden", !open);
+      }
+
       function setupMobileMenu() {
         const toggle = document.querySelector(".mobile-menu-toggle");
         const drawer = document.getElementById("mobile-menu-drawer");
-        const openIcon = toggle?.querySelector(".menu-icon-open");
-        const closeIcon = toggle?.querySelector(".menu-icon-close");
         if (!toggle || !drawer) return;
 
-        let isOpen = false;
-        function setMenuState(open) {
-          isOpen = open;
-          toggle.setAttribute("aria-expanded", String(open));
-          toggle.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单");
-          if (open) {
-            drawer.classList.remove("hidden");
-            openIcon?.classList.add("hidden");
-            closeIcon?.classList.remove("hidden");
-          } else {
-            drawer.classList.add("hidden");
-            openIcon?.classList.remove("hidden");
-            closeIcon?.classList.add("hidden");
-          }
+        // 状态由 DOM 属性驱动，事件只绑定一次
+        if (!toggle.dataset.menuBound) {
+          toggle.dataset.menuBound = "true";
+          toggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            setMobileMenuState(toggle.getAttribute("aria-expanded") !== "true");
+          });
+          drawer.querySelectorAll("a").forEach((a) => {
+            a.addEventListener("click", () => setMobileMenuState(false));
+          });
         }
 
-        toggle.addEventListener("click", (e) => {
-          e.stopPropagation();
-          setMenuState(!isOpen);
-        });
-
-        // Close on clicking outside
-        document.addEventListener("click", (e) => {
-          if (isOpen && !drawer.contains(e.target) && !toggle.contains(e.target)) {
-            setMenuState(false);
-          }
-        });
-
-        // Close when clicking nav link
-        drawer.querySelectorAll("a").forEach((a) => {
-          a.addEventListener("click", () => setMenuState(false));
-        });
+        if (!window.__mobileMenuDocBound) {
+          window.__mobileMenuDocBound = true;
+          document.addEventListener("click", (e) => {
+            const currentToggle = document.querySelector(".mobile-menu-toggle");
+            const currentDrawer = document.getElementById("mobile-menu-drawer");
+            if (!currentDrawer || currentDrawer.classList.contains("hidden")) return;
+            if (currentDrawer.contains(e.target)) return;
+            if (currentToggle && currentToggle.contains(e.target)) return;
+            setMobileMenuState(false);
+          });
+        }
       }
-      document.addEventListener("astro:page-load", () => {
+
+      function initHeaderChrome() {
         applyTheme(window.__siteTheme === "dark");
         syncIcon();
         setupMobileMenu();
         initHeaderScroll();
-        window.requestAnimationFrame(initMagicPill);
-      });
-      syncIcon();
-      setupMobileMenu();
-      initHeaderScroll();
-      window.requestAnimationFrame(initMagicPill);
-      window.addEventListener("pageshow", () => root.classList.remove("is-page-leaving"));
+        initMagicPill();
+      }
+      document.addEventListener("astro:page-load", initHeaderChrome);
+      initHeaderChrome();
 
       // Top Page Transition Loading Bar (Kova Smooth Navigation)
       const loadingBar = document.getElementById("page-loading-bar");
       let finishTimeout = null;
 
       document.addEventListener("astro:before-preparation", () => {
+        window.__spaNav = true;
+        // 立即结束进站编排，避免新页 header 在切换帧里重播沉降动画
+        root.classList.remove("is-entering");
         if (finishTimeout) clearTimeout(finishTimeout);
         loadingBar?.classList.remove("is-finishing");
         loadingBar?.classList.add("is-active");
       });
 
-      document.addEventListener("astro:after-preparation", () => {
+      // after-swap 发生在新页快照捕获之前：此处的 DOM 状态会写入过渡帧
+      document.addEventListener("astro:after-swap", () => {
+        window.__spaNav = true;
+        root.classList.remove("is-entering");
+
+        // 首屏内容立即定格显现（无过渡），保证快照帧完整；下方内容仍走滚动显现
+        root.classList.add("is-swap-capture");
+        document.querySelectorAll("[data-reveal]").forEach((el) => {
+          if (!(el instanceof HTMLElement)) return;
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            el.classList.add("is-revealed");
+          }
+        });
+        // 导航胶囊立即对齐新激活项，快照帧即正确
+        const nav = document.querySelector(".header-nav-desktop");
+        if (nav instanceof HTMLElement) syncMagicPill(nav, false);
+        requestAnimationFrame(() => root.classList.remove("is-swap-capture"));
+
         loadingBar?.classList.remove("is-active");
         loadingBar?.classList.add("is-finishing");
         finishTimeout = setTimeout(() => {
           loadingBar?.classList.remove("is-finishing");
-        }, 360);
+        }, 560);
       });
 
       // Smooth Blur & FadeUp Intersection Observer

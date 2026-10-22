@@ -19,11 +19,11 @@ const heroDescription = "记录技术实践，分享可复用的方法。";
   <!-- HERO：纯文字叙事 -->
   <section class="relative mx-auto max-w-5xl pb-4 pt-12 text-center sm:pt-16 md:pt-20">
     <div class="pointer-events-none absolute -top-12 left-1/2 -z-10 h-72 w-96 -translate-x-1/2 rounded-full bg-leaf-500/10 blur-[80px] dark:bg-leaf-400/15" style="animation: ambient-glow-pulse 6s ease-in-out infinite;" aria-hidden="true"></div>
-    <h1 class="hero-title font-display text-4xl text-ink-900 dark:text-ink-50 md:text-6xl lg:text-[4rem]" data-reveal style="--reveal-delay: 80ms">
+    <h1 class="hero-title font-display text-4xl text-ink-900 dark:text-ink-50 md:text-6xl lg:text-[4rem]" data-reveal="title" style="--reveal-delay: 120ms">
       把知识沉淀成分享
     </h1>
-    <p class="mx-auto mt-7 max-w-lg text-base leading-8 text-ink-600 dark:text-ink-300 md:text-lg" data-reveal style="--reveal-delay: 150ms">{heroDescription}</p>
-    <div class="mt-9 flex flex-wrap items-center justify-center gap-3" data-reveal style="--reveal-delay: 220ms">
+    <p class="mx-auto mt-7 max-w-lg text-base leading-8 text-ink-600 dark:text-ink-300 md:text-lg" data-reveal style="--reveal-delay: 300ms">{heroDescription}</p>
+    <div class="mt-9 flex flex-wrap items-center justify-center gap-3" data-reveal style="--reveal-delay: 420ms">
       <a class="inline-flex items-center gap-2 rounded-xl bg-leaf-600 px-5 py-3 text-sm font-semibold text-white shadow-lift transition hover:-translate-y-0.5 hover:bg-leaf-700 dark:bg-leaf-600 dark:text-white dark:hover:bg-leaf-500" href={withBase("/blog/")}>
         开始阅读
         <Icon name="arrow" class="h-4 w-4" />
@@ -33,7 +33,7 @@ const heroDescription = "记录技术实践，分享可复用的方法。";
         关于 daliyMove
       </a>
     </div>
-    <div class="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ink-500 dark:text-ink-300" data-reveal="soft" style="--reveal-delay: 240ms">
+    <div class="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ink-500 dark:text-ink-300" data-reveal="soft" style="--reveal-delay: 520ms">
       <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{posts.length}</strong>篇文章</span>
       <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{allCategories.length}</strong>个分类</span>
       <span class="inline-flex items-center gap-2"><strong class="text-lg text-ink-900 dark:text-ink-50">{allTags.length}</strong>个标签</span>
