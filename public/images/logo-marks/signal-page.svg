@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="daliyMove 技术分享">
+  <title>Folded page with signal spine</title>
+  <rect x="6" y="5" width="20" height="22" fill="none" stroke="#0A0A0A" stroke-width="1.6"/>
+  <line x1="16" y1="5" x2="16" y2="27" stroke="#0A0A0A" stroke-width="1.6"/>
+  <rect x="3" y="5" width="2.5" height="22" fill="#7C3AED"/>
+</svg>

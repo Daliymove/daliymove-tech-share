@@ -1,20 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Icon from "../components/Icon.astro";
 import { withBase } from "../lib/posts";
 ---
 
 <BaseLayout title="页面不存在" noindex>
-  <section class="mx-auto max-w-2xl text-center">
-    <div class="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-leaf-600 to-bark-500 text-white shadow-glow">
-      <Icon name="search" class="h-7 w-7" />
-    </div>
-    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-leaf-700 dark:text-leaf-300">404</p>
-    <h1 class="mt-4 text-4xl font-semibold text-ink-950 dark:text-ink-50">这页暂时还没有写出来</h1>
-    <p class="mt-4 text-ink-600 dark:text-ink-300">可能是链接变了，也可能是一篇未来会补上的技术笔记。</p>
-    <a class="mt-8 inline-flex items-center gap-2 rounded-xl bg-ink-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-leaf-700 dark:bg-leaf-300 dark:text-ink-950" href={withBase("/")}>
-      回到首页
-      <Icon name="arrow" class="h-4 w-4" />
-    </a>
+  <section class="max-w-2xl py-16 md:py-24">
+    <p class="qs-eyebrow">404 / Not found</p>
+    <h1 class="mt-6 font-display text-4xl font-semibold leading-tight text-ink-primary md:text-5xl">这页暂时还没有写出来</h1>
+    <p class="mt-5 text-base leading-8 text-ink-secondary">可能是链接变了，也可能是一篇未来会补上的技术笔记。</p>
+    <a class="qs-link mt-9 inline-block text-sm" href={withBase("/")}>回到首页 →</a>
   </section>
 </BaseLayout>

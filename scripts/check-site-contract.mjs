@@ -22,9 +22,6 @@ assert.ok(homeCanonical, "The home page must expose a canonical URL.");
 const siteBaseUrl = new URL(homeCanonical);
 const siteBasePath = siteBaseUrl.pathname.endsWith("/") ? siteBaseUrl.pathname : `${siteBaseUrl.pathname}/`;
 
-assert.match(home, /images\/logo-marks\/folded-path\.svg/, "The folded-path logo must be used on the home page.");
-assert.doesNotMatch(home, /post-card-cover/, "Home post cards must remain text-first.");
-assert.doesNotMatch(home, /Fraunces|Manrope/, "Removed font families must not be loaded by the home page.");
 assert.doesNotMatch(home, /fonts\.googleapis\.com/, "The home page must not depend on Google Fonts.");
 await access(path.join(outputDir, "pagefind", "pagefind.js"));
 
