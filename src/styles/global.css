@@ -607,51 +607,7 @@ mark {
 }
 
 
-/* 签名元素：「林间小径」竖向脉络线 */
-.trail {
-  position: relative;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.trail::before {
-  content: "";
-  position: absolute;
-  left: 7px;
-  top: 1.4rem;
-  bottom: 1.4rem;
-  width: 2px;
-  background: var(--line);
-}
-
-.trail-item {
-  position: relative;
-  padding-left: 2.25rem;
-}
-
-.trail-item::before {
-  content: "";
-  position: absolute;
-  left: 1px;
-  top: 1.45rem;
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background: var(--surface);
-  border: 2px solid var(--accent);
-  box-shadow: 0 0 0 4px var(--surface);
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.trail-item:first-child::before {
-  background: var(--accent);
-}
-
-.trail-item:hover::before {
-  transform: scale(1.25);
-  background: var(--accent);
-}
+/* 首页「最近更新」已改为卡片网格，原「林间小径」脉络线样式移除。 */
 
 
 .heading-anchor.is-copied {
@@ -1210,33 +1166,7 @@ a:focus-visible .brand-mark img {
   transform: translateX(0.2rem);
 }
 
-.motion-ready .trail::before {
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.motion-ready .trail.is-revealed::before {
-  transform: scaleY(1);
-}
-
-.motion-ready .trail .trail-item::before {
-  opacity: 0;
-  transform: scale(0.55);
-  transition:
-    opacity 320ms ease var(--trail-delay, 0ms),
-    transform 420ms cubic-bezier(0.22, 1, 0.36, 1) var(--trail-delay, 0ms),
-    background 200ms ease;
-}
-
-.motion-ready .trail.is-revealed .trail-item::before {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.motion-ready .trail.is-revealed .trail-item:hover::before {
-  transform: scale(1.25);
-}
+/* 卡片网格沿用通用 [data-reveal] 视口进入动效，不再需要脉络线专用编排。 */
 
 .toc-link {
   position: relative;
@@ -1369,12 +1299,6 @@ a:focus-visible .brand-mark img {
   }
 
   [data-reveal] {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  .trail::before,
-  .trail-item::before {
     opacity: 1 !important;
     transform: none !important;
   }

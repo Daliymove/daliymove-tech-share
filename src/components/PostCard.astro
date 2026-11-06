@@ -34,7 +34,7 @@ const year = post.data.pubDate.getFullYear();
         {post.data.pinned && (
           <span class="inline-flex items-center gap-1 rounded-full border border-bark-300/60 bg-bark-100 px-2.5 py-1 font-semibold text-bark-700 dark:border-bark-300/25 dark:bg-bark-500/15 dark:text-bark-300">
             <Icon name="pin" class="h-3 w-3" />
-            主编领读
+            置顶
           </span>
         )}
         <a class="inline-flex items-center gap-1 rounded-full border border-leaf-200 bg-leaf-50 px-2.5 py-1 text-leaf-700 transition hover:border-leaf-300 hover:bg-leaf-100 dark:border-leaf-300/20 dark:bg-leaf-300/10 dark:text-leaf-100 dark:hover:bg-leaf-300/20" href={getCategoryUrl(post.data.category)}>

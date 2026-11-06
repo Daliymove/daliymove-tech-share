@@ -222,7 +222,7 @@ const localSearchIndexJson = JSON.stringify(localSearchIndex).replace(/</g, "\\u
             <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-leaf-200 bg-leaf-50 font-mono text-sm font-semibold text-leaf-700 dark:border-leaf-300/20 dark:bg-leaf-300/10 dark:text-leaf-200">${String(index + 1).padStart(2, "0")}</span>
             <div class="min-w-0 flex-1">
               <div class="flex flex-wrap items-center gap-2 text-xs text-ink-500 dark:text-ink-300">
-                ${item.pinned ? `<span class="rounded-full border border-bark-300/50 bg-bark-100 px-2.5 py-1 font-semibold text-bark-700 dark:border-bark-300/25 dark:bg-bark-500/15 dark:text-bark-300">主编领读</span>` : ""}
+                ${item.pinned ? `<span class="rounded-full border border-bark-300/50 bg-bark-100 px-2.5 py-1 font-semibold text-bark-700 dark:border-bark-300/25 dark:bg-bark-500/15 dark:text-bark-300">置顶</span>` : ""}
                 ${item.category ? `<span class="rounded-full border border-leaf-200 bg-leaf-50 px-2.5 py-1 text-leaf-700 dark:border-leaf-300/20 dark:bg-leaf-300/10 dark:text-leaf-100">${escapeHtml(item.category)}</span>` : ""}
                 ${item.date ? `<span>${escapeHtml(item.date)}</span>` : ""}
               </div>
