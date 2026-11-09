@@ -98,6 +98,7 @@ draft: false
 
 - 文章图片：`public/images/posts/<文章-slug>/`，例如 `public/images/posts/astro-first-day/cover.webp`
 - 分类封面库：`public/images/posts/covers/` 下按四个正式分类各一张（`ai-engineering.webp`、`frontend-tooling.webp`、`knowledge-learning.webp`、`personal-systems.webp`）。统一为 1536×1024、3:2 的编辑式剪纸拼贴风格，暖白纸感、无文字与水印，新文章可直接引用。
+- 专题封面：同目录下另有 5 张专题图（`inference-systems.webp`、`fde-career.webp`、`agri-remote-sensing.webp`、`static-site-content.webp`、`model-attention.webp`），分别对应推理系统、职业转型、遥感农险、静态站点内容结构与模型注意力；与分类封面共用同一视觉语言，供具体文章选用。
 - 默认分享图：`public/images/posts/covers/og-default.webp`，由 `src/lib/posts.ts` 的 `defaultImagePath` 引用；`og-ai-tech.webp` 为备用 AI 主题素材。两者由原 `public/images/og/*.png` 压缩为 WebP（q88），**原 `public/images/og/` 路径已废弃，不再使用**。
 - 在文章中以 `/images/posts/<文章-slug>/file.webp` 引用；构建会自动处理 GitHub Pages 的项目路径。
 - `cover` 仅用于文章正文页，可使用 SVG/WebP/PNG；未设置时正文不会补一张默认大图。

@@ -7,7 +7,7 @@ category: AI 工程
 tags:
   - 笔记
   - 分享
-cover: /images/posts/covers/ai-engineering.webp
+cover: /images/posts/covers/model-attention.webp
 series: 农险 AI反欺诈
 pinned: true
 draft: false

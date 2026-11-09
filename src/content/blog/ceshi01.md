@@ -6,7 +6,7 @@ updatedDate: 2026-11-09
 category: 个人系统
 tags:
   - 测试
-cover: /images/posts/covers/og-default.webp
+cover: /images/posts/covers/inference-systems.webp
 pinned: false
 draft: true
 # ogImage: "/images/posts/covers/og-default.webp" # 可选；确认文件存在后取消注释
