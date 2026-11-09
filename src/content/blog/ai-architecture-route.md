@@ -1,17 +1,17 @@
 ---
-title: "从 Transformer 到 Kimi K3：大模型架构演进与 MoE 原理解析"
-description: "让有开发基础的人理解“大模型架构为什么一步步演化到今天”，并能看懂 K3 到底新在哪里。"
+title: 从 Transformer 到 Kimi K3：大模型架构演进与 MoE 原理解析
+description: 让有开发基础的人理解“大模型架构为什么一步步演化到今天”，并能看懂 K3 到底新在哪里。
 pubDate: 2026-07-28
 updatedDate: 2026-07-28
-category: "AI 工程"
+category: AI 工程
 tags:
   - 笔记
   - 分享
-cover: "/images/og/ai-tech-promot.png"
-series: "AI知识分享系列"
+cover: /images/posts/covers/ai-engineering.webp
+series: AI知识分享系列
 pinned: false
+draft: false
 ---
-
 
 **KIMI K3 在昨晚（7 月 27 日）刚开放权重**。它是一个 **2.8T 总参数、每 token 激活约 104B 参数的 MoE 模型**，并使用了 **KDA（Kimi Delta Attention）+ Gated MLA + Stable LatentMoE** 等新设计。  
 

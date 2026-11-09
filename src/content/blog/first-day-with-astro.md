@@ -8,7 +8,7 @@ tags:
   - TypeScript
   - 前端
   - 博客搭建
-cover: "/images/posts/peitu1.png"
+cover: "/images/posts/covers/frontend-tooling.webp"
 draft: false
 ---
 

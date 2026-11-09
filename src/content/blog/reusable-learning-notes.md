@@ -7,7 +7,7 @@ tags:
   - 学习笔记
   - 方法论
   - 复盘
-cover: "/images/posts/peitu3.png"
+cover: "/images/posts/covers/knowledge-learning.webp"
 draft: false
 ---
 

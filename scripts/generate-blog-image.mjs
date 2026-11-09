@@ -2,7 +2,9 @@ import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
 const DEFAULT_BASE_URL = 'https://api.shuaiapi.com/v1';
-const DEFAULT_OUTPUT = 'public/images/og/default.png';
+// The legacy public/images/og/ path is retired. Generated source images now
+// live beside the cover library; the site serves the compressed .webp version.
+const DEFAULT_OUTPUT = 'public/images/posts/covers/og-default-source.png';
 const DEFAULT_PROMPT = [
   'Use case: stylized-concept',
   'Asset type: technical blog cover illustration',

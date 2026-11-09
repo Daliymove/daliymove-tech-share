@@ -1,16 +1,15 @@
 ---
-title: "农险反欺诈AI应用落地经验与国内主要机构优劣势对比研究报告"
-description: "关于农险反欺诈AI应用落地经验的相关调查，并对国内主要农险机构的AI反欺诈实践进行了横向对比"
+title: 农险反欺诈AI应用落地经验与国内主要机构优劣势对比研究报告
+description: 关于农险反欺诈AI应用落地经验的相关调查，并对国内主要农险机构的AI反欺诈实践进行了横向对比
 pubDate: 2026-08-03
 updatedDate: 2026-08-03
-category: "AI 工程"
+category: AI 工程
 tags:
   - 笔记
   - 分享
-
+cover: /images/posts/covers/ai-engineering.webp
+series: 农险 AI反欺诈
 pinned: true
-cover: "/images/og/default.png"
-series: "农险 AI反欺诈"
 draft: false
 ---
 

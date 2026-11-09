@@ -7,8 +7,8 @@ category: "前端与工具"
 tags:
   - 笔记
   - 实践
-# cover: "/images/og/default.png" # 可选；确认文件存在后取消注释
-# ogImage: "/images/og/default.png" # 可选；确认文件存在后取消注释
+# cover: "/images/posts/covers/frontend-tooling.webp" # 可选；确认文件存在后取消注释
+# ogImage: "/images/posts/covers/og-default.webp" # 可选；确认文件存在后取消注释
 # series: "个人博客搭建" # 可选
 pinned: false
 draft: true

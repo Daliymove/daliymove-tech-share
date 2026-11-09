@@ -39,6 +39,8 @@ const {
 
 const pageTitle = title ? `${title} | ${site.title}` : site.title;
 const currentPath = Astro.url.pathname;
+// The writing studio is a local authoring tool; never expose it in static builds.
+const navItems = site.nav.filter((item) => !item.devOnly || import.meta.env.DEV);
 const homeHref = withBase("/");
 const searchHref = withBase("/search/");
 const faviconSvgHref = withBase("/favicon.svg");
@@ -124,7 +126,7 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
         </a>
 
         <nav class="site-nav" aria-label="主导航">
-          {site.nav.map((item) => {
+          {navItems.map((item) => {
             const href = withBase(item.href);
             const active = currentPath === href || (item.href !== "/" && currentPath.startsWith(href));
             return (
@@ -152,7 +154,7 @@ const ogImageHeight = imageHeight ?? (usesDefaultImage ? defaultImageHeight : un
 
       <div id="mobile-nav" class="qs-container mobile-nav" data-mobile-nav>
         <nav aria-label="移动端导航">
-          {site.nav.map((item) => {
+          {navItems.map((item) => {
             const href = withBase(item.href);
             const active = currentPath === href || (item.href !== "/" && currentPath.startsWith(href));
             return <a class="mobile-nav-link" href={href} aria-current={active ? "page" : undefined}>{item.label}</a>;

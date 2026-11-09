@@ -9,10 +9,11 @@ export const site = {
   locale: "zh_CN",
   twitter: "",
   nav: [
-    { href: "/", label: "首页", icon: "home" },
-    { href: "/blog/", label: "文章", icon: "article" },
-    { href: "/categories/", label: "分类", icon: "grid" },
-    { href: "/tags/", label: "标签", icon: "tag" },
-    { href: "/about/", label: "关于", icon: "user" },
+    { href: "/", label: "首页", icon: "home", devOnly: false },
+    { href: "/blog/", label: "文章", icon: "article", devOnly: false },
+    { href: "/categories/", label: "分类", icon: "grid", devOnly: false },
+    { href: "/tags/", label: "标签", icon: "tag", devOnly: false },
+    { href: "/studio/", label: "创作", icon: "pen", devOnly: true },
+    { href: "/about/", label: "关于", icon: "user", devOnly: false },
   ],
 } as const;

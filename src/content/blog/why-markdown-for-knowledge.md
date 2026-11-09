@@ -8,7 +8,7 @@ tags:
   - Markdown
   - 知识管理
   - 写作系统
-cover: "/images/posts/peitu1.png"
+cover: "/images/posts/covers/knowledge-learning.webp"
 draft: false
 ---
 

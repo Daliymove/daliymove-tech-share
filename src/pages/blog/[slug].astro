@@ -4,7 +4,10 @@ import PostLayout from "../../layouts/PostLayout.astro";
 import { getSlug } from "../../lib/posts";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  // Drafts are previewable from the local studio during development only.
+  // Production builds keep them out of pages, RSS, sitemap and search indexes.
+  const includeDrafts = import.meta.env.DEV;
+  const posts = await getCollection("blog", ({ data }) => includeDrafts || !data.draft);
   return posts.map((post) => ({
     params: { slug: getSlug(post) },
     props: { post },

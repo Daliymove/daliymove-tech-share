@@ -1,14 +1,15 @@
 ---
-title: "vLLM里的checkpoint是什么？"
-description: "checkpoint核心的意思是：训练好的模型在某个时刻保存下来的一整套状态文件；vLLM 将它加载进来，用于推理。"
+title: vLLM里的checkpoint是什么？
+description: checkpoint核心的意思是：训练好的模型在某个时刻保存下来的一整套状态文件；vLLM 将它加载进来，用于推理。
 pubDate: 2026-07-22
 updatedDate: 2026-07-22
-category: "AI 工程"
+category: AI 工程
 tags:
   - vllm
   - 大模型训练
-cover: "/images/posts/vllm-study.png"
-series: "vLLM 学习笔记"
+cover: /images/posts/covers/frontend-tooling.webp
+series: vLLM 学习笔记
+pinned: false
 draft: false
 ---
 

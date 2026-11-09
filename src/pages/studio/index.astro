@@ -1,0 +1,169 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import { categoryNames } from "../../lib/categories";
+import { withBase } from "../../lib/posts";
+
+const isDev = import.meta.env.DEV;
+const apiBase = withBase("/api/studio");
+const blogBase = withBase("/blog");
+---
+
+<BaseLayout title={isDev ? "创作" : "创作台"} noindex>
+  {isDev ? (
+    <>
+      <PageHeader
+        title="创作"
+        eyebrow="Studio"
+        description="一键新建草稿、编辑文章信息与正文，保存即写回本地 Markdown 文件。"
+      />
+      <div
+        class="qs-studio"
+        data-studio-app
+        data-api-base={apiBase}
+        data-blog-base={blogBase}
+        data-site-base={withBase("/")}
+      >
+        <aside class="qs-studio-sidebar" aria-label="文章列表">
+          <div class="qs-studio-pane-head">
+            <span class="qs-eyebrow">文章</span>
+            <button class="qs-btn qs-btn-primary" type="button" data-action="new">新建草稿</button>
+          </div>
+          <input
+            class="qs-studio-filter"
+            type="search"
+            data-role="filter"
+            placeholder="筛选标题或标签"
+            aria-label="筛选文章"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <div class="qs-studio-list" data-role="post-list" aria-busy="true"></div>
+          <p class="qs-meta qs-studio-count" data-role="post-count"></p>
+        </aside>
+
+        <section class="qs-studio-editor" aria-label="文章编辑区">
+          <div class="qs-studio-pane-head">
+            <div class="qs-studio-slug">
+              <span class="qs-eyebrow">正在编辑</span>
+              <code data-role="slug">—</code>
+            </div>
+            <div class="qs-studio-actions">
+              <span class="qs-meta" data-role="save-state" role="status" aria-live="polite"></span>
+              <a class="qs-plain-link" data-role="open-post" target="_blank" rel="noopener">新标签打开</a>
+              <button class="qs-plain-link qs-studio-danger" type="button" data-action="delete">删除</button>
+              <button class="qs-btn" type="button" data-action="reload">放弃修改</button>
+              <button class="qs-btn qs-btn-primary" type="button" data-action="save">保存</button>
+            </div>
+          </div>
+
+          <div class="qs-studio-errors" data-role="errors" role="alert" hidden></div>
+          <p class="qs-studio-empty" data-role="empty">从左侧选择一篇文章，或点击「新建草稿」。</p>
+
+          <div data-role="editor" hidden>
+            <div class="qs-studio-section-head">
+              <span class="qs-eyebrow">文章信息</span>
+              <span class="qs-meta" data-role="fields-summary"></span>
+              <button class="qs-plain-link" type="button" data-action="toggle-fields" aria-expanded="true" aria-controls="studio-fields">收起</button>
+            </div>
+            <div class="qs-studio-fields" id="studio-fields" data-role="fields">
+              <label class="qs-studio-field qs-studio-field-wide qs-studio-title-field">
+                <span>标题</span>
+                <input class="qs-studio-title-input" type="text" data-field="title" maxlength="100" autocomplete="off" />
+              </label>
+              <label class="qs-studio-field qs-studio-field-wide">
+                <span>保存文件名（不含 .md，仅限小写字母、数字与连字符）</span>
+                <input class="qs-studio-slug-input" type="text" data-field="slug" autocomplete="off" spellcheck="false" />
+              </label>
+              <label class="qs-studio-field qs-studio-field-wide">
+                <span>摘要</span>
+                <textarea data-field="description" rows="2" maxlength="220"></textarea>
+              </label>
+              <label class="qs-studio-field">
+                <span>分类</span>
+                <select data-field="category">
+                  {categoryNames.map((name) => <option value={name}>{name}</option>)}
+                </select>
+              </label>
+              <label class="qs-studio-field">
+                <span>发布日期</span>
+                <input type="date" data-field="pubDate" />
+              </label>
+              <label class="qs-studio-field">
+                <span>标签（逗号分隔，最多 8 个）</span>
+                <input type="text" data-field="tags" autocomplete="off" />
+              </label>
+              <label class="qs-studio-field">
+                <span>系列（可选）</span>
+                <input type="text" data-field="series" autocomplete="off" />
+              </label>
+              <div class="qs-studio-field qs-studio-field-wide">
+                <div class="qs-studio-label-row">
+                  <span>封面</span>
+                  <span class="qs-studio-label-actions">
+                    <button class="qs-plain-link" type="button" data-action="upload">上传图片</button>
+                    <input type="file" accept="image/png,image/jpeg,image/webp,image/avif" data-role="file" hidden />
+                  </span>
+                </div>
+                <select data-field="cover" aria-label="选择封面">
+                  <option value="">不使用封面</option>
+                </select>
+                <div class="qs-studio-cover-row">
+                  <img class="qs-studio-cover-preview" data-role="cover-preview" alt="封面预览" hidden />
+                  <p class="qs-meta">可从已有封面中选择，或上传 png / jpg / webp / avif 图片。</p>
+                </div>
+              </div>
+              <div class="qs-studio-field qs-studio-field-wide qs-studio-switches">
+                <label><input type="checkbox" data-field="draft" /> 草稿（不进入页面、RSS 与索引）</label>
+                <label><input type="checkbox" data-field="pinned" /> 首页置顶</label>
+              </div>
+            </div>
+
+            <div class="qs-studio-section-head">
+              <span class="qs-eyebrow">正文</span>
+            </div>
+            <div class="qs-studio-editor-box">
+              <div class="qs-studio-toolbar" role="toolbar" aria-label="Markdown 工具栏">
+                <button type="button" data-md="h2">H2</button>
+                <button type="button" data-md="h3">H3</button>
+                <button type="button" data-md="bold">加粗</button>
+                <button type="button" data-md="italic">斜体</button>
+                <button type="button" data-md="code">行内代码</button>
+                <button type="button" data-md="fence">代码块</button>
+                <button type="button" data-md="link">链接</button>
+                <button type="button" data-md="list">列表</button>
+                <button type="button" data-md="quote">引用</button>
+                <button type="button" data-md="image">图片</button>
+              </div>
+              <textarea
+                class="qs-studio-textarea"
+                data-role="body"
+                spellcheck="false"
+                placeholder="在这里写正文（Markdown）"
+                aria-label="Markdown 正文"
+              ></textarea>
+            </div>
+            <p class="qs-meta qs-studio-footnote">
+              文件名与 URL 由 slug 固定，修改标题不会改变链接。Ctrl / ⌘ + S 保存；「新标签打开」可在独立页面查看文章，草稿仅在本地 dev 环境可见。
+            </p>
+          </div>
+        </section>
+      </div>
+      <script>import "../../studio/studio-client.ts";</script>
+    </>
+  ) : (
+    <>
+      <PageHeader
+        title="创作台"
+        eyebrow="Studio"
+        description="创作台是本地写作工具，仅在开发环境可用。"
+      />
+      <section class="mt-10 max-w-2xl">
+        <p>
+          本站为静态构建产物，线上不包含任何写入接口。若要新建或编辑文章，请在本地仓库运行
+          <code>pnpm dev</code>，然后从导航进入「创作」。
+        </p>
+      </section>
+    </>
+  )}
+</BaseLayout>

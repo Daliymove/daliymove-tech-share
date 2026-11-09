@@ -1,14 +1,14 @@
 ---
-title: "FDE工程师转型手册"
-description: "Java开发转型FDE手册最终奥义"
+title: FDE工程师转型手册
+description: Java开发转型FDE手册最终奥义
 pubDate: 2026-07-20
 updatedDate: 2026-07-20
-category: "AI 工程"
+category: AI 工程
 tags:
   - 笔记
   - 实践
+cover: /images/posts/covers/personal-systems.webp
 pinned: false
-cover: "/images/posts/FDE-engineer.png"
 draft: false
 ---
 

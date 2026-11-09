@@ -7,7 +7,7 @@ tags:
   - 复盘
   - 个人系统
   - 清单
-cover: "/images/posts/peitu2.png"
+cover: "/images/posts/covers/personal-systems.webp"
 draft: false
 ---
 

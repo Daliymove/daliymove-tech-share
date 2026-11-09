@@ -4,7 +4,7 @@ import { getCategoryDefinition, type CategoryName } from "./categories";
 
 export type BlogPost = CollectionEntry<"blog">;
 
-export const defaultImagePath = "/images/og/default.png";
+export const defaultImagePath = "/images/posts/covers/og-default.webp";
 export const defaultImageWidth = 1536;
 export const defaultImageHeight = 1024;
 
